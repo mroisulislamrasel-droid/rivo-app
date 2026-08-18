@@ -26,10 +26,59 @@ button,input,textarea{font:inherit}
   background:#111
 }
 
-/* LOGIN */
-#authScreen{
+/* WELCOME */
+#welcomeScreen{
   height:100%;
   display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  text-align:center;
+  background:
+    radial-gradient(circle at 20% 20%,#ff2d7545,transparent 35%),
+    radial-gradient(circle at 80% 80%,#7c3cff45,transparent 35%),
+    #08080c
+}
+
+.welcomeBox{
+  width:100%;
+  max-width:420px;
+}
+
+.welcomeLogo{
+  font-size:64px;
+  font-weight:950;
+  letter-spacing:-4px;
+  margin-bottom:5px;
+}
+
+.welcomeTitle{
+  font-size:27px;
+  font-weight:850;
+  margin-bottom:10px;
+}
+
+.welcomeText{
+  opacity:.7;
+  line-height:1.5;
+  margin-bottom:28px;
+}
+
+.welcomeBtn{
+  width:100%;
+  padding:15px;
+  border:0;
+  border-radius:14px;
+  background:#ff2d75;
+  color:#fff;
+  font-weight:850;
+  cursor:pointer;
+}
+
+/* AUTH */
+#authScreen{
+  height:100%;
+  display:none;
   align-items:center;
   justify-content:center;
   padding:22px;
@@ -81,7 +130,8 @@ button,input,textarea{font:inherit}
   border-radius:13px;
   background:#ff2d75;
   color:#fff;
-  font-weight:800
+  font-weight:800;
+  cursor:pointer
 }
 
 .secondary{
@@ -91,7 +141,18 @@ button,input,textarea{font:inherit}
   border:1px solid #383842;
   border-radius:13px;
   background:#22222b;
-  color:#fff
+  color:#fff;
+  cursor:pointer
+}
+
+.backBtn{
+  width:100%;
+  margin-top:10px;
+  padding:12px;
+  background:transparent;
+  color:#aaa;
+  border:0;
+  cursor:pointer
 }
 
 .authMsg{
@@ -102,8 +163,11 @@ button,input,textarea{font:inherit}
   font-size:14px
 }
 
-/* APP */
-#mainApp{display:none;height:100%}
+/* MAIN APP */
+#mainApp{
+  display:none;
+  height:100%
+}
 
 .feed{
   height:100%;
@@ -112,17 +176,20 @@ button,input,textarea{font:inherit}
   scrollbar-width:none
 }
 
-.feed::-webkit-scrollbar{display:none}
+.feed::-webkit-scrollbar{
+  display:none
+}
 
 .video{
   height:100%;
   min-height:100dvh;
   scroll-snap-align:start;
   position:relative;
-  background:#151515
+  background:#151515;
+  overflow:hidden
 }
 
-.video video{
+.videoMedia{
   position:absolute;
   inset:0;
   width:100%;
@@ -131,11 +198,12 @@ button,input,textarea{font:inherit}
   background:#111
 }
 
-.video:after{
-  content:"";
+.videoOverlay{
   position:absolute;
   inset:0;
-  background:linear-gradient(to top,#000d 0%,transparent 58%)
+  background:linear-gradient(to top,#000e 0%,transparent 60%);
+  z-index:2;
+  pointer-events:none
 }
 
 .top{
@@ -148,7 +216,8 @@ button,input,textarea{font:inherit}
   padding:15px 16px;
   display:flex;
   justify-content:space-between;
-  align-items:center
+  align-items:center;
+  pointer-events:none
 }
 
 .logo{
@@ -163,7 +232,10 @@ button,input,textarea{font:inherit}
   font-weight:700
 }
 
-.tabs span{opacity:.55}
+.tabs span{
+  opacity:.55
+}
+
 .tabs .active{
   opacity:1;
   border-bottom:2px solid #ff2d75;
@@ -185,10 +257,8 @@ button,input,textarea{font:inherit}
 
 .caption{
   margin-top:8px;
-  line-height:1.35
+  line-height:1.4
 }
-
-.tag{color:#ff5c95}
 
 .music{
   margin-top:10px;
@@ -207,7 +277,9 @@ button,input,textarea{font:inherit}
   gap:17px
 }
 
-.act{text-align:center}
+.act{
+  text-align:center
+}
 
 .act button{
   width:48px;
@@ -217,7 +289,12 @@ button,input,textarea{font:inherit}
   background:#ffffff1c;
   color:#fff;
   font-size:23px;
-  backdrop-filter:blur(8px)
+  backdrop-filter:blur(8px);
+  cursor:pointer
+}
+
+.act button.liked{
+  color:#ff2d75
 }
 
 .act small{
@@ -245,7 +322,8 @@ button,input,textarea{font:inherit}
   background:none;
   border:0;
   color:#fff;
-  font-size:12px
+  font-size:12px;
+  cursor:pointer
 }
 
 .bottom b{
@@ -273,7 +351,9 @@ button,input,textarea{font:inherit}
   overflow:auto
 }
 
-.panel h2{margin-top:0}
+.panel h2{
+  margin-top:0
+}
 
 .close{
   position:absolute;
@@ -285,7 +365,8 @@ button,input,textarea{font:inherit}
   border-radius:50%;
   width:40px;
   height:40px;
-  font-size:20px
+  font-size:20px;
+  cursor:pointer
 }
 
 .card{
@@ -296,7 +377,8 @@ button,input,textarea{font:inherit}
   margin:10px 0
 }
 
-.card input,.card textarea{
+.card input,
+.card textarea{
   width:100%;
   padding:12px;
   margin:7px 0;
@@ -306,18 +388,50 @@ button,input,textarea{font:inherit}
   color:#fff
 }
 
+.card textarea{
+  min-height:90px;
+  resize:vertical
+}
+
 .btn{
   background:#ff2d75;
   border:0;
   color:white;
   padding:11px 16px;
   border-radius:12px;
-  font-weight:800
+  font-weight:800;
+  cursor:pointer
 }
 
 .fullBtn{
   width:100%;
   margin-top:8px
+}
+
+.cancelBtn{
+  background:#292933;
+  margin-top:8px
+}
+
+.uploadType{
+  display:flex;
+  gap:8px;
+  margin-bottom:10px
+}
+
+.uploadType button{
+  flex:1;
+  padding:11px;
+  border:1px solid #383842;
+  border-radius:10px;
+  background:#202028;
+  color:#fff;
+  cursor:pointer
+}
+
+.uploadType button.active{
+  background:#ff2d75;
+  border-color:#ff2d75
 }
 
 .toast{
@@ -367,6 +481,45 @@ button,input,textarea{font:inherit}
   width:0%;
   background:#ff2d75
 }
+
+.commentInput{
+  display:flex;
+  gap:8px;
+  margin-top:10px
+}
+
+.commentInput input{
+  flex:1;
+  margin:0!important
+}
+
+.commentInput button{
+  border:0;
+  border-radius:10px;
+  background:#ff2d75;
+  color:#fff;
+  padding:0 14px;
+  font-weight:800
+}
+
+.comment{
+  padding:10px 0;
+  border-bottom:1px solid #292933
+}
+
+.comment:last-child{
+  border-bottom:0
+}
+
+.photoPreview{
+  width:100%;
+  max-height:250px;
+  object-fit:contain;
+  background:#08080c;
+  border-radius:12px;
+  margin-top:10px;
+  display:none
+}
 </style>
 </head>
 
@@ -374,19 +527,67 @@ button,input,textarea{font:inherit}
 
 <div class="app">
 
-<!-- LOGIN / SIGN UP -->
+<!-- WELCOME -->
+<div id="welcomeScreen">
+
+  <div class="welcomeBox">
+
+    <div class="welcomeLogo">Rivo</div>
+
+    <div class="welcomeTitle">
+      Short videos. Real people.
+    </div>
+
+    <div class="welcomeText">
+      ভিডিও দেখুন, ছবি ও ভিডিও শেয়ার করুন,
+      Like ও Comment করুন এবং নিজের Content তৈরি করুন।
+    </div>
+
+    <button class="welcomeBtn" onclick="openAuth()">
+      Get Started
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- LOGIN -->
 <div id="authScreen">
 
   <div class="authBox">
 
     <div class="brand">Rivo</div>
-    <div class="subtitle">Short videos. Real people.</div>
 
-    <input id="email" type="email" placeholder="Email address">
-    <input id="password" type="password" placeholder="Password">
+    <div class="subtitle">
+      আপনার Rivo account-এ প্রবেশ করুন
+    </div>
 
-    <button class="primary" onclick="login()">Login</button>
-    <button class="secondary" onclick="signup()">Create new account</button>
+    <input
+      id="email"
+      type="email"
+      placeholder="Email address"
+      autocomplete="email"
+    >
+
+    <input
+      id="password"
+      type="password"
+      placeholder="Password"
+      autocomplete="current-password"
+    >
+
+    <button class="primary" onclick="login()">
+      Login
+    </button>
+
+    <button class="secondary" onclick="signup()">
+      Create new account
+    </button>
+
+    <button class="backBtn" onclick="backToWelcome()">
+      ← Back
+    </button>
 
     <div id="authMsg" class="authMsg"></div>
 
@@ -408,30 +609,39 @@ button,input,textarea{font:inherit}
   </div>
 
   <div id="feed" class="feed">
-    <div class="loading">ভিডিও লোড হচ্ছে...</div>
+    <div class="loading">
+      ভিডিও লোড হচ্ছে...
+    </div>
   </div>
 
 
+  <!-- BOTTOM NAV -->
   <div class="bottom">
 
     <button onclick="closePanels()">
-      <b>⌂</b>Home
+      <b>⌂</b>
+      Home
     </button>
 
     <button onclick="showPanel('discoverPanel')">
-      <b>⌕</b>Discover
+      <b>⌕</b>
+      Discover
     </button>
 
-    <button class="plus" onclick="showPanel('uploadPanel')">
+    <button
+      class="plus"
+      onclick="showPanel('uploadPanel')">
       ＋
     </button>
 
     <button onclick="showPanel('inboxPanel')">
-      <b>♡</b>Inbox
+      <b>♡</b>
+      Inbox
     </button>
 
     <button onclick="showPanel('profilePanel')">
-      <b>♙</b>Profile
+      <b>♙</b>
+      Profile
     </button>
 
   </div>
@@ -440,24 +650,64 @@ button,input,textarea{font:inherit}
   <!-- UPLOAD -->
   <div id="uploadPanel" class="panel">
 
-    <button class="close" onclick="closePanels()">×</button>
+    <button
+      class="close"
+      onclick="closePanels()">
+      ×
+    </button>
 
-    <h2>Upload Video</h2>
+    <h2>Create Post</h2>
 
     <div class="card">
 
-      <p>আপনার ভিডিও নির্বাচন করুন</p>
+      <div class="uploadType">
 
-      <input id="videoFile" type="file" accept="video/*">
+        <button
+          id="videoTypeBtn"
+          class="active"
+          onclick="setUploadType('video')">
+          🎥 Video
+        </button>
 
-      <textarea id="videoCaption"
-        placeholder="ভিডিওর ক্যাপশন লিখুন..."></textarea>
+        <button
+          id="photoTypeBtn"
+          onclick="setUploadType('photo')">
+          🖼️ Photo
+        </button>
 
-      <button class="btn fullBtn" onclick="uploadVideo()">
-        Post Video
+      </div>
+
+      <p id="uploadHelp">
+        আপনার ভিডিও নির্বাচন করুন
+      </p>
+
+      <input
+        id="mediaFile"
+        type="file"
+        accept="video/*"
+        onchange="previewMedia()"
+      >
+
+      <img
+        id="photoPreview"
+        class="photoPreview"
+        alt="Preview"
+      >
+
+      <textarea
+        id="mediaCaption"
+        placeholder="আপনার ক্যাপশন লিখুন..."
+      ></textarea>
+
+      <button
+        class="btn fullBtn"
+        onclick="uploadMedia()">
+        Post
       </button>
 
-      <div id="uploadProgress" class="progress">
+      <div
+        id="uploadProgress"
+        class="progress">
         <div id="progressBar"></div>
       </div>
 
@@ -471,7 +721,11 @@ button,input,textarea{font:inherit}
   <!-- DISCOVER -->
   <div id="discoverPanel" class="panel">
 
-    <button class="close" onclick="closePanels()">×</button>
+    <button
+      class="close"
+      onclick="closePanels()">
+      ×
+    </button>
 
     <h2>Discover</h2>
 
@@ -481,12 +735,12 @@ button,input,textarea{font:inherit}
 
     <div class="card">
       <b>#RivoChallenge</b>
-      <p>Trending challenge</p>
+      <p>Rivo-এর নতুন challenge</p>
     </div>
 
     <div class="card">
       <b>#BanglaVibes</b>
-      <p>বাংলা ভিডিও</p>
+      <p>বাংলা ভিডিও ও Content</p>
     </div>
 
   </div>
@@ -495,13 +749,25 @@ button,input,textarea{font:inherit}
   <!-- INBOX -->
   <div id="inboxPanel" class="panel">
 
-    <button class="close" onclick="closePanels()">×</button>
+    <button
+      class="close"
+      onclick="closePanels()">
+      ×
+    </button>
 
     <h2>Inbox</h2>
 
-    <div class="card">❤️ আপনার ভিডিওতে কেউ Like করেছে</div>
-    <div class="card">👤 নতুন follower</div>
-    <div class="card">💬 নতুন comment</div>
+    <div class="card">
+      ❤️ আপনার ভিডিওতে Like এসেছে
+    </div>
+
+    <div class="card">
+      👤 নতুন follower
+    </div>
+
+    <div class="card">
+      💬 নতুন comment
+    </div>
 
   </div>
 
@@ -509,26 +775,70 @@ button,input,textarea{font:inherit}
   <!-- PROFILE -->
   <div id="profilePanel" class="panel">
 
-    <button class="close" onclick="closePanels()">×</button>
+    <button
+      class="close"
+      onclick="closePanels()">
+      ×
+    </button>
 
     <h2>Profile</h2>
 
     <div class="card">
 
-      <h3 id="profileName">@rivo_user</h3>
+      <h3 id="profileName">
+        @rivo_user
+      </h3>
 
       <p id="profileEmail"></p>
 
       <hr>
 
       <p>
-        <b id="myFollowers">0</b> Followers
+        <b id="myFollowers">0</b>
+        Followers
         &nbsp;&nbsp;
-        <b id="myLikes">0</b> Likes
+        <b id="myLikes">0</b>
+        Likes
       </p>
 
-      <button class="btn fullBtn" onclick="logout()">
+      <button
+        class="btn fullBtn"
+        onclick="logout()">
         Logout
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- COMMENTS -->
+  <div id="commentsPanel" class="panel">
+
+    <button
+      class="close"
+      onclick="closePanels()">
+      ×
+    </button>
+
+    <h2>Comments</h2>
+
+    <div id="commentsList">
+      <div class="loading">
+        Comments লোড হচ্ছে...
+      </div>
+    </div>
+
+    <div class="commentInput">
+
+      <input
+        id="commentText"
+        type="text"
+        placeholder="Comment লিখুন..."
+      >
+
+      <button onclick="postComment()">
+        Send
       </button>
 
     </div>
@@ -568,7 +878,8 @@ import {
   setDoc,
   updateDoc,
   increment,
-  getDoc
+  getDoc,
+  where
 }
 from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
@@ -585,63 +896,121 @@ from "https://www.gstatic.com/firebasejs/12.17.1/firebase-storage.js";
 
 const firebaseConfig = {
 
-  apiKey: "AIzaSyCW803F1tziGDy0DB3DNoF6IQLXgl__-28",
+  apiKey:
+    "AIzaSyCW803F1tziGDy0DB3DNoF6IQLXgl__-28",
 
-  authDomain: "rivo-4256a.firebaseapp.com",
+  authDomain:
+    "rivo-4256a.firebaseapp.com",
 
-  projectId: "rivo-4256a",
+  projectId:
+    "rivo-4256a",
 
-  storageBucket: "rivo-4256a.firebasestorage.app",
+  storageBucket:
+    "rivo-4256a.firebasestorage.app",
 
-  messagingSenderId: "608273960517",
+  messagingSenderId:
+    "608273960517",
 
-  appId: "1:608273960517:web:8e74a4e66e760119fbdd2c",
+  appId:
+    "1:608273960517:web:8e74a4e66e760119fbdd2c",
 
-  measurementId: "G-FS0RQMPCFJ"
+  measurementId:
+    "G-FS0RQMPCFJ"
 
 };
 
 
 /* INITIALIZE */
 
-const app = initializeApp(firebaseConfig);
+const app =
+  initializeApp(firebaseConfig);
 
-const auth = getAuth(app);
+const auth =
+  getAuth(app);
 
-const db = getFirestore(app);
+const db =
+  getFirestore(app);
 
-const storage = getStorage(app);
+const storage =
+  getStorage(app);
 
 let currentUser = null;
+
+let uploadType = "video";
+
+let selectedCommentVideoId = null;
+
+
+/* WELCOME */
+
+window.openAuth = function(){
+
+  document.getElementById("welcomeScreen").style.display =
+    "none";
+
+  document.getElementById("authScreen").style.display =
+    "flex";
+
+};
+
+
+window.backToWelcome = function(){
+
+  document.getElementById("authScreen").style.display =
+    "none";
+
+  document.getElementById("welcomeScreen").style.display =
+    "flex";
+
+  document.getElementById("authMsg").textContent =
+    "";
+
+};
 
 
 /* AUTH STATE */
 
-onAuthStateChanged(auth, async (user)=>{
+onAuthStateChanged(
+  auth,
+  async (user)=>{
 
-  currentUser = user;
+    currentUser = user;
 
-  if(user){
+    if(user){
 
-    document.getElementById("authScreen").style.display="none";
+      document.getElementById("welcomeScreen").style.display =
+        "none";
 
-    document.getElementById("mainApp").style.display="block";
+      document.getElementById("authScreen").style.display =
+        "none";
 
-    document.getElementById("profileEmail").textContent=user.email;
+      document.getElementById("mainApp").style.display =
+        "block";
 
-    await createUserProfile(user);
+      document.getElementById("profileEmail").textContent =
+        user.email || "";
 
-    loadVideos();
+      await createUserProfile(user);
 
-  }else{
+      await loadProfile();
 
-    document.getElementById("authScreen").style.display="flex";
+      await loadVideos();
 
-    document.getElementById("mainApp").style.display="none";
+    }else{
+
+      document.getElementById("mainApp").style.display =
+        "none";
+
+      document.getElementById("authScreen").style.display =
+        "none";
+
+      document.getElementById("welcomeScreen").style.display =
+        "flex";
+
+    }
 
   }
-
-});
+);
 
 
 /* SIGN UP */
@@ -656,14 +1025,18 @@ window.signup = async function(){
 
   if(!email || !password){
 
-    authMessage("Email এবং password দিন");
+    authMessage(
+      "Email এবং password দিন"
+    );
 
     return;
   }
 
   if(password.length < 6){
 
-    authMessage("Password কমপক্ষে ৬ অক্ষরের হতে হবে");
+    authMessage(
+      "Password কমপক্ষে ৬ অক্ষরের হতে হবে"
+    );
 
     return;
   }
@@ -677,13 +1050,17 @@ window.signup = async function(){
         password
       );
 
-    await createUserProfile(result.user);
+    await createUserProfile(
+      result.user
+    );
 
     toast("Account তৈরি হয়েছে ❤️");
 
   }catch(error){
 
-    authMessage(firebaseError(error));
+    authMessage(
+      firebaseError(error)
+    );
 
   }
 
@@ -702,7 +1079,9 @@ window.login = async function(){
 
   if(!email || !password){
 
-    authMessage("Email এবং password দিন");
+    authMessage(
+      "Email এবং password দিন"
+    );
 
     return;
   }
@@ -715,15 +1094,65 @@ window.login = async function(){
       password
     );
 
-    toast("Login সফল হয়েছে");
+    toast("Login সফল হয়েছে ❤️");
 
   }catch(error){
 
-    authMessage(firebaseError(error));
+    authMessage(
+      firebaseError(error)
+    );
 
   }
 
 };
+
+
+/* AUTH MESSAGE */
+
+function authMessage(message){
+
+  document.getElementById("authMsg").textContent =
+    message;
+
+}
+
+
+/* FIREBASE ERROR */
+
+function firebaseError(error){
+
+  const code =
+    error && error.code
+      ? error.code
+      : "";
+
+  if(code.includes("auth/invalid-credential")){
+    return "Email অথবা password সঠিক নয়।";
+  }
+
+  if(code.includes("auth/invalid-email")){
+    return "সঠিক Email দিন।";
+  }
+
+  if(code.includes("auth/email-already-in-use")){
+    return "এই Email দিয়ে আগে থেকেই account আছে। Login করুন।";
+  }
+
+  if(code.includes("auth/weak-password")){
+    return "Password কমপক্ষে ৬ অক্ষরের হতে হবে।";
+  }
+
+  if(code.includes("auth/network-request-failed")){
+    return "Internet connection পরীক্ষা করুন।";
+  }
+
+  if(code.includes("permission-denied")){
+    return "Firebase permission সেটিংস পরীক্ষা করুন।";
+  }
+
+  return error.message || "একটি সমস্যা হয়েছে। আবার চেষ্টা করুন।";
+
+}
 
 
 /* USER PROFILE */
@@ -731,34 +1160,77 @@ window.login = async function(){
 async function createUserProfile(user){
 
   const userRef =
-    doc(db,"users",user.uid);
+    doc(
+      db,
+      "users",
+      user.uid
+    );
 
   const existing =
     await getDoc(userRef);
 
   if(!existing.exists()){
 
-    await setDoc(userRef,{
-
-      uid:user.uid,
-
-      email:user.email,
-
-      username:
-        user.email.split("@")[0],
-
-      followers:0,
-
-      likes:0,
-
-      createdAt:serverTimestamp()
-
-    });
+    await setDoc(
+      userRef,
+      {
+        uid:user.uid,
+        email:user.email || "",
+        username:
+          (user.email || "rivo_user")
+            .split("@")[0],
+        followers:0,
+        likes:0,
+        createdAt:
+          serverTimestamp()
+      }
+    );
 
   }
 
   document.getElementById("profileName").textContent =
-    "@" + user.email.split("@")[0];
+    "@" +
+    (user.email || "rivo_user").split("@")[0];
+
+}
+
+
+/* LOAD PROFILE */
+
+async function loadProfile(){
+
+  if(!currentUser) return;
+
+  try{
+
+    const userRef =
+      doc(
+        db,
+        "users",
+        currentUser.uid
+      );
+
+    const snap =
+      await getDoc(userRef);
+
+    if(snap.exists()){
+
+      const data =
+        snap.data();
+
+      document.getElementById("myFollowers").textContent =
+        data.followers || 0;
+
+      document.getElementById("myLikes").textContent =
+        data.likes || 0;
+
+    }
+
+  }catch(error){
+
+    console.log(error);
+
+  }
 
 }
 
@@ -767,11 +1239,323 @@ async function createUserProfile(user){
 
 window.logout = async function(){
 
-  await signOut(auth);
+  try{
 
-  closePanels();
+    await signOut(auth);
 
-  toast("Logout হয়েছে");
+    closePanels();
+
+    toast("Logout হয়েছে");
+
+  }catch(error){
+
+    toast("Logout করা যায়নি");
+
+  }
+
+};
+
+
+/* UPLOAD TYPE */
+
+window.setUploadType = function(type){
+
+  uploadType = type;
+
+  const videoBtn =
+    document.getElementById("videoTypeBtn");
+
+  const photoBtn =
+    document.getElementById("photoTypeBtn");
+
+  const file =
+    document.getElementById("mediaFile");
+
+  const help =
+    document.getElementById("uploadHelp");
+
+  const preview =
+    document.getElementById("photoPreview");
+
+  if(type === "video"){
+
+    videoBtn.classList.add("active");
+
+    photoBtn.classList.remove("active");
+
+    file.accept =
+      "video/*";
+
+    help.textContent =
+      "আপনার ভিডিও নির্বাচন করুন";
+
+    preview.style.display =
+      "none";
+
+  }else{
+
+    photoBtn.classList.add("active");
+
+    videoBtn.classList.remove("active");
+
+    file.accept =
+      "image/*";
+
+    help.textContent =
+      "আপনার ছবি নির্বাচন করুন";
+
+  }
+
+  file.value = "";
+
+};
+
+
+/* PREVIEW PHOTO */
+
+window.previewMedia = function(){
+
+  const file =
+    document.getElementById("mediaFile").files[0];
+
+  const preview =
+    document.getElementById("photoPreview");
+
+  if(
+    file &&
+    uploadType === "photo"
+  ){
+
+    const url =
+      URL.createObjectURL(file);
+
+    preview.src =
+      url;
+
+    preview.style.display =
+      "block";
+
+  }else{
+
+    preview.style.display =
+      "none";
+
+  }
+
+};
+
+
+/* UPLOAD MEDIA */
+
+window.uploadMedia = async function(){
+
+  if(!currentUser){
+
+    toast("আগে Login করুন");
+
+    return;
+  }
+
+  const file =
+    document.getElementById("mediaFile").files[0];
+
+  const caption =
+    document.getElementById("mediaCaption").value.trim();
+
+  if(!file){
+
+    toast(
+      uploadType === "video"
+        ? "একটি ভিডিও নির্বাচন করুন"
+        : "একটি ছবি নির্বাচন করুন"
+    );
+
+    return;
+  }
+
+  const maxSize =
+    uploadType === "video"
+      ? 100 * 1024 * 1024
+      : 15 * 1024 * 1024;
+
+  if(file.size > maxSize){
+
+    toast(
+      uploadType === "video"
+        ? "ভিডিও সর্বোচ্চ 100MB হতে পারবে"
+        : "ছবি সর্বোচ্চ 15MB হতে পারবে"
+    );
+
+    return;
+  }
+
+  const progress =
+    document.getElementById("uploadProgress");
+
+  const bar =
+    document.getElementById("progressBar");
+
+  const status =
+    document.getElementById("uploadStatus");
+
+  progress.style.display =
+    "block";
+
+  bar.style.width =
+    "0%";
+
+  status.textContent =
+    "Upload শুরু হচ্ছে...";
+
+  try{
+
+    const safeName =
+      file.name.replace(
+        /[^a-zA-Z0-9._-]/g,
+        "_"
+      );
+
+    const path =
+      "uploads/" +
+      currentUser.uid +
+      "/" +
+      Date.now() +
+      "_" +
+      safeName;
+
+    const storageRef =
+      ref(
+        storage,
+        path
+      );
+
+    const uploadTask =
+      uploadBytesResumable(
+        storageRef,
+        file
+      );
+
+    uploadTask.on(
+      "state_changed",
+
+      (snapshot)=>{
+
+        const percent =
+          Math.round(
+            (
+              snapshot.bytesTransferred /
+              snapshot.totalBytes
+            ) * 100
+          );
+
+        bar.style.width =
+          percent + "%";
+
+        status.textContent =
+          "Upload হচ্ছে... " +
+          percent +
+          "%";
+
+      },
+
+      (error)=>{
+
+        console.error(error);
+
+        status.textContent =
+          "Upload ব্যর্থ হয়েছে";
+
+        toast(
+          "Firebase Storage permission পরীক্ষা করুন"
+        );
+
+      },
+
+      async ()=>{
+
+        const url =
+          await getDownloadURL(
+            uploadTask.snapshot.ref
+          );
+
+        const videoRef =
+          await addDoc(
+            collection(
+              db,
+              "videos"
+            ),
+            {
+              uid:
+                currentUser.uid,
+
+              username:
+                (currentUser.email || "rivo_user")
+                  .split("@")[0],
+
+              email:
+                currentUser.email || "",
+
+              mediaUrl:
+                url,
+
+              mediaType:
+                uploadType,
+
+              caption:
+                caption,
+
+              likes:0,
+
+              comments:0,
+
+              createdAt:
+                serverTimestamp()
+            }
+          );
+
+        status.textContent =
+          "Post সফল হয়েছে ❤️";
+
+        bar.style.width =
+          "100%";
+
+        toast("Post সফল হয়েছে ❤️");
+
+        document.getElementById(
+          "mediaFile"
+        ).value = "";
+
+        document.getElementById(
+          "mediaCaption"
+        ).value = "";
+
+        document.getElementById(
+          "photoPreview"
+        ).style.display = "none";
+
+        setTimeout(
+          ()=>{
+            closePanels();
+            loadVideos();
+          },
+          800
+        );
+
+      }
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    status.textContent =
+      "Upload করা যায়নি";
+
+    toast(
+      firebaseError(error)
+    );
+
+  }
 
 };
 
@@ -790,22 +1574,30 @@ async function loadVideos(){
 
     const q =
       query(
-        collection(db,"videos"),
-        orderBy("createdAt","desc")
+        collection(
+          db,
+          "videos"
+        ),
+        orderBy(
+          "createdAt",
+          "desc"
+        )
       );
 
     const snapshot =
       await getDocs(q);
 
-    feed.innerHTML="";
+    feed.innerHTML = "";
 
     if(snapshot.empty){
 
-      feed.innerHTML=`
+      feed.innerHTML = `
         <div class="empty">
           <div>
-            <h2>Rivo-তে এখনো কোনো ভিডিও নেই</h2>
-            <p>＋ চাপ দিয়ে প্রথম ভিডিওটি Upload করুন 🎥</p>
+            <h2>Rivo-তে এখনো কোনো Post নেই</h2>
+            <p>
+              ＋ চাপ দিয়ে প্রথম Video বা Photo Post করুন 🎥
+            </p>
           </div>
         </div>
       `;
@@ -813,9 +1605,794 @@ async function loadVideos(){
       return;
     }
 
-    snapshot.forEach(item=>{
+    snapshot.forEach(
+      item=>{
 
-      const video =
-        item.data();
+        createPost(
+          item.id,
+          item.data()
+        );
 
-      createVideo
+      }
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    feed.innerHTML = `
+      <div class="empty">
+        <div>
+          <h2>Post লোড করা যাচ্ছে না</h2>
+          <p>
+            Firebase Firestore rules অথবা index পরীক্ষা করুন।
+          </p>
+        </div>
+      </div>
+    `;
+
+  }
+
+}
+
+
+/* CREATE POST */
+
+function createPost(id,data){
+
+  const feed =
+    document.getElementById("feed");
+
+  const section =
+    document.createElement("section");
+
+  section.className =
+    "video";
+
+  const media =
+    document.createElement(
+      data.mediaType === "photo"
+        ? "img"
+        : "video"
+    );
+
+  media.className =
+    "videoMedia";
+
+  media.src =
+    data.mediaUrl;
+
+  if(data.mediaType === "video"){
+
+    media.autoplay =
+      true;
+
+    media.loop =
+      true;
+
+    media.muted =
+      true;
+
+    media.playsInline =
+      true;
+
+    media.setAttribute(
+      "playsinline",
+      ""
+    );
+
+  }
+
+  const overlay =
+    document.createElement("div");
+
+  overlay.className =
+    "videoOverlay";
+
+  const content =
+    document.createElement("div");
+
+  content.className =
+    "content";
+
+  const username =
+    document.createElement("div");
+
+  username.className =
+    "user";
+
+  username.textContent =
+    "@" +
+    (data.username || "rivo_user");
+
+  const caption =
+    document.createElement("div");
+
+  caption.className =
+    "caption";
+
+  caption.textContent =
+    data.caption || "";
+
+  const music =
+    document.createElement("div");
+
+  music.className =
+    "music";
+
+  music.textContent =
+    data.mediaType === "photo"
+      ? "🖼️ Rivo Photo"
+      : "♪ Rivo Video";
+
+  content.appendChild(
+    username
+  );
+
+  content.appendChild(
+    caption
+  );
+
+  content.appendChild(
+    music
+  );
+
+
+  const actions =
+    document.createElement("div");
+
+  actions.className =
+    "actions";
+
+
+  /* LIKE */
+
+  const likeBox =
+    document.createElement("div");
+
+  likeBox.className =
+    "act";
+
+  const likeButton =
+    document.createElement("button");
+
+  likeButton.textContent =
+    "♡";
+
+  const likeCount =
+    document.createElement("small");
+
+  likeCount.textContent =
+    data.likes || 0;
+
+  likeButton.onclick =
+    ()=>toggleLike(
+      id,
+      likeButton,
+      likeCount
+    );
+
+  likeBox.appendChild(
+    likeButton
+  );
+
+  likeBox.appendChild(
+    likeCount
+  );
+
+
+  /* COMMENT */
+
+  const commentBox =
+    document.createElement("div");
+
+  commentBox.className =
+    "act";
+
+  const commentButton =
+    document.createElement("button");
+
+  commentButton.textContent =
+    "💬";
+
+  const commentCount =
+    document.createElement("small");
+
+  commentCount.textContent =
+    data.comments || 0;
+
+  commentButton.onclick =
+    ()=>{
+      selectedCommentVideoId =
+        id;
+
+      showComments(
+        id
+      );
+    };
+
+  commentBox.appendChild(
+    commentButton
+  );
+
+  commentBox.appendChild(
+    commentCount
+  );
+
+
+  /* SHARE */
+
+  const shareBox =
+    document.createElement("div");
+
+  shareBox.className =
+    "act";
+
+  const shareButton =
+    document.createElement("button");
+
+  shareButton.textContent =
+    "↗";
+
+  const shareText =
+    document.createElement("small");
+
+  shareText.textContent =
+    "Share";
+
+  shareButton.onclick =
+    ()=>sharePost(
+      data.mediaUrl
+    );
+
+  shareBox.appendChild(
+    shareButton
+  );
+
+  shareBox.appendChild(
+    shareText
+  );
+
+
+  /* SAVE */
+
+  const saveBox =
+    document.createElement("div");
+
+  saveBox.className =
+    "act";
+
+  const saveButton =
+    document.createElement("button");
+
+  saveButton.textContent =
+    "🔖";
+
+  const saveText =
+    document.createElement("small");
+
+  saveText.textContent =
+    "Save";
+
+  saveButton.onclick =
+    ()=>{
+      toast(
+        "Post Save হয়েছে 🔖"
+      );
+    };
+
+  saveBox.appendChild(
+    saveButton
+  );
+
+  saveBox.appendChild(
+    saveText
+  );
+
+
+  actions.appendChild(
+    likeBox
+  );
+
+  actions.appendChild(
+    commentBox
+  );
+
+  actions.appendChild(
+    shareBox
+  );
+
+  actions.appendChild(
+    saveBox
+  );
+
+
+  section.appendChild(
+    media
+  );
+
+  section.appendChild(
+    overlay
+  );
+
+  section.appendChild(
+    content
+  );
+
+  section.appendChild(
+    actions
+  );
+
+  feed.appendChild(
+    section
+  );
+
+}
+
+
+/* LIKE */
+
+async function toggleLike(
+  postId,
+  button,
+  countElement
+){
+
+  if(!currentUser){
+
+    toast("আগে Login করুন");
+
+    return;
+  }
+
+  try{
+
+    const likeId =
+      currentUser.uid +
+      "_" +
+      postId;
+
+    const likeRef =
+      doc(
+        db,
+        "likes",
+        likeId
+      );
+
+    const existing =
+      await getDoc(
+        likeRef
+      );
+
+    const postRef =
+      doc(
+        db,
+        "videos",
+        postId
+      );
+
+    if(existing.exists()){
+
+      await setDoc(
+        likeRef,
+        {
+          uid:currentUser.uid,
+          postId:postId
+        }
+      );
+
+      await updateDoc(
+        postRef,
+        {
+          likes:
+            increment(1)
+        }
+      );
+
+      button.textContent =
+        "♥";
+
+      button.classList.add(
+        "liked"
+      );
+
+      countElement.textContent =
+        Number(
+          countElement.textContent || 0
+        ) + 1;
+
+    }else{
+
+      await setDoc(
+        likeRef,
+        {
+          uid:currentUser.uid,
+          postId:postId
+        }
+      );
+
+      await updateDoc(
+        postRef,
+        {
+          likes:
+            increment(1)
+        }
+      );
+
+      button.textContent =
+        "♥";
+
+      button.classList.add(
+        "liked"
+      );
+
+      countElement.textContent =
+        Number(
+          countElement.textContent || 0
+        ) + 1;
+
+    }
+
+  }catch(error){
+
+    console.error(error);
+
+    toast(
+      "Like করা যায়নি"
+    );
+
+  }
+
+}
+
+
+/* SHARE */
+
+window.sharePost =
+  async function(url){
+
+    try{
+
+      if(
+        navigator.share
+      ){
+
+        await navigator.share({
+          title:"Rivo",
+          text:"Rivo-তে এই Post দেখুন",
+          url:url
+        });
+
+      }else{
+
+        await navigator.clipboard.writeText(
+          url
+        );
+
+        toast(
+          "Link copy হয়েছে"
+        );
+
+      }
+
+    }catch(error){
+
+      if(
+        error &&
+        error.name === "AbortError"
+      ){
+        return;
+      }
+
+      toast(
+        "Share করা যায়নি"
+      );
+
+    }
+
+  };
+
+
+/* COMMENTS */
+
+async function showComments(
+  postId
+){
+
+  showPanel(
+    "commentsPanel"
+  );
+
+  const list =
+    document.getElementById(
+      "commentsList"
+    );
+
+  list.innerHTML =
+    '<div class="loading">Comments লোড হচ্ছে...</div>';
+
+  try{
+
+    const q =
+      query(
+        collection(
+          db,
+          "comments"
+        ),
+        where(
+          "postId",
+          "==",
+          postId
+        ),
+        orderBy(
+          "createdAt",
+          "asc"
+        )
+      );
+
+    const snapshot =
+      await getDocs(q);
+
+    list.innerHTML =
+      "";
+
+    if(snapshot.empty){
+
+      list.innerHTML =
+        '<div class="empty" style="height:auto">এখনো কোনো comment নেই।</div>';
+
+      return;
+    }
+
+    snapshot.forEach(
+      item=>{
+
+        const data =
+          item.data();
+
+        const div =
+          document.createElement(
+            "div"
+          );
+
+        div.className =
+          "comment";
+
+        div.innerHTML =
+          "<b>@" +
+          escapeHtml(
+            data.username ||
+            "user"
+          ) +
+          "</b><br>" +
+          escapeHtml(
+            data.text || ""
+          );
+
+        list.appendChild(
+          div
+        );
+
+      }
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    list.innerHTML =
+      '<div class="card">Comment লোড করা যাচ্ছে না। Firebase rules/index পরীক্ষা করুন।</div>';
+
+  }
+
+}
+
+
+/* POST COMMENT */
+
+window.postComment =
+  async function(){
+
+    if(!currentUser){
+
+      toast("আগে Login করুন");
+
+      return;
+    }
+
+    if(!selectedCommentVideoId){
+
+      toast("Post নির্বাচন করুন");
+
+      return;
+    }
+
+    const input =
+      document.getElementById(
+        "commentText"
+      );
+
+    const text =
+      input.value.trim();
+
+    if(!text){
+
+      toast(
+        "Comment লিখুন"
+      );
+
+      return;
+    }
+
+    try{
+
+      await addDoc(
+        collection(
+          db,
+          "comments"
+        ),
+        {
+          postId:
+            selectedCommentVideoId,
+
+          uid:
+            currentUser.uid,
+
+          username:
+            (currentUser.email || "user")
+              .split("@")[0],
+
+          text:
+            text,
+
+          createdAt:
+            serverTimestamp()
+        }
+      );
+
+      await updateDoc(
+        doc(
+          db,
+          "videos",
+          selectedCommentVideoId
+        ),
+        {
+          comments:
+            increment(1)
+        }
+      );
+
+      input.value =
+        "";
+
+      toast(
+        "Comment posted 💬"
+      );
+
+      showComments(
+        selectedCommentVideoId
+      );
+
+    }catch(error){
+
+      console.error(error);
+
+      toast(
+        "Comment করা যায়নি"
+      );
+
+    }
+
+  };
+
+
+/* ESCAPE HTML */
+
+function escapeHtml(text){
+
+  return String(text)
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+/* PANELS */
+
+window.showPanel =
+  function(id){
+
+    document
+      .querySelectorAll(".panel")
+      .forEach(
+        panel=>{
+          panel.style.display =
+            "none";
+        }
+      );
+
+    const panel =
+      document.getElementById(
+        id
+      );
+
+    if(panel){
+
+      panel.style.display =
+        "block";
+
+    }
+
+  };
+
+
+window.closePanels =
+  function(){
+
+    document
+      .querySelectorAll(".panel")
+      .forEach(
+        panel=>{
+          panel.style.display =
+            "none";
+        }
+      );
+
+  };
+
+
+/* TOAST */
+
+window.toast =
+  function(message){
+
+    const box =
+      document.getElementById(
+        "toast"
+      );
+
+    box.textContent =
+      message;
+
+    box.style.display =
+      "block";
+
+    clearTimeout(
+      window.rivoToastTimer
+    );
+
+    window.rivoToastTimer =
+      setTimeout(
+        ()=>{
+          box.style.display =
+            "none";
+        },
+        1800
+      );
+
+  };
+
+</script>
+
+</div>
+
+</body>
+</html>
