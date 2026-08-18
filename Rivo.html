@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#09090d">
+<title>Rivo — Short Video Demo</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#000;color:#fff;font-family:system-ui,-apple-system,sans-serif}
+.app{height:100dvh;max-width:520px;margin:auto;position:relative;overflow:hidden;background:#111}
+.feed{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none}
+.feed::-webkit-scrollbar{display:none}
+.video{height:100%;min-height:100dvh;scroll-snap-align:start;position:relative;background:linear-gradient(145deg,#17251d,#0d1110 55%,#29152c)}
+.video:nth-child(2){background:linear-gradient(145deg,#24150d,#111827 55%,#30152a)}
+.video:nth-child(3){background:linear-gradient(145deg,#071b29,#10131b 55%,#182d20)}
+.video:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 65% 35%,#ffffff18,transparent 30%),linear-gradient(to top,#000c 0%,transparent 55%)}
+.top{position:fixed;top:0;left:50%;transform:translateX(-50%);width:min(520px,100%);z-index:5;padding:15px 16px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:25px;font-weight:900;letter-spacing:-1px}.tabs{display:flex;gap:18px;font-weight:700}.tabs span{opacity:.55}.tabs .active{opacity:1;border-bottom:2px solid #ff2d75;padding-bottom:5px}
+.content{position:absolute;left:16px;right:78px;bottom:82px;z-index:2}.user{font-weight:800;font-size:17px}.caption{margin-top:8px;line-height:1.35}.tag{color:#ff5c95}
+.music{margin-top:10px;font-size:13px;opacity:.9}
+.actions{position:absolute;right:12px;bottom:95px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:17px}.act{text-align:center}.act button{width:48px;height:48px;border:0;border-radius:50%;background:#ffffff1c;color:#fff;font-size:23px;backdrop-filter:blur(8px)}.act small{display:block;margin-top:3px;font-size:12px}
+.follow{position:absolute;left:42px;bottom:235px;z-index:4;background:#ff2d75;color:#fff;border:0;border-radius:20px;padding:7px 13px;font-weight:800}
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);z-index:6;height:62px;background:#000c;backdrop-filter:blur(12px);display:flex;justify-content:space-around;align-items:center}.bottom button{background:none;border:0;color:#fff;font-size:12px}.bottom b{display:block;font-size:21px}.plus{background:#fff!important;color:#111!important;border-radius:10px!important;width:46px;height:34px;font-size:25px!important}
+.panel{display:none;position:absolute;inset:0;background:#111;z-index:20;padding:65px 18px 80px;overflow:auto}.panel h2{margin-top:0}.close{position:absolute;right:15px;top:15px;background:#222;color:#fff;border:0;border-radius:50%;width:40px;height:40px;font-size:20px}
+.card{background:#1b1b22;border:1px solid #2b2b35;border-radius:16px;padding:16px;margin:10px 0}.btn{background:#ff2d75;border:0;color:white;padding:11px 16px;border-radius:12px;font-weight:800}
+.toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%);background:#fff;color:#111;padding:10px 15px;border-radius:14px;z-index:30;display:none;font-weight:700}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top"><div class="logo">Rivo</div><div class="tabs"><span>Following</span><span class="active">For You</span>⌕</div></div>
+
+<div class="feed">
+<section class="video">
+<div class="content"><div class="user">@rivo_creator <button class="follow" onclick="toast('Followed!')">Follow</button></div><div class="caption">প্রকৃতির সুন্দর মুহূর্ত 🌿✨ <span class="tag">#Rivo #BanglaVibes</span></div><div class="music">♪ Original Sound — Rivo</div></div>
+<div class="actions">
+<div class="act"><button onclick="like(this)">♡</button><small>12.3K</small></div>
+<div class="act"><button onclick="comment()">💬</button><small>256</small></div>
+<div class="act"><button onclick="share()">↗</button><small>432</small></div>
+<div class="act"><button onclick="toast('ভিডিও Save হয়েছে')">🔖</button><small>Save</small></div>
+</div>
+</section>
+
+<section class="video">
+<div class="content"><div class="user">@rivo_dance</div><div class="caption">আজকের নতুন challenge! 💃🔥 <span class="tag">#RivoChallenge</span></div><div class="music">♪ Trending Sound</div></div>
+<div class="actions">
+<div class="act"><button onclick="like(this)">♡</button><small>8.7K</small></div>
+<div class="act"><button onclick="comment()">💬</button><small>184</small></div>
+<div class="act"><button onclick="share()">↗</button><small>310</small></div>
+<div class="act"><button onclick="toast('ভিডিও Save হয়েছে')">🔖</button><small>Save</small></div>
+</div>
+</section>
+
+<section class="video">
+<div class="content"><div class="user">@rivo_travel</div><div class="caption">বাংলাদেশের সৌন্দর্য 🇧🇩❤️ <span class="tag">#TravelBD</span></div><div class="music">♪ Rivo Original</div></div>
+<div class="actions">
+<div class="act"><button onclick="like(this)">♡</button><small>21.1K</small></div>
+<div class="act"><button onclick="comment()">💬</button><small>521</small></div>
+<div class="act"><button onclick="share()">↗</button><small>802</small></div>
+<div class="act"><button onclick="toast('ভিডিও Save হয়েছে')">🔖</button><small>Save</small></div>
+</div>
+</section>
+</div>
+
+<div class="bottom">
+<button onclick="showPanel('homePanel')"><b>⌂</b>Home</button>
+<button onclick="showPanel('discoverPanel')"><b>⌕</b>Discover</button>
+<button class="plus" onclick="showPanel('uploadPanel')">＋</button>
+<button onclick="showPanel('inboxPanel')"><b>♡</b>Inbox</button>
+<button onclick="showPanel('profilePanel')"><b>♙</b>Profile</button>
+</div>
+
+<div id="homePanel" class="panel"><button class="close" onclick="hidePanels()">×</button><h2>Rivo</h2><div class="card"><b>For You Feed</b><p>উপরে/নিচে swipe করে ভিডিও দেখুন।</p></div><div class="card"><b>Demo</b><p>এখন এটি offline UI prototype। বাস্তব ভিডিও, login ও database পরের ধাপে যুক্ত হবে।</p></div></div>
+<div id="discoverPanel" class="panel"><button class="close" onclick="hidePanels()">×</button><h2>Discover</h2><div class="card">🔎 Search users, videos, hashtags</div><div class="card"><b>#RivoChallenge</b><p>12.5M views</p></div><div class="card"><b>#BanglaVibes</b><p>8.2M views</p></div></div>
+<div id="uploadPanel" class="panel"><button class="close" onclick="hidePanels()">×</button><h2>Upload Video</h2><div class="card"><p>এটি demo upload screen।</p><input type="file" accept="video/*" style="max-width:100%"><p><input placeholder="Write a caption..." style="padding:12px;width:100%;border-radius:10px;border:0"></p><button class="btn" onclick="toast('Demo: video upload queued');hidePanels()">Post Video</button></div></div>
+<div id="inboxPanel" class="panel"><button class="close" onclick="hidePanels()">×</button><h2>Inbox</h2><div class="card">❤️ Someone liked your video</div><div class="card">👤 New follower</div><div class="card">💬 New comment</div></div>
+<div id="profilePanel" class="panel"><button class="close" onclick="hidePanels()">×</button><h2>@rivo_creator</h2><div class="card"><b>12.5K Followers</b> &nbsp; <b>245K Likes</b><p>Content Creator • Rivo Video Lover</p></div><div class="card">🎥 24 Videos &nbsp; 👁 256K Views</div></div>
+<div id="toast" class="toast"></div>
+<script>
+function showPanel(id){document.querySelectorAll('.panel').forEach(x=>x.style.display='none');document.getElementById(id).style.display='block'}
+function hidePanels(){document.querySelectorAll('.panel').forEach(x=>x.style.display='none')}
+function toast(t){let x=document.getElementById('toast');x.textContent=t;x.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>x.style.display='none',1500)}
+function like(b){b.textContent=b.textContent==='♡'?'♥':'♡';toast(b.textContent==='♥'?'Liked ❤️':'Like removed')}
+function comment(){let x=prompt('আপনার comment লিখুন:');if(x)toast('Comment posted')}
+function share(){if(navigator.share) navigator.share({title:'Rivo',text:'Rivo short video'}); else {navigator.clipboard?.writeText(location.href);toast('Share link copied')}}
+</script>
+</div>
+</body>
+</html>
