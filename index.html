@@ -1,363 +1,905 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport"
-content="width=device-width,initial-scale=1,viewport-fit=cover">
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
-<title>Rivo</title>
+<title>Rivo — Short Video Platform</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
 
 html,body{
- margin:0;
- width:100%;
- height:100%;
- background:#09070e;
- color:white;
- font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+  width:100%;
+  height:100%;
+  background:#000;
+  color:#fff;
+  font-family:Arial,Helvetica,sans-serif;
+  overflow:hidden;
 }
 
-button,input,textarea{font:inherit}
+button,input,textarea{
+  font:inherit;
+}
 
-button{cursor:pointer}
+button{
+  border:0;
+  cursor:pointer;
+}
 
 .app{
- width:100%;
- max-width:520px;
- height:100dvh;
- margin:auto;
- position:relative;
- overflow:hidden;
- background:#0d0a12
+  width:100%;
+  height:100dvh;
+  max-width:520px;
+  margin:auto;
+  position:relative;
+  background:#000;
+  overflow:hidden;
 }
 
-/* AUTH */
+/* ================= TOP ================= */
 
-#auth{
- position:absolute;
- inset:0;
- z-index:100;
- display:flex;
- align-items:center;
- justify-content:center;
- padding:20px;
- background:
- radial-gradient(circle at 20% 20%,#ff2d7560,transparent 35%),
- radial-gradient(circle at 80% 80%,#7c3cff55,transparent 40%),
- #09070d
-}
-
-.authbox{
- width:100%;
- padding:28px 20px;
- border-radius:25px;
- background:#17131ddd;
- border:1px solid #ffffff18
+.topbar{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:70px;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,.7),
+    transparent
+  );
 }
 
 .logo{
- font-size:48px;
- font-weight:950;
- text-align:center;
- background:linear-gradient(90deg,#fff,#ff3f87,#9d5cff);
- -webkit-background-clip:text;
- color:transparent
+  font-size:29px;
+  font-weight:900;
+  letter-spacing:-1px;
 }
 
-.subtitle{
- text-align:center;
- color:#aaa;
- margin-bottom:20px
+.logo span{
+  color:#ff2d8d;
 }
 
-input,textarea{
- width:100%;
- padding:14px;
- margin:6px 0;
- border:1px solid #ffffff15;
- border-radius:13px;
- background:#0b0910;
- color:white;
- outline:none
+.top-actions{
+  display:flex;
+  gap:10px;
 }
 
-.btn{
- width:100%;
- padding:14px;
- margin-top:8px;
- border:0;
- border-radius:13px;
- background:linear-gradient(90deg,#ff2d75,#8b5cff);
- color:white;
- font-weight:800
+.icon-btn{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:rgba(255,255,255,.13);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  backdrop-filter:blur(10px);
 }
 
-.secondary{
- background:#27212f
-}
-
-.msg{
- text-align:center;
- color:#ff709f;
- margin-top:10px;
- min-height:22px
-}
-
-/* APP */
-
-#app{
- display:none;
- height:100%
-}
+/* ================= FEED ================= */
 
 .feed{
- height:100%;
- overflow-y:auto;
- scroll-snap-type:y mandatory
+  width:100%;
+  height:100%;
+  overflow-y:auto;
+  scroll-snap-type:y mandatory;
+  scrollbar-width:none;
 }
 
-.post{
- min-height:100dvh;
- position:relative;
- scroll-snap-align:start;
- background:#111
+.feed::-webkit-scrollbar{
+  display:none;
 }
 
-.media{
- position:absolute;
- inset:0;
- width:100%;
- height:100%;
- object-fit:cover
+.video-card{
+  position:relative;
+  width:100%;
+  height:100dvh;
+  min-height:100dvh;
+  scroll-snap-align:start;
+  background:#111;
+  overflow:hidden;
 }
 
-.overlay{
- position:absolute;
- inset:0;
- background:
- linear-gradient(#0008,transparent 30%),
- linear-gradient(transparent 45%,#000e)
+.video-card video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  background:#111;
 }
 
-.info{
- position:absolute;
- left:15px;
- right:85px;
- bottom:90px;
- z-index:5
+.video-overlay{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(
+      to top,
+      rgba(0,0,0,.85) 0%,
+      rgba(0,0,0,.35) 24%,
+      transparent 48%
+    );
 }
 
-.user{
- font-weight:900;
- font-size:18px
+/* ================= VIDEO INFO ================= */
+
+.video-info{
+  position:absolute;
+  left:16px;
+  right:90px;
+  bottom:90px;
+  z-index:10;
 }
 
-.caption{
- margin-top:8px;
- line-height:1.4
-}
-
-.actions{
- position:absolute;
- right:10px;
- bottom:100px;
- z-index:10;
- display:flex;
- flex-direction:column;
- gap:15px
-}
-
-.action{
- text-align:center
-}
-
-.action button{
- width:50px;
- height:50px;
- border:0;
- border-radius:50%;
- background:#ffffff25;
- color:white;
- font-size:22px
-}
-
-.action small{
- display:block;
- margin-top:3px
-}
-
-.liked{
- color:#ff3f87!important
-}
-
-.top{
- position:fixed;
- top:0;
- left:50%;
- transform:translateX(-50%);
- width:min(520px,100%);
- z-index:30;
- padding:15px;
- display:flex;
- justify-content:space-between;
- background:linear-gradient(#09070dcc,transparent)
-}
-
-.top b{
- font-size:25px
-}
-
-.bottom{
- position:fixed;
- bottom:0;
- left:50%;
- transform:translateX(-50%);
- width:min(520px,100%);
- height:65px;
- z-index:40;
- display:flex;
- align-items:center;
- justify-content:space-around;
- background:#09070eee;
- border-top:1px solid #ffffff10
-}
-
-.bottom button{
- background:none;
- border:0;
- color:white;
- font-size:12px
-}
-
-.bottom b{
- display:block;
- font-size:22px
-}
-
-.plus{
- width:48px;
- height:38px;
- border-radius:10px!important;
- background:linear-gradient(90deg,#ff2d75,#8b5cff)!important;
- font-size:25px!important
-}
-
-/* PANELS */
-
-.panel{
- display:none;
- position:absolute;
- inset:0;
- z-index:70;
- overflow-y:auto;
- padding:65px 16px 90px;
- background:#100c16
-}
-
-.close{
- position:absolute;
- right:15px;
- top:13px;
- width:40px;
- height:40px;
- border:0;
- border-radius:50%;
- background:#29222f;
- color:white;
- font-size:22px
-}
-
-.card{
- padding:16px;
- margin:10px 0;
- border-radius:18px;
- background:#1b1622;
- border:1px solid #ffffff0d
-}
-
-.preview{
- display:none;
- width:100%;
- max-height:350px;
- margin-top:10px;
- border-radius:15px;
- overflow:hidden;
- background:#050509
-}
-
-.preview img,
-.preview video{
- width:100%;
- max-height:350px;
- object-fit:contain
-}
-
-.progress{
- height:6px;
- background:#332c38;
- border-radius:10px;
- margin-top:10px;
- overflow:hidden
-}
-
-.bar{
- width:0%;
- height:100%;
- background:#ff2d75
+.creator-row{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin-bottom:12px;
 }
 
 .avatar{
- width:90px;
- height:90px;
- border-radius:50%;
- object-fit:cover;
- border:3px solid #ff3f87
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#333;
+  border:2px solid #fff;
 }
 
-.profile{
- text-align:center
+.username{
+  font-weight:800;
+  font-size:16px;
+}
+
+.follow-btn{
+  margin-left:5px;
+  padding:7px 14px;
+  border-radius:20px;
+  color:#fff;
+  background:#ff237f;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.caption{
+  font-size:15px;
+  line-height:1.4;
+  margin-bottom:9px;
+}
+
+.hashtags{
+  color:#ddd;
+  font-size:13px;
+}
+
+.sound{
+  margin-top:10px;
+  font-size:13px;
+}
+
+/* ================= RIGHT ACTIONS ================= */
+
+.actions{
+  position:absolute;
+  right:12px;
+  bottom:105px;
+  width:60px;
+  z-index:20;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:17px;
+}
+
+.action{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  color:#fff;
+  background:transparent;
+  font-size:12px;
+  text-shadow:0 1px 4px #000;
+}
+
+.action-icon{
+  width:48px;
+  height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:rgba(0,0,0,.28);
+  backdrop-filter:blur(8px);
+  font-size:25px;
+  margin-bottom:3px;
+}
+
+.action.liked .action-icon{
+  color:#ff237f;
+}
+
+.action.share .action-icon{
+  background:#ff237f;
+}
+
+/* ================= PLAY ================= */
+
+.play-button{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:78px;
+  height:78px;
+  border-radius:50%;
+  background:rgba(255,255,255,.9);
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30px;
+  z-index:12;
+  opacity:0;
+  transition:.2s;
+}
+
+.video-card.paused .play-button{
+  opacity:1;
+}
+
+.play-button span{
+  margin-left:4px;
+}
+
+/* ================= BOTTOM NAV ================= */
+
+.bottom-nav{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:70px;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:space-around;
+  background:rgba(5,5,8,.96);
+  border-top:1px solid rgba(255,255,255,.08);
+}
+
+.nav-item{
+  flex:1;
+  height:70px;
+  color:#aaa;
+  background:none;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:4px;
+  font-size:11px;
+}
+
+.nav-item.active{
+  color:#fff;
+}
+
+.nav-icon{
+  font-size:22px;
+}
+
+.upload-nav{
+  width:52px;
+  height:40px;
+  border-radius:13px;
+  background:linear-gradient(135deg,#ff207d,#933cff);
+  color:#fff;
+  font-size:28px;
+  line-height:40px;
+  margin-bottom:3px;
+}
+
+/* ================= SCREENS ================= */
+
+.screen{
+  position:absolute;
+  inset:0;
+  z-index:80;
+  background:#08080b;
+  display:none;
+  overflow-y:auto;
+  padding-bottom:80px;
+}
+
+.screen.show{
+  display:block;
+}
+
+.screen-header{
+  height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 18px;
+  border-bottom:1px solid #222;
+  position:sticky;
+  top:0;
+  z-index:5;
+  background:rgba(8,8,11,.95);
+  backdrop-filter:blur(12px);
+}
+
+.screen-title{
+  font-size:21px;
+  font-weight:800;
+}
+
+.close-btn{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  color:#fff;
+  background:#222;
+  font-size:22px;
+}
+
+/* ================= SEARCH ================= */
+
+.search-box{
+  margin:18px;
+  height:48px;
+  background:#19191e;
+  border:1px solid #292930;
+  border-radius:15px;
+  display:flex;
+  align-items:center;
+  padding:0 14px;
+  gap:9px;
+}
+
+.search-box input{
+  flex:1;
+  color:#fff;
+  border:0;
+  outline:0;
+  background:transparent;
+}
+
+.search-results{
+  padding:0 18px;
+}
+
+.user-result{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:13px 0;
+  border-bottom:1px solid #222;
+}
+
+.user-result .avatar{
+  width:48px;
+  height:48px;
+}
+
+.user-result-info{
+  flex:1;
+}
+
+.user-result-info strong{
+  display:block;
+}
+
+.user-result-info small{
+  color:#999;
+}
+
+/* ================= DISCOVER ================= */
+
+.discover-wrap{
+  padding:15px 16px;
+}
+
+.banner{
+  border-radius:20px;
+  min-height:150px;
+  padding:20px;
+  background:
+    radial-gradient(circle at 80% 20%,#7b39ff,transparent 45%),
+    linear-gradient(135deg,#171025,#210c20);
+  margin-bottom:20px;
+}
+
+.banner h2{
+  font-size:25px;
+  margin-bottom:8px;
+}
+
+.banner p{
+  color:#bbb;
+  font-size:13px;
+}
+
+.banner button{
+  margin-top:18px;
+  background:#ff2784;
+  color:#fff;
+  border-radius:20px;
+  padding:10px 17px;
+  font-weight:bold;
+}
+
+.section-title{
+  font-size:18px;
+  font-weight:bold;
+  margin:20px 0 12px;
+}
+
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+}
+
+.tag{
+  padding:9px 13px;
+  border-radius:20px;
+  background:#1b1b21;
+  color:#ddd;
+}
+
+/* ================= UPLOAD ================= */
+
+.upload-wrap{
+  padding:18px;
+}
+
+.upload-box{
+  min-height:220px;
+  border:2px dashed #444;
+  border-radius:20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  color:#aaa;
+  text-align:center;
+  padding:20px;
+}
+
+.upload-box .big{
+  font-size:48px;
+  margin-bottom:12px;
+}
+
+.file-input{
+  display:none;
+}
+
+.choose-btn{
+  margin-top:16px;
+  background:#ff237f;
+  color:#fff;
+  padding:12px 20px;
+  border-radius:22px;
+  font-weight:bold;
+}
+
+.preview{
+  margin-top:16px;
+  width:100%;
+  max-height:350px;
+  border-radius:18px;
+  object-fit:cover;
+  display:none;
+}
+
+.field{
+  margin-top:16px;
+}
+
+.field label{
+  display:block;
+  color:#aaa;
+  font-size:13px;
+  margin-bottom:7px;
+}
+
+.field textarea,
+.field input{
+  width:100%;
+  border:1px solid #2b2b32;
+  background:#17171c;
+  color:#fff;
+  border-radius:14px;
+  padding:13px;
+  outline:none;
+  resize:none;
+}
+
+.post-btn{
+  width:100%;
+  margin-top:18px;
+  padding:15px;
+  border-radius:15px;
+  color:#fff;
+  font-weight:bold;
+  background:linear-gradient(135deg,#ff237f,#8d36ff);
+}
+
+/* ================= PROFILE ================= */
+
+.profile-wrap{
+  padding:20px 16px;
+}
+
+.profile-top{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.profile-avatar{
+  width:82px;
+  height:82px;
+  border-radius:50%;
+  border:3px solid #ff237f;
+  object-fit:cover;
+}
+
+.profile-name{
+  font-size:20px;
+  font-weight:800;
+}
+
+.profile-handle{
+  color:#aaa;
+  margin-top:4px;
+}
+
+.stats{
+  display:flex;
+  justify-content:space-around;
+  margin:22px 0;
+  text-align:center;
+}
+
+.stat strong{
+  display:block;
+  font-size:20px;
+}
+
+.stat span{
+  color:#999;
+  font-size:12px;
+}
+
+.edit-profile{
+  width:100%;
+  height:44px;
+  border-radius:12px;
+  background:#222;
+  color:#fff;
+  font-weight:bold;
+}
+
+.profile-bio{
+  color:#bbb;
+  margin:17px 0;
+  line-height:1.4;
 }
 
 .grid{
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:3px
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:3px;
 }
 
-.grid div{
- aspect-ratio:1;
- background:#211b29;
- overflow:hidden
+.grid-item{
+  aspect-ratio:1/1.25;
+  background:#1a1a1f;
+  overflow:hidden;
+  position:relative;
 }
 
-.grid img,.grid video{
- width:100%;
- height:100%;
- object-fit:cover
+.grid-item video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.grid-views{
+  position:absolute;
+  left:7px;
+  bottom:7px;
+  font-size:11px;
+  text-shadow:0 1px 3px #000;
+}
+
+/* ================= DASHBOARD ================= */
+
+.dashboard{
+  padding:16px;
+}
+
+.dashboard-card{
+  background:#17131f;
+  border:1px solid #292032;
+  border-radius:20px;
+  padding:18px;
+  margin-bottom:14px;
+}
+
+.dashboard-card h3{
+  color:#aaa;
+  font-size:13px;
+  font-weight:normal;
+}
+
+.dashboard-number{
+  font-size:31px;
+  font-weight:900;
+  margin-top:6px;
+}
+
+.dashboard-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.mini-card{
+  background:#17171d;
+  border-radius:17px;
+  padding:15px;
+}
+
+.mini-card strong{
+  font-size:21px;
+  display:block;
+  margin-top:5px;
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+  position:absolute;
+  inset:0;
+  z-index:200;
+  display:none;
+  background:rgba(0,0,0,.72);
+  align-items:flex-end;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.sheet{
+  width:100%;
+  max-height:75%;
+  background:#17171c;
+  border-radius:25px 25px 0 0;
+  padding:20px;
+  overflow-y:auto;
+}
+
+.sheet-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
 }
 
 .comment{
- padding:10px 0;
- border-bottom:1px solid #ffffff12
+  display:flex;
+  gap:10px;
+  margin:14px 0;
 }
 
+.comment img{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+}
+
+.comment-body{
+  background:#222228;
+  padding:10px 12px;
+  border-radius:14px;
+  flex:1;
+}
+
+.comment-body strong{
+  display:block;
+  font-size:13px;
+  margin-bottom:4px;
+}
+
+.comment-body span{
+  color:#ddd;
+  font-size:13px;
+}
+
+.comment-input{
+  display:flex;
+  gap:8px;
+  margin-top:15px;
+}
+
+.comment-input input{
+  flex:1;
+  background:#24242a;
+  border:0;
+  border-radius:20px;
+  padding:12px 15px;
+  color:#fff;
+  outline:none;
+}
+
+.comment-input button{
+  width:45px;
+  border-radius:50%;
+  background:#ff237f;
+  color:#fff;
+}
+
+/* ================= LOGIN ================= */
+
+.login{
+  position:absolute;
+  inset:0;
+  z-index:300;
+  background:#08080b;
+  display:none;
+  padding:35px 24px;
+  overflow-y:auto;
+}
+
+.login.show{
+  display:block;
+}
+
+.login-logo{
+  text-align:center;
+  font-size:48px;
+  font-weight:900;
+  margin-top:40px;
+  margin-bottom:10px;
+}
+
+.login-logo span{
+  color:#ff237f;
+}
+
+.login-sub{
+  text-align:center;
+  color:#888;
+  margin-bottom:35px;
+}
+
+.login input{
+  width:100%;
+  height:50px;
+  margin-bottom:12px;
+  background:#18181e;
+  color:#fff;
+  border:1px solid #2c2c34;
+  border-radius:13px;
+  padding:0 15px;
+  outline:none;
+}
+
+.login-main{
+  width:100%;
+  height:50px;
+  border-radius:13px;
+  background:linear-gradient(135deg,#ff237f,#8e39ff);
+  color:#fff;
+  font-weight:bold;
+  margin-top:5px;
+}
+
+.login-demo{
+  width:100%;
+  height:45px;
+  border-radius:13px;
+  background:#222;
+  color:#fff;
+  margin-top:12px;
+}
+
+.login-note{
+  color:#777;
+  font-size:12px;
+  text-align:center;
+  margin-top:20px;
+  line-height:1.5;
+}
+
+/* ================= TOAST ================= */
+
 .toast{
- display:none;
- position:fixed;
- z-index:200;
- left:50%;
- bottom:80px;
- transform:translateX(-50%);
- background:white;
- color:#111;
- padding:11px 16px;
- border-radius:13px;
- font-weight:800;
- max-width:90%
+  position:absolute;
+  left:50%;
+  bottom:90px;
+  transform:translateX(-50%) translateY(20px);
+  background:#fff;
+  color:#000;
+  padding:11px 17px;
+  border-radius:20px;
+  z-index:500;
+  font-size:13px;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  white-space:nowrap;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(min-width:600px){
+  .app{
+    box-shadow:0 0 80px rgba(255,20,130,.15);
+  }
+}
+
+/* ================= LOADING ================= */
+
+.loading{
+  position:absolute;
+  inset:0;
+  z-index:600;
+  background:#000;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+.loading-logo{
+  font-size:50px;
+  font-weight:900;
+}
+
+.loading-logo span{
+  color:#ff237f;
+}
+
+.spinner{
+  width:35px;
+  height:35px;
+  border:3px solid #333;
+  border-top-color:#ff237f;
+  border-radius:50%;
+  margin-top:20px;
+  animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
 }
 </style>
 </head>
@@ -366,1037 +908,1775 @@ input,textarea{
 
 <div class="app">
 
-<!-- LOGIN -->
+<!-- ================= LOADING ================= -->
 
-<div id="auth">
-
-<div class="authbox">
-
-<div class="logo">Rivo</div>
-
-<div class="subtitle">
-Short videos. Real people.
+<div class="loading" id="loading">
+  <div class="loading-logo">Ri<span>vo</span></div>
+  <div class="spinner"></div>
 </div>
 
-<input id="email"
-type="email"
-placeholder="Email">
+<!-- ================= TOP BAR ================= -->
 
-<input id="password"
-type="password"
-placeholder="Password">
+<div class="topbar">
+  <div class="logo">Ri<span>vo</span></div>
 
-<button class="btn"
-onclick="signup()">
-Create account
-</button>
-
-<button class="btn secondary"
-onclick="login()">
-Login
-</button>
-
-<div id="authMsg" class="msg"></div>
-
-</div>
+  <div class="top-actions">
+    <button class="icon-btn" onclick="openScreen('searchScreen')">🔎</button>
+    <button class="icon-btn" onclick="openScreen('inboxScreen')">🔔</button>
+  </div>
 </div>
 
+<!-- ================= HOME FEED ================= -->
 
-<!-- MAIN -->
+<div class="feed" id="feed"></div>
 
-<div id="app">
+<!-- ================= DISCOVER ================= -->
 
-<div class="top">
-<b>Rivo</b>
-<button onclick="openPanel('searchPanel')">🔎</button>
+<div class="screen" id="discoverScreen">
+
+  <div class="screen-header">
+    <div class="screen-title">Discover</div>
+    <button class="close-btn" onclick="closeScreens()">×</button>
+  </div>
+
+  <div class="discover-wrap">
+
+    <div class="search-box">
+      🔎
+      <input id="discoverSearch"
+             placeholder="Search users, videos, hashtags..."
+             oninput="searchDiscover()">
+    </div>
+
+    <div class="banner">
+      <h2>#RivoChallenge</h2>
+      <p>Join the challenge and share your best video with the Rivo community.</p>
+      <button onclick="toast('Challenge joined!')">Join Now</button>
+    </div>
+
+    <div class="section-title">Trending Hashtags</div>
+
+    <div class="tags">
+      <div class="tag">#RivoChallenge</div>
+      <div class="tag">#BanglaVibes</div>
+      <div class="tag">#RivoCreators</div>
+      <div class="tag">#ForYou</div>
+      <div class="tag">#Viral</div>
+      <div class="tag">#Dhaka</div>
+    </div>
+
+    <div class="section-title">Suggested Creators</div>
+
+    <div id="suggestedCreators"></div>
+
+  </div>
 </div>
 
-<div id="feed" class="feed"></div>
+<!-- ================= SEARCH ================= -->
 
+<div class="screen" id="searchScreen">
 
-<div class="bottom">
+  <div class="screen-header">
+    <div class="screen-title">Search</div>
+    <button class="close-btn" onclick="closeScreens()">×</button>
+  </div>
 
-<button onclick="loadFeed()">
-<b>⌂</b>
-Home
-</button>
+  <div class="search-box">
+    🔎
+    <input id="searchInput"
+           placeholder="Search Rivo..."
+           oninput="runSearch()">
+  </div>
 
-<button onclick="openPanel('searchPanel')">
-<b>🔎</b>
-Search
-</button>
-
-<button class="plus"
-onclick="openPanel('uploadPanel')">
-+
-</button>
-
-<button onclick="openProfile()">
-<b>👤</b>
-Profile
-</button>
-
-<button onclick="logout()">
-<b>↪</b>
-Logout
-</button>
-
-</div>
-
-
-<!-- UPLOAD -->
-
-<div id="uploadPanel" class="panel">
-
-<button class="close"
-onclick="closePanels()">×</button>
-
-<h2>নতুন Post</h2>
-
-<div class="card">
-
-<input id="mediaFile"
-type="file"
-accept="image/*,video/*"
-onchange="previewFile()">
-
-<div id="preview" class="preview"></div>
-
-<textarea id="caption"
-placeholder="কিছু লিখুন..."></textarea>
-
-<div class="progress">
-<div id="bar" class="bar"></div>
-</div>
-
-<button class="btn"
-onclick="uploadPost()">
-Post করুন
-</button>
-
-<p id="uploadMsg"></p>
-
-</div>
-</div>
-
-
-<!-- SEARCH -->
-
-<div id="searchPanel" class="panel">
-
-<button class="close"
-onclick="closePanels()">×</button>
-
-<h2>Search</h2>
-
-<div class="card">
-
-<input id="search"
-placeholder="Username লিখুন"
-oninput="searchUsers()">
-
-<div id="results"></div>
+  <div class="search-results" id="searchResults">
+    <p style="color:#777;text-align:center;margin-top:30px">
+      Search users or hashtags
+    </p>
+  </div>
 
 </div>
 
+<!-- ================= UPLOAD ================= -->
+
+<div class="screen" id="uploadScreen">
+
+  <div class="screen-header">
+    <div class="screen-title">Upload Video</div>
+    <button class="close-btn" onclick="closeScreens()">×</button>
+  </div>
+
+  <div class="upload-wrap">
+
+    <div class="upload-box" id="uploadBox">
+
+      <div class="big">🎬</div>
+
+      <div>Choose a video from your phone</div>
+
+      <label class="choose-btn">
+        Choose Video
+        <input
+          id="videoFile"
+          class="file-input"
+          type="file"
+          accept="video/*"
+          onchange="previewVideo(event)">
+      </label>
+
+    </div>
+
+    <video
+      id="previewVideo"
+      class="preview"
+      controls>
+    </video>
+
+    <div class="field">
+      <label>Caption</label>
+      <textarea
+        id="captionInput"
+        rows="3"
+        placeholder="Write a caption..."></textarea>
+    </div>
+
+    <div class="field">
+      <label>Hashtags</label>
+      <input
+        id="hashtagsInput"
+        placeholder="#Rivo #BanglaVibes">
+    </div>
+
+    <button class="post-btn" onclick="uploadVideo()">
+      Post Video
+    </button>
+
+  </div>
 </div>
 
+<!-- ================= PROFILE ================= -->
 
-<!-- PROFILE -->
+<div class="screen" id="profileScreen">
 
-<div id="profilePanel" class="panel">
+  <div class="screen-header">
+    <div class="screen-title">Profile</div>
+    <button class="icon-btn" onclick="openScreen('dashboardScreen')">⚙️</button>
+  </div>
 
-<button class="close"
-onclick="closePanels()">×</button>
+  <div class="profile-wrap">
 
-<div id="profileContent"></div>
+    <div class="profile-top">
+
+      <img
+        id="profileAvatar"
+        class="profile-avatar"
+        src="https://i.pravatar.cc/200?img=12">
+
+      <div>
+        <div class="profile-name" id="profileName">
+          Rivo Creator
+        </div>
+
+        <div class="profile-handle" id="profileHandle">
+          @rivo_creator
+        </div>
+      </div>
+
+    </div>
+
+    <div class="stats">
+
+      <div class="stat">
+        <strong id="followingCount">120</strong>
+        <span>Following</span>
+      </div>
+
+      <div class="stat">
+        <strong id="followersCount">12.5K</strong>
+        <span>Followers</span>
+      </div>
+
+      <div class="stat">
+        <strong id="likesCount">245K</strong>
+        <span>Likes</span>
+      </div>
+
+    </div>
+
+    <button class="edit-profile"
+            onclick="toast('Edit profile coming next')">
+      Edit Profile
+    </button>
+
+    <div class="profile-bio">
+      Content Creator • Video Lover • Rivo Creator 🎥
+      <br>
+      Dhaka, Bangladesh 🇧🇩
+    </div>
+
+    <div class="grid" id="profileGrid"></div>
+
+  </div>
+</div>
+
+<!-- ================= DASHBOARD ================= -->
+
+<div class="screen" id="dashboardScreen">
+
+  <div class="screen-header">
+    <div class="screen-title">Creator Dashboard</div>
+    <button class="close-btn" onclick="closeScreens()">×</button>
+  </div>
+
+  <div class="dashboard">
+
+    <div class="dashboard-card">
+      <h3>Total Views</h3>
+      <div class="dashboard-number">256.5K</div>
+      <div style="color:#35d98b;margin-top:6px">
+        +12.5% vs last 7 days
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+
+      <div class="mini-card">
+        <span style="color:#999">Followers</span>
+        <strong>12.5K</strong>
+        <small style="color:#35d98b">+8.2%</small>
+      </div>
+
+      <div class="mini-card">
+        <span style="color:#999">Likes</span>
+        <strong>245K</strong>
+        <small style="color:#35d98b">+11.3%</small>
+      </div>
+
+      <div class="mini-card">
+        <span style="color:#999">Profile Views</span>
+        <strong>18.6K</strong>
+        <small style="color:#35d98b">+7.6%</small>
+      </div>
+
+      <div class="mini-card">
+        <span style="color:#999">Videos</span>
+        <strong id="dashboardVideos">12</strong>
+        <small style="color:#35d98b">+8.7%</small>
+      </div>
+
+    </div>
+
+    <div class="section-title">Recent Videos</div>
+
+    <div class="grid" id="dashboardGrid"></div>
+
+  </div>
+</div>
+
+<!-- ================= INBOX ================= -->
+
+<div class="screen" id="inboxScreen">
+
+  <div class="screen-header">
+    <div class="screen-title">Inbox</div>
+    <button class="close-btn" onclick="closeScreens()">×</button>
+  </div>
+
+  <div style="padding:18px">
+
+    <div class="dashboard-grid">
+
+      <div class="mini-card" onclick="toast('Likes')">
+        ❤️
+        <strong>Likes</strong>
+      </div>
+
+      <div class="mini-card" onclick="toast('Comments')">
+        💬
+        <strong>Comments</strong>
+      </div>
+
+      <div class="mini-card" onclick="toast('Followers')">
+        👥
+        <strong>Followers</strong>
+      </div>
+
+      <div class="mini-card" onclick="toast('Mentions')">
+        @
+        <strong>Mentions</strong>
+      </div>
+
+    </div>
+
+    <div class="section-title">Messages</div>
+
+    <div class="user-result">
+      <img class="avatar" src="https://i.pravatar.cc/100?img=47">
+      <div class="user-result-info">
+        <strong>Riya Islam</strong>
+        <small>Sent a message • 2m</small>
+      </div>
+      <b style="background:#ff237f;padding:5px 8px;border-radius:50%">2</b>
+    </div>
+
+    <div class="user-result">
+      <img class="avatar" src="https://i.pravatar.cc/100?img=13">
+      <div class="user-result-info">
+        <strong>Arif Ahmed</strong>
+        <small>Sent a message • 10m</small>
+      </div>
+      <b style="background:#ff237f;padding:5px 8px;border-radius:50%">1</b>
+    </div>
+
+    <div class="user-result">
+      <img class="avatar" src="https://i.pravatar.cc/100?img=32">
+      <div class="user-result-info">
+        <strong>Team Rivo</strong>
+        <small>Welcome to Rivo! 🎉</small>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= COMMENT MODAL ================= -->
+
+<div class="modal" id="commentModal">
+
+  <div class="sheet">
+
+    <div class="sheet-head">
+      <strong>Comments</strong>
+      <button class="close-btn" onclick="closeComments()">×</button>
+    </div>
+
+    <div id="commentsList">
+
+      <div class="comment">
+        <img src="https://i.pravatar.cc/100?img=44">
+        <div class="comment-body">
+          <strong>Riya</strong>
+          <span>দারুণ ভিডিও ❤️</span>
+        </div>
+      </div>
+
+      <div class="comment">
+        <img src="https://i.pravatar.cc/100?img=14">
+        <div class="comment-body">
+          <strong>Arif</strong>
+          <span>অনেক সুন্দর হয়েছে 🔥</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="comment-input">
+      <input id="commentInput"
+             placeholder="Write a comment...">
+      <button onclick="sendComment()">➤</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= LOGIN ================= -->
+
+<div class="login" id="loginScreen">
+
+  <div class="login-logo">
+    Ri<span>vo</span>
+  </div>
+
+  <div class="login-sub">
+    Short Video Platform
+  </div>
+
+  <input id="loginEmail"
+         type="email"
+         placeholder="Email">
+
+  <input id="loginPassword"
+         type="password"
+         placeholder="Password">
+
+  <button class="login-main"
+          onclick="loginUser()">
+    Login
+  </button>
+
+  <button class="login-demo"
+          onclick="demoLogin()">
+    Continue Demo
+  </button>
+
+  <div class="login-note">
+    Demo mode works without Supabase.<br>
+    Connect your Supabase project for real accounts.
+  </div>
 
 </div>
 
+<!-- ================= BOTTOM NAV ================= -->
 
-<!-- COMMENTS -->
+<div class="bottom-nav">
 
-<div id="commentPanel" class="panel">
+  <button class="nav-item active"
+          onclick="goHome(this)">
+    <div class="nav-icon">⌂</div>
+    Home
+  </button>
 
-<button class="close"
-onclick="closePanels()">×</button>
+  <button class="nav-item"
+          onclick="openScreen('discoverScreen',this)">
+    <div class="nav-icon">⌕</div>
+    Discover
+  </button>
 
-<h2>Comments</h2>
+  <button class="nav-item"
+          onclick="openScreen('uploadScreen',this)">
+    <div class="upload-nav">+</div>
+  </button>
 
-<div id="comments"></div>
+  <button class="nav-item"
+          onclick="openScreen('inboxScreen',this)">
+    <div class="nav-icon">💬</div>
+    Inbox
+  </button>
 
-<div class="card">
-
-<input id="commentInput"
-placeholder="Comment লিখুন">
-
-<button class="btn"
-onclick="sendComment()">
-Send
-</button>
+  <button class="nav-item"
+          onclick="openScreen('profileScreen',this)">
+    <div class="nav-icon">♙</div>
+    Profile
+  </button>
 
 </div>
 
-</div>
+<div class="toast" id="toast"></div>
 
 </div>
-
-</div>
-
-<div id="toast" class="toast"></div>
-
 
 <script>
 
-const SUPABASE_URL =
-"https://ayoactrisfcdhmhsnrwz.supabase.co";
+/* =========================================================
+   RIVO CONFIG
+   ========================================================= */
 
-const SUPABASE_KEY =
-"sb_publishable_pvPMH5zhPX3_vjarFMrYtw_9uZkagYX";
+const SUPABASE_URL = "YOUR_SUPABASE_URL";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
 
-const client =
-supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+let supabaseClient = null;
 
-let currentUser=null;
-let currentCommentPost=null;
+if(
+  SUPABASE_URL !== "YOUR_SUPABASE_URL" &&
+  SUPABASE_ANON_KEY !== "YOUR_SUPABASE_ANON_KEY"
+){
+  try{
+    supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+  }catch(e){
+    console.log("Supabase error:",e);
+  }
+}
 
 
-/* =====================
-AUTH
-===================== */
+/* =========================================================
+   DEMO DATA
+   ========================================================= */
 
-async function signup(){
+const demoVideos = [
 
- const email=
- document.getElementById("email").value.trim();
+  {
+    id:"1",
+    username:"priya_official",
+    name:"Priya",
+    avatar:"https://i.pravatar.cc/150?img=47",
+    video:
+      "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    caption:"Nature is the best place to be 🌿",
+    hashtags:"#nature #vibes #rivo",
+    likes:12300,
+    comments:256,
+    shares:432,
+    liked:false
+  },
 
- const password=
- document.getElementById("password").value;
+  {
+    id:"2",
+    username:"rivo_creator",
+    name:"Rivo Creator",
+    avatar:"https://i.pravatar.cc/150?img=12",
+    video:
+      "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    caption:"Welcome to Rivo! 🔥",
+    hashtags:"#rivo #shortvideo #viral",
+    likes:8600,
+    comments:142,
+    shares:218,
+    liked:false
+  },
 
- if(!email || !password){
-  msg("Email এবং Password দিন");
-  return;
- }
+  {
+    id:"3",
+    username:"rasel_khan",
+    name:"Rasel Khan",
+    avatar:"https://i.pravatar.cc/150?img=13",
+    video:
+      "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    caption:"Beautiful day ✨",
+    hashtags:"#beautiful #life #rivo",
+    likes:15200,
+    comments:322,
+    shares:510,
+    liked:false
+  },
 
- const {data,error}=
- await client.auth.signUp({
-  email,
-  password
- });
+  {
+    id:"4",
+    username:"tanjila_riya",
+    name:"Tanjila Riya",
+    avatar:"https://i.pravatar.cc/150?img=32",
+    video:
+      "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    caption:"Just enjoying the moment ❤️",
+    hashtags:"#daily #fun #rivo",
+    likes:9100,
+    comments:187,
+    shares:302,
+    liked:false
+  }
 
- if(error){
-  msg(error.message);
-  return;
- }
+];
 
- if(data.user){
+let videos = [...demoVideos];
 
-  await client.from("profiles").upsert({
-   id:data.user.id,
-   username:email.split("@")[0],
-   display_name:email.split("@")[0],
-   bio:"",
-   avatar_url:""
+let currentVideo = null;
+
+
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
+
+document.addEventListener("DOMContentLoaded",async()=>{
+
+  renderFeed();
+
+  renderProfileGrid();
+
+  renderDashboard();
+
+  renderCreators();
+
+  setupVideoObserver();
+
+  setTimeout(()=>{
+    document.getElementById("loading").style.display="none";
+  },700);
+
+  if(supabaseClient){
+    await loadSupabaseVideos();
+    await loadUser();
+  }
+
+});
+
+
+/* =========================================================
+   RENDER FEED
+   ========================================================= */
+
+function renderFeed(){
+
+  const feed=document.getElementById("feed");
+
+  feed.innerHTML="";
+
+  videos.forEach((v,index)=>{
+
+    const card=document.createElement("div");
+
+    card.className="video-card";
+
+    card.dataset.id=v.id;
+
+    card.innerHTML=`
+
+      <video
+        playsinline
+        loop
+        preload="${index===0?"auto":"metadata"}"
+        src="${v.video}">
+      </video>
+
+      <div class="video-overlay"></div>
+
+      <button
+        class="play-button"
+        onclick="toggleVideo(this)">
+        <span>▶</span>
+      </button>
+
+      <div class="video-info">
+
+        <div class="creator-row">
+
+          <img
+            class="avatar"
+            src="${v.avatar}">
+
+          <div class="username">
+            @${v.username}
+          </div>
+
+          <button
+            class="follow-btn"
+            onclick="followUser(event,'${v.username}')">
+            Follow
+          </button>
+
+        </div>
+
+        <div class="caption">
+          ${escapeHTML(v.caption)}
+        </div>
+
+        <div class="hashtags">
+          ${escapeHTML(v.hashtags)}
+        </div>
+
+        <div class="sound">
+          🎵 Original Sound
+        </div>
+
+      </div>
+
+      <div class="actions">
+
+        <button
+          class="action like-action"
+          onclick="likeVideo(event,'${v.id}')">
+
+          <div class="action-icon">♥</div>
+          <span>${formatNumber(v.likes)}</span>
+
+        </button>
+
+        <button
+          class="action"
+          onclick="openComments('${v.id}')">
+
+          <div class="action-icon">💬</div>
+          <span>${formatNumber(v.comments)}</span>
+
+        </button>
+
+        <button
+          class="action share"
+          onclick="shareVideo(event,'${v.id}')">
+
+          <div class="action-icon">↗</div>
+          <span>${formatNumber(v.shares)}</span>
+
+        </button>
+
+        <button
+          class="action"
+          onclick="openProfileFromVideo(event,'${v.username}')">
+
+          <div class="action-icon">👤</div>
+          <span>Profile</span>
+
+        </button>
+
+      </div>
+    `;
+
+    feed.appendChild(card);
+
   });
 
- }
-
- msg("Account তৈরি হয়েছে। Email verify লাগতে পারে।");
 }
 
 
-async function login(){
+/* =========================================================
+   VIDEO OBSERVER
+   ========================================================= */
 
- const email=
- document.getElementById("email").value.trim();
+function setupVideoObserver(){
 
- const password=
- document.getElementById("password").value;
+  const observer=new IntersectionObserver(
+    entries=>{
 
- const {data,error}=
- await client.auth.signInWithPassword({
-  email,
-  password
- });
+      entries.forEach(entry=>{
 
- if(error){
-  msg(error.message);
-  return;
- }
+        const video=entry.target.querySelector("video");
 
- currentUser=data.user;
+        if(entry.isIntersecting){
 
- showApp();
-}
+          currentVideo=video;
 
+          document
+            .querySelectorAll(".video-card video")
+            .forEach(v=>{
+              if(v!==video){
+                v.pause();
+                v.closest(".video-card")
+                  ?.classList.add("paused");
+              }
+            });
 
-async function logout(){
+          video.play()
+            .then(()=>{
+              entry.target.classList.remove("paused");
+            })
+            .catch(()=>{
+              entry.target.classList.add("paused");
+            });
 
- await client.auth.signOut();
+        }else{
 
- currentUser=null;
+          video.pause();
 
- document.getElementById("app").style.display="none";
- document.getElementById("auth").style.display="flex";
-}
+        }
 
+      });
 
-function msg(text){
+    },
+    {
+      threshold:.7
+    }
+  );
 
- document.getElementById("authMsg").textContent=text;
-
-}
-
-
-/* =====================
-START
-===================== */
-
-async function start(){
-
- const {data}=
- await client.auth.getSession();
-
- if(data.session){
-
-  currentUser=data.session.user;
-
-  showApp();
-
- }
+  document
+    .querySelectorAll(".video-card")
+    .forEach(card=>{
+      observer.observe(card);
+    });
 
 }
 
 
-function showApp(){
+/* =========================================================
+   PLAY / PAUSE
+   ========================================================= */
 
- document.getElementById("auth").style.display="none";
+function toggleVideo(button){
 
- document.getElementById("app").style.display="block";
+  const card=button.closest(".video-card");
 
- loadFeed();
+  const video=card.querySelector("video");
 
-}
+  if(video.paused){
 
+    video.play();
 
-/* =====================
-FEED
-===================== */
+    card.classList.remove("paused");
 
-async function loadFeed(){
+  }else{
 
- const feed=
- document.getElementById("feed");
+    video.pause();
 
- feed.innerHTML=
- "<div style='padding:100px;text-align:center'>Loading...</div>";
-
- const {data:posts,error}=
- await client
- .from("posts")
- .select("*")
- .order("created_at",{ascending:false});
-
- if(error){
-
-  feed.innerHTML=
-  "<div style='padding:100px;text-align:center'>Post load হয়নি</div>";
-
-  return;
- }
-
- if(!posts || posts.length===0){
-
-  feed.innerHTML=
-  "<div style='padding:100px;text-align:center'>এখনো কোনো Post নেই।<br><br>প্রথম Post আপনিই দিন ❤️</div>";
-
-  return;
- }
-
- const userIds=
- [...new Set(posts.map(p=>p.user_id))];
-
- const {data:profiles}=
- await client
- .from("profiles")
- .select("*")
- .in("id",userIds);
-
- const profileMap={};
-
- (profiles||[]).forEach(p=>{
-  profileMap[p.id]=p;
- });
-
- feed.innerHTML="";
-
- for(const post of posts){
-
-  const p=
-  profileMap[post.user_id]||{};
-
-  const {count:likeCount}=
-  await client
-  .from("likes")
-  .select("*",{count:"exact",head:true})
-  .eq("post_id",post.id);
-
-  let liked=false;
-
-  if(currentUser){
-
-   const {data:myLike}=
-   await client
-   .from("likes")
-   .select("post_id")
-   .eq("post_id",post.id)
-   .eq("user_id",currentUser.id)
-   .maybeSingle();
-
-   liked=!!myLike;
+    card.classList.add("paused");
 
   }
 
-  const postEl=
-  document.createElement("div");
+}
 
-  postEl.className="post";
 
-  const media=
-  post.media_type==="video"
-  ?
-  `<video class="media" src="${post.media_url}" controls playsinline></video>`
-  :
-  `<img class="media" src="${post.media_url}">`;
+/* =========================================================
+   LIKE
+   ========================================================= */
 
-  postEl.innerHTML=`
+async function likeVideo(event,id){
 
-  ${media}
+  event.stopPropagation();
 
-  <div class="overlay"></div>
+  const video=videos.find(v=>v.id===id);
 
-  <div class="info">
+  if(!video)return;
 
-   <div class="user">
-   @${escapeHtml(p.username||"user")}
-   </div>
+  const button=event.currentTarget;
 
-   <div class="caption">
-   ${escapeHtml(post.caption||"")}
-   </div>
+  video.liked=!video.liked;
 
-  </div>
+  if(video.liked){
+    video.likes++;
+    button.classList.add("liked");
+  }else{
+    video.likes--;
+    button.classList.remove("liked");
+  }
 
-  <div class="actions">
+  button.querySelector("span").textContent=
+    formatNumber(video.likes);
 
-   <div class="action">
+  if(supabaseClient){
 
-    <button
-    class="${liked?'liked':''}"
-    onclick="toggleLike('${post.id}',this)">
-    ❤️
-    </button>
+    try{
 
-    <small>${likeCount||0}</small>
+      const user=
+        (await supabaseClient.auth.getUser()).data.user;
 
-   </div>
+      if(user){
 
-   <div class="action">
+        if(video.liked){
 
-    <button
-    onclick="openComments('${post.id}')">
-    💬
-    </button>
+          await supabaseClient
+            .from("likes")
+            .insert({
+              user_id:user.id,
+              video_id:video.id
+            });
 
-   </div>
+        }else{
 
-   <div class="action">
+          await supabaseClient
+            .from("likes")
+            .delete()
+            .eq("user_id",user.id)
+            .eq("video_id",video.id);
 
-    <button
-    onclick="sharePost('${post.media_url}')">
-    ↗️
-    </button>
+        }
 
-   </div>
+      }
 
-  </div>
-  `;
+    }catch(e){
+      console.log(e);
+    }
 
-  feed.appendChild(postEl);
-
- }
+  }
 
 }
 
 
-/* =====================
-LIKE
-===================== */
+/* =========================================================
+   FOLLOW
+   ========================================================= */
 
-async function toggleLike(postId,button){
+async function followUser(event,username){
 
- if(!currentUser){
-  toast("Login করুন");
-  return;
- }
+  event.stopPropagation();
 
- const {data:existing}=
- await client
- .from("likes")
- .select("*")
- .eq("post_id",postId)
- .eq("user_id",currentUser.id)
- .maybeSingle();
+  const btn=event.currentTarget;
 
- if(existing){
+  if(btn.textContent==="Follow"){
 
-  await client
-  .from("likes")
-  .delete()
-  .eq("post_id",postId)
-  .eq("user_id",currentUser.id);
+    btn.textContent="Following";
 
-  button.classList.remove("liked");
+    btn.style.background="#333";
 
- }else{
+    toast("Following @"+username);
 
-  await client
-  .from("likes")
-  .insert({
-   post_id:postId,
-   user_id:currentUser.id
-  });
+  }else{
 
-  button.classList.add("liked");
+    btn.textContent="Follow";
 
- }
+    btn.style.background="#ff237f";
 
- loadFeed();
+    toast("Unfollowed @"+username);
+
+  }
 
 }
 
 
-/* =====================
-UPLOAD PREVIEW
-===================== */
+/* =========================================================
+   SHARE
+   ========================================================= */
 
-function previewFile(){
+async function shareVideo(event,id){
 
- const file=
- document.getElementById("mediaFile").files[0];
+  event.stopPropagation();
 
- const box=
- document.getElementById("preview");
+  const url=location.href+"#video-"+id;
 
- if(!file){
-  box.style.display="none";
-  return;
- }
+  if(navigator.share){
 
- const url=
- URL.createObjectURL(file);
+    try{
 
- if(file.type.startsWith("video")){
+      await navigator.share({
+        title:"Rivo Short Video",
+        text:"Watch this video on Rivo",
+        url:url
+      });
 
-  box.innerHTML=
-  `<video src="${url}" controls></video>`;
+    }catch(e){}
 
- }else{
+  }else{
 
-  box.innerHTML=
-  `<img src="${url}">`;
+    try{
 
- }
+      await navigator.clipboard.writeText(url);
 
- box.style.display="block";
-}
+      toast("Video link copied!");
 
+    }catch(e){
 
-/* =====================
-UPLOAD
-===================== */
+      toast("Share link: "+url);
 
-async function uploadPost(){
+    }
 
- if(!currentUser){
-  toast("Login করুন");
-  return;
- }
-
- const file=
- document.getElementById("mediaFile").files[0];
-
- const caption=
- document.getElementById("caption").value.trim();
-
- if(!file){
-
-  toast("ছবি অথবা ভিডিও নির্বাচন করুন");
-  return;
- }
-
- const extension=
- file.name.split(".").pop();
-
- const path=
- `${currentUser.id}/${Date.now()}.${extension}`;
-
- document.getElementById("uploadMsg").textContent=
- "Upload হচ্ছে...";
-
- const {error:uploadError}=
- await client
- .storage
- .from("media")
- .upload(path,file,{
-  contentType:file.type,
-  upsert:false
- });
-
- if(uploadError){
-
-  document.getElementById("uploadMsg").textContent=
-  uploadError.message;
-
-  return;
- }
-
- const {data:urlData}=
- client
- .storage
- .from("media")
- .getPublicUrl(path);
-
- const mediaType=
- file.type.startsWith("video")
- ?"video"
- :"image";
-
- const {error}=
- await client
- .from("posts")
- .insert({
-  user_id:currentUser.id,
-  media_url:urlData.publicUrl,
-  media_type:mediaType,
-  caption:caption
- });
-
- if(error){
-
-  document.getElementById("uploadMsg").textContent=
-  error.message;
-
-  return;
- }
-
- toast("Post হয়েছে ❤️");
-
- document.getElementById("mediaFile").value="";
- document.getElementById("caption").value="";
- document.getElementById("preview").style.display="none";
-
- closePanels();
-
- loadFeed();
+  }
 
 }
 
 
-/* =====================
-COMMENTS
-===================== */
+/* =========================================================
+   COMMENTS
+   ========================================================= */
 
-async function openComments(postId){
+function openComments(id){
 
- currentCommentPost=postId;
+  currentVideo=id;
 
- openPanel("commentPanel");
+  document
+    .getElementById("commentModal")
+    .classList.add("show");
 
- const box=
- document.getElementById("comments");
+}
 
- box.innerHTML="Loading...";
+function closeComments(){
 
- const {data:comments}=
- await client
- .from("comments")
- .select("*")
- .eq("post_id",postId)
- .order("created_at",{ascending:true});
+  document
+    .getElementById("commentModal")
+    .classList.remove("show");
 
- if(!comments||comments.length===0){
+}
 
-  box.innerHTML=
-  "<p style='color:#aaa'>কোনো Comment নেই।</p>";
+async function sendComment(){
 
-  return;
- }
+  const input=document.getElementById("commentInput");
 
- const ids=
- [...new Set(comments.map(c=>c.user_id))];
+  const text=input.value.trim();
 
- const {data:profiles}=
- await client
- .from("profiles")
- .select("id,username")
- .in("id",ids);
+  if(!text)return;
 
- const map={};
+  const list=document.getElementById("commentsList");
 
- (profiles||[]).forEach(p=>{
-  map[p.id]=p.username;
- });
-
- box.innerHTML="";
-
- comments.forEach(c=>{
-
-  const div=
-  document.createElement("div");
+  const div=document.createElement("div");
 
   div.className="comment";
 
   div.innerHTML=`
-  <b>@${escapeHtml(map[c.user_id]||"user")}</b>
-  ${escapeHtml(c.body)}
+
+    <img src="https://i.pravatar.cc/100?img=12">
+
+    <div class="comment-body">
+
+      <strong>You</strong>
+
+      <span>${escapeHTML(text)}</span>
+
+    </div>
   `;
 
-  box.appendChild(div);
+  list.appendChild(div);
 
- });
+  input.value="";
 
-}
+  toast("Comment added ❤️");
 
+  if(supabaseClient){
 
-async function sendComment(){
+    try{
 
- if(!currentUser){
+      const user=
+        (await supabaseClient.auth.getUser()).data.user;
 
-  toast("Login করুন");
-  return;
+      if(user && currentVideo){
 
- }
+        await supabaseClient
+          .from("comments")
+          .insert({
+            user_id:user.id,
+            video_id:currentVideo,
+            content:text
+          });
 
- const input=
- document.getElementById("commentInput");
+      }
 
- const body=input.value.trim();
-
- if(!body)return;
-
- const {error}=
- await client
- .from("comments")
- .insert({
-  post_id:currentCommentPost,
-  user_id:currentUser.id,
-  body
- });
-
- if(error){
-
-  toast(error.message);
-  return;
-
- }
-
- input.value="";
-
- openComments(currentCommentPost);
-
-}
-
-
-/* =====================
-SHARE
-===================== */
-
-async function sharePost(url){
-
- try{
-
-  if(navigator.share){
-
-   await navigator.share({
-    title:"Rivo",
-    text:"Rivo-তে এই Post দেখুন",
-    url:url
-   });
-
-  }else{
-
-   await navigator.clipboard.writeText(url);
-
-   toast("Link copy হয়েছে");
+    }catch(e){
+      console.log(e);
+    }
 
   }
 
- }catch(e){}
-
 }
 
 
-/* =====================
-PROFILE
-===================== */
+/* =========================================================
+   SCREENS
+   ========================================================= */
 
-async function openProfile(userId=null){
+function openScreen(id,nav){
 
- const id=
- userId||currentUser.id;
+  document
+    .querySelectorAll(".screen")
+    .forEach(s=>s.classList.remove("show"));
 
- openPanel("profilePanel");
+  document
+    .getElementById(id)
+    .classList.add("show");
 
- const {data:p}=
- await client
- .from("profiles")
- .select("*")
- .eq("id",id)
- .single();
+  if(nav){
 
- const {data:posts}=
- await client
- .from("posts")
- .select("*")
- .eq("user_id",id)
- .order("created_at",{ascending:false});
+    document
+      .querySelectorAll(".nav-item")
+      .forEach(n=>n.classList.remove("active"));
 
- const avatar=
- p?.avatar_url
- ||
- "https://ui-avatars.com/api/?name="+
- encodeURIComponent(p?.username||"R");
-
- const box=
- document.getElementById("profileContent");
-
- box.innerHTML=`
-
- <div class="profile">
-
- <img
- class="avatar"
- src="${avatar}">
-
- <h2>
- @${escapeHtml(p?.username||"user")}
- </h2>
-
- <p>
- ${escapeHtml(p?.bio||"")}
- </p>
-
- <p>
- ${posts?.length||0} Posts
- </p>
-
- ${id===currentUser.id
- ?
- `<button class="btn"
- onclick="editProfile()">
- Edit Profile
- </button>`
- :""}
-
- </div>
-
- <h3>Posts</h3>
-
- <div class="grid" id="profileGrid"></div>
- `;
-
- const grid=
- document.getElementById("profileGrid");
-
- (posts||[]).forEach(post=>{
-
-  const item=
-  document.createElement("div");
-
-  if(post.media_type==="video"){
-
-   item.innerHTML=
-   `<video src="${post.media_url}" controls></video>`;
-
-  }else{
-
-   item.innerHTML=
-   `<img src="${post.media_url}">`;
+    nav.classList.add("active");
 
   }
 
-  grid.appendChild(item);
+}
 
- });
+function closeScreens(){
+
+  document
+    .querySelectorAll(".screen")
+    .forEach(s=>s.classList.remove("show"));
+
+}
+
+function goHome(button){
+
+  closeScreens();
+
+  document
+    .querySelectorAll(".nav-item")
+    .forEach(n=>n.classList.remove("active"));
+
+  button.classList.add("active");
 
 }
 
 
-/* =====================
-EDIT PROFILE
-===================== */
+/* =========================================================
+   UPLOAD PREVIEW
+   ========================================================= */
 
-async function editProfile(){
+function previewVideo(event){
 
- const username=
- prompt(
- "Username:",
- document.querySelector("#profileContent h2")
- ?.textContent
- ?.replace("@","")||""
- );
+  const file=event.target.files[0];
 
- if(username===null)return;
+  if(!file)return;
 
- const bio=
- prompt(
- "Bio:"
- );
+  const video=document.getElementById("previewVideo");
 
- const {error}=
- await client
- .from("profiles")
- .update({
-  username:username.trim(),
-  bio:bio||""
- })
- .eq("id",currentUser.id);
+  video.src=URL.createObjectURL(file);
 
- if(error){
+  video.style.display="block";
 
-  toast(error.message);
-  return;
-
- }
-
- openProfile();
+  document.getElementById("uploadBox").style.display="none";
 
 }
 
 
-/* =====================
-SEARCH
-===================== */
+/* =========================================================
+   UPLOAD
+   ========================================================= */
 
-async function searchUsers(){
+async function uploadVideo(){
 
- const term=
- document.getElementById("search")
- .value
- .trim()
- .toLowerCase();
+  const file=
+    document.getElementById("videoFile").files[0];
 
- const results=
- document.getElementById("results");
+  const caption=
+    document.getElementById("captionInput").value.trim();
 
- if(!term){
+  const hashtags=
+    document.getElementById("hashtagsInput").value.trim();
 
-  results.innerHTML="";
-  return;
+  if(!file){
 
- }
+    toast("Please choose a video first");
 
- const {data}=
- await client
- .from("profiles")
- .select("*")
- .ilike("username",`%${term}%`)
- .limit(20);
+    return;
 
- results.innerHTML="";
+  }
 
- (data||[]).forEach(p=>{
+  if(!supabaseClient){
 
-  const div=
-  document.createElement("div");
+    toast("Demo mode: Supabase is not connected");
 
-  div.className="card";
+    return;
 
-  div.innerHTML=`
+  }
 
-  <b>
-  @${escapeHtml(p.username||"user")}
-  </b>
+  try{
 
-  <p>
-  ${escapeHtml(p.bio||"")}
-  </p>
+    toast("Uploading video...");
 
-  <button class="btn"
-  onclick="openProfile('${p.id}')">
-  Profile দেখুন
-  </button>
+    const {
+      data:{user}
+    }=
+      await supabaseClient.auth.getUser();
 
-  `;
+    if(!user){
 
-  results.appendChild(div);
+      document
+        .getElementById("loginScreen")
+        .classList.add("show");
 
- });
+      return;
+
+    }
+
+    const extension=
+      file.name.split(".").pop();
+
+    const fileName=
+      `${user.id}/${Date.now()}.${extension}`;
+
+    const upload=
+      await supabaseClient
+        .storage
+        .from("videos")
+        .upload(
+          fileName,
+          file,
+          {
+            contentType:file.type,
+            upsert:false
+          }
+        );
+
+    if(upload.error)
+      throw upload.error;
+
+    const publicUrl=
+      supabaseClient
+        .storage
+        .from("videos")
+        .getPublicUrl(fileName)
+        .data
+        .publicUrl;
+
+    const insert=
+      await supabaseClient
+        .from("videos")
+        .insert({
+          user_id:user.id,
+          video_url:publicUrl,
+          caption:caption,
+          hashtags:hashtags
+        })
+        .select()
+        .single();
+
+    if(insert.error)
+      throw insert.error;
+
+    toast("Video posted successfully!");
+
+    document
+      .getElementById("captionInput")
+      .value="";
+
+    document
+      .getElementById("hashtagsInput")
+      .value="";
+
+    document
+      .getElementById("videoFile")
+      .value="";
+
+    closeScreens();
+
+    await loadSupabaseVideos();
+
+  }catch(error){
+
+    console.error(error);
+
+    toast("Upload failed: "+error.message);
+
+  }
 
 }
 
 
-/* =====================
-PANELS
-===================== */
+/* =========================================================
+   SUPABASE VIDEOS
+   ========================================================= */
 
-function openPanel(id){
+async function loadSupabaseVideos(){
 
- document
- .querySelectorAll(".panel")
- .forEach(x=>x.style.display="none");
+  if(!supabaseClient)return;
 
- document.getElementById(id).style.display="block";
+  try{
+
+    const result=
+      await supabaseClient
+        .from("videos")
+        .select(`
+          id,
+          user_id,
+          video_url,
+          caption,
+          hashtags,
+          created_at,
+          profiles(
+            username,
+            full_name,
+            avatar_url
+          )
+        `)
+        .order("created_at",{ascending:false})
+        .limit(50);
+
+    if(result.error){
+
+      console.log(
+        "Videos table not ready:",
+        result.error.message
+      );
+
+      return;
+
+    }
+
+    if(result.data && result.data.length){
+
+      videos=
+        result.data.map(v=>({
+
+          id:v.id,
+
+          username:
+            v.profiles?.username || "rivo_user",
+
+          name:
+            v.profiles?.full_name || "Rivo User",
+
+          avatar:
+            v.profiles?.avatar_url ||
+            "https://i.pravatar.cc/150?img=12",
+
+          video:v.video_url,
+
+          caption:v.caption || "",
+
+          hashtags:v.hashtags || "",
+
+          likes:0,
+
+          comments:0,
+
+          shares:0,
+
+          liked:false
+
+        }));
+
+      renderFeed();
+
+      setupVideoObserver();
+
+    }
+
+  }catch(e){
+
+    console.log(e);
+
+  }
 
 }
 
-function closePanels(){
 
- document
- .querySelectorAll(".panel")
- .forEach(x=>x.style.display="none");
+/* =========================================================
+   AUTH
+   ========================================================= */
+
+async function loginUser(){
+
+  if(!supabaseClient){
+
+    toast("Supabase is not connected");
+
+    return;
+
+  }
+
+  const email=
+    document.getElementById("loginEmail").value.trim();
+
+  const password=
+    document.getElementById("loginPassword").value;
+
+  if(!email || !password){
+
+    toast("Enter email and password");
+
+    return;
+
+  }
+
+  const result=
+    await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
+
+  if(result.error){
+
+    toast(result.error.message);
+
+    return;
+
+  }
+
+  document
+    .getElementById("loginScreen")
+    .classList.remove("show");
+
+  toast("Welcome back!");
+
+  await loadUser();
 
 }
 
 
-/* =====================
-HELPERS
-===================== */
+async function loadUser(){
 
-function toast(text){
+  if(!supabaseClient)return;
 
- const t=
- document.getElementById("toast");
+  try{
 
- t.textContent=text;
+    const {
+      data:{user}
+    }=
+      await supabaseClient.auth.getUser();
 
- t.style.display="block";
+    if(!user)return;
 
- setTimeout(()=>{
-  t.style.display="none";
- },2500);
+    const result=
+      await supabaseClient
+        .from("profiles")
+        .select("*")
+        .eq("id",user.id)
+        .single();
+
+    if(result.data){
+
+      document.getElementById("profileName")
+        .textContent=
+        result.data.full_name ||
+        result.data.username ||
+        "Rivo Creator";
+
+      document.getElementById("profileHandle")
+        .textContent=
+        "@"+(
+          result.data.username ||
+          "rivo_creator"
+        );
+
+      if(result.data.avatar_url){
+
+        document
+          .getElementById("profileAvatar")
+          .src=result.data.avatar_url;
+
+      }
+
+    }
+
+  }catch(e){
+
+    console.log(e);
+
+  }
 
 }
 
-function escapeHtml(value){
 
- return String(value||"")
- .replaceAll("&","&amp;")
- .replaceAll("<","&lt;")
- .replaceAll(">","&gt;")
- .replaceAll('"',"&quot;")
- .replaceAll("'","&#039;");
+function demoLogin(){
+
+  document
+    .getElementById("loginScreen")
+    .classList.remove("show");
+
+  toast("Demo mode activated");
 
 }
 
 
-/* START */
+/* =========================================================
+   PROFILE GRID
+   ========================================================= */
 
-start();
+function renderProfileGrid(){
+
+  const grid=
+    document.getElementById("profileGrid");
+
+  const list=
+    videos.slice(0,6);
+
+  grid.innerHTML="";
+
+  list.forEach(v=>{
+
+    const item=
+      document.createElement("div");
+
+    item.className="grid-item";
+
+    item.innerHTML=`
+
+      <video
+        muted
+        playsinline
+        src="${v.video}">
+      </video>
+
+      <div class="grid-views">
+        ▶ ${formatNumber(v.likes)}
+      </div>
+
+    `;
+
+    grid.appendChild(item);
+
+  });
+
+}
+
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+function renderDashboard(){
+
+  const grid=
+    document.getElementById("dashboardGrid");
+
+  if(!grid)return;
+
+  grid.innerHTML="";
+
+  videos.slice(0,6).forEach(v=>{
+
+    const item=
+      document.createElement("div");
+
+    item.className="grid-item";
+
+    item.innerHTML=`
+
+      <video
+        muted
+        playsinline
+        src="${v.video}">
+      </video>
+
+      <div class="grid-views">
+        ▶ ${formatNumber(v.likes)}
+      </div>
+
+    `;
+
+    grid.appendChild(item);
+
+  });
+
+  document
+    .getElementById("dashboardVideos")
+    .textContent=videos.length;
+
+}
+
+
+/* =========================================================
+   CREATORS
+   ========================================================= */
+
+function renderCreators(){
+
+  const box=
+    document.getElementById("suggestedCreators");
+
+  if(!box)return;
+
+  const creators=[
+    ["Nusrat Jahan","nusrat_jahan",44],
+    ["Arif Ahmed","arif_ahmed",13],
+    ["Tanjila Riya","riya_tanjila",32]
+  ];
+
+  box.innerHTML="";
+
+  creators.forEach(c=>{
+
+    const div=
+      document.createElement("div");
+
+    div.className="user-result";
+
+    div.innerHTML=`
+
+      <img
+        class="avatar"
+        src="https://i.pravatar.cc/100?img=${c[2]}">
+
+      <div class="user-result-info">
+        <strong>${c[0]}</strong>
+        <small>@${c[1]}</small>
+      </div>
+
+      <button
+        class="follow-btn"
+        onclick="followUser(event,'${c[1]}')">
+        Follow
+      </button>
+
+    `;
+
+    box.appendChild(div);
+
+  });
+
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+function runSearch(){
+
+  const q=
+    document
+      .getElementById("searchInput")
+      .value
+      .toLowerCase()
+      .trim();
+
+  const box=
+    document.getElementById("searchResults");
+
+  if(!q){
+
+    box.innerHTML=`
+      <p style="color:#777;text-align:center;margin-top:30px">
+        Search users or hashtags
+      </p>
+    `;
+
+    return;
+
+  }
+
+  const matches=
+    videos.filter(v=>
+      v.username.toLowerCase().includes(q) ||
+      v.caption.toLowerCase().includes(q) ||
+      v.hashtags.toLowerCase().includes(q)
+    );
+
+  box.innerHTML="";
+
+  matches.forEach(v=>{
+
+    const div=
+      document.createElement("div");
+
+    div.className="user-result";
+
+    div.innerHTML=`
+
+      <img class="avatar" src="${v.avatar}">
+
+      <div class="user-result-info">
+        <strong>@${v.username}</strong>
+        <small>${escapeHTML(v.caption)}</small>
+      </div>
+
+      <button
+        class="follow-btn"
+        onclick="followUser(event,'${v.username}')">
+        Follow
+      </button>
+
+    `;
+
+    box.appendChild(div);
+
+  });
+
+  if(!matches.length){
+
+    box.innerHTML=`
+      <p style="color:#777;text-align:center;margin-top:30px">
+        No results found
+      </p>
+    `;
+
+  }
+
+}
+
+
+function searchDiscover(){
+
+  const q=
+    document
+      .getElementById("discoverSearch")
+      .value
+      .toLowerCase()
+      .trim();
+
+  if(!q){
+
+    renderCreators();
+
+    return;
+
+  }
+
+  const box=
+    document.getElementById("suggestedCreators");
+
+  const matches=
+    videos.filter(v=>
+      v.username.toLowerCase().includes(q) ||
+      v.caption.toLowerCase().includes(q)
+    );
+
+  box.innerHTML="";
+
+  matches.forEach(v=>{
+
+    const div=
+      document.createElement("div");
+
+    div.className="user-result";
+
+    div.innerHTML=`
+
+      <img class="avatar" src="${v.avatar}">
+
+      <div class="user-result-info">
+        <strong>@${v.username}</strong>
+        <small>${escapeHTML(v.caption)}</small>
+      </div>
+
+      <button
+        class="follow-btn"
+        onclick="followUser(event,'${v.username}')">
+        Follow
+      </button>
+
+    `;
+
+    box.appendChild(div);
+
+  });
+
+}
+
+
+/* =========================================================
+   PROFILE FROM VIDEO
+   ========================================================= */
+
+function openProfileFromVideo(event,username){
+
+  event.stopPropagation();
+
+  openScreen("profileScreen");
+
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+let toastTimer;
+
+function toast(message){
+
+  const el=
+    document.getElementById("toast");
+
+  el.textContent=message;
+
+  el.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer=
+    setTimeout(()=>{
+      el.classList.remove("show");
+    },2200);
+
+}
+
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
+function formatNumber(num){
+
+  if(num>=1000000)
+    return (num/1000000).toFixed(1)+"M";
+
+  if(num>=1000)
+    return (num/1000).toFixed(1)+"K";
+
+  return String(num);
+
+}
+
+
+function escapeHTML(str){
+
+  return String(str)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   VIDEO TAP
+   ========================================================= */
+
+document.addEventListener("click",function(e){
+
+  const video=e.target.closest(".video-card video");
+
+  if(!video)return;
+
+  toggleVideo({
+    closest:()=>video.closest(".video-card")
+  });
+
+});
+
+
+/* =========================================================
+   KEYBOARD / ESC
+   ========================================================= */
+
+document.addEventListener("keydown",e=>{
+
+  if(e.key==="Escape"){
+
+    closeScreens();
+    closeComments();
+
+  }
+
+});
 
 </script>
 
