@@ -2,722 +2,362 @@
 <html lang="bn">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#120d1c">
-<title>Rivo — Short Video</title>
+<meta name="viewport"
+content="width=device-width,initial-scale=1,viewport-fit=cover">
+
+<title>Rivo</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{box-sizing:border-box}
 
 html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  background:#09070e;
-  color:#fff;
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+ margin:0;
+ width:100%;
+ height:100%;
+ background:#09070e;
+ color:white;
+ font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
 }
 
-button,input,textarea,select{
-  font:inherit
-}
+button,input,textarea{font:inherit}
 
-button{
-  cursor:pointer
-}
+button{cursor:pointer}
 
 .app{
-  width:100%;
-  height:100dvh;
-  max-width:520px;
-  margin:auto;
-  position:relative;
-  overflow:hidden;
-  background:
-    radial-gradient(circle at 10% 10%,#7b2cff22,transparent 35%),
-    radial-gradient(circle at 90% 80%,#ff2d7520,transparent 35%),
-    #0d0a12
+ width:100%;
+ max-width:520px;
+ height:100dvh;
+ margin:auto;
+ position:relative;
+ overflow:hidden;
+ background:#0d0a12
 }
 
-/* =========================
-   WELCOME / LOGIN
-========================= */
+/* AUTH */
 
-#authScreen{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:22px;
-  background:
-    radial-gradient(circle at 15% 15%,#ff2d7560,transparent 35%),
-    radial-gradient(circle at 85% 80%,#7c3cff55,transparent 38%),
-    linear-gradient(145deg,#09070d,#171021,#0a0810);
-  z-index:100
+#auth{
+ position:absolute;
+ inset:0;
+ z-index:100;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:20px;
+ background:
+ radial-gradient(circle at 20% 20%,#ff2d7560,transparent 35%),
+ radial-gradient(circle at 80% 80%,#7c3cff55,transparent 40%),
+ #09070d
 }
 
-.authBox{
-  width:100%;
-  padding:30px 21px;
-  border-radius:28px;
-  background:#15121ddd;
-  border:1px solid #ffffff16;
-  box-shadow:0 25px 90px #000;
-  backdrop-filter:blur(20px)
-}
-
-.brand{
-  text-align:center;
-  font-size:48px;
-  font-weight:950;
-  letter-spacing:-3px;
-  background:linear-gradient(90deg,#fff,#ff4c91,#a970ff);
-  -webkit-background-clip:text;
-  color:transparent
-}
-
-.subtitle{
-  text-align:center;
-  color:#aaa;
-  margin:3px 0 28px
-}
-
-.authBox input{
-  width:100%;
-  padding:15px;
-  margin:7px 0;
-  border-radius:14px;
-  border:1px solid #ffffff14;
-  outline:none;
-  background:#0b0910;
-  color:white
-}
-
-.authBox input:focus{
-  border-color:#ff2d75
-}
-
-.primary{
-  width:100%;
-  padding:15px;
-  margin-top:12px;
-  border:0;
-  border-radius:14px;
-  color:#fff;
-  font-weight:850;
-  background:linear-gradient(90deg,#ff2d75,#ff477f,#8b5cff);
-  box-shadow:0 8px 30px #ff2d7530
-}
-
-.secondary{
-  width:100%;
-  padding:14px;
-  margin-top:10px;
-  border-radius:14px;
-  color:#fff;
-  background:#25202d;
-  border:1px solid #ffffff15
-}
-
-.authMsg{
-  min-height:22px;
-  text-align:center;
-  margin-top:12px;
-  color:#ff709f;
-  font-size:14px
-}
-
-/* =========================
-   MAIN APP
-========================= */
-
-#mainApp{
-  display:none;
-  height:100%
-}
-
-.feed{
-  height:100%;
-  overflow-y:auto;
-  scroll-snap-type:y mandatory;
-  scrollbar-width:none
-}
-
-.feed::-webkit-scrollbar{
-  display:none
-}
-
-.post{
-  min-height:100dvh;
-  position:relative;
-  scroll-snap-align:start;
-  background:#111
-}
-
-.postMedia{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  background:#17131d
-}
-
-.postOverlay{
-  position:absolute;
-  inset:0;
-  background:
-    linear-gradient(to bottom,#0008,transparent 25%),
-    linear-gradient(to top,#000e,transparent 60%);
-  z-index:1;
-  pointer-events:none
-}
-
-/* =========================
-   TOP BAR
-========================= */
-
-.top{
-  position:fixed;
-  top:0;
-  left:50%;
-  transform:translateX(-50%);
-  width:min(520px,100%);
-  height:65px;
-  padding:13px 16px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  z-index:20;
-  background:linear-gradient(#09070dcc,transparent)
+.authbox{
+ width:100%;
+ padding:28px 20px;
+ border-radius:25px;
+ background:#17131ddd;
+ border:1px solid #ffffff18
 }
 
 .logo{
-  font-size:27px;
-  font-weight:950;
-  letter-spacing:-1px
+ font-size:48px;
+ font-weight:950;
+ text-align:center;
+ background:linear-gradient(90deg,#fff,#ff3f87,#9d5cff);
+ -webkit-background-clip:text;
+ color:transparent
 }
 
-.tabs{
-  display:flex;
-  gap:18px;
-  font-weight:750
+.subtitle{
+ text-align:center;
+ color:#aaa;
+ margin-bottom:20px
 }
 
-.tabs span{
-  opacity:.5
-}
-
-.tabs .active{
-  opacity:1;
-  border-bottom:2px solid #ff2d75;
-  padding-bottom:5px
-}
-
-/* =========================
-   POST INFO
-========================= */
-
-.postInfo{
-  position:absolute;
-  left:16px;
-  right:82px;
-  bottom:88px;
-  z-index:5
-}
-
-.username{
-  font-size:17px;
-  font-weight:900
-}
-
-.caption{
-  margin-top:7px;
-  line-height:1.4
-}
-
-.postType{
-  margin-top:9px;
-  font-size:13px;
-  color:#ddd
-}
-
-/* =========================
-   ACTIONS
-========================= */
-
-.actions{
-  position:absolute;
-  right:11px;
-  bottom:93px;
-  z-index:8;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:15px
-}
-
-.action{
-  text-align:center
-}
-
-.action button{
-  width:50px;
-  height:50px;
-  border:0;
-  border-radius:50%;
-  background:#ffffff20;
-  color:white;
-  font-size:23px;
-  backdrop-filter:blur(10px)
-}
-
-.action button.liked{
-  background:#ff2d7538;
-  color:#ff3f87
-}
-
-.action small{
-  display:block;
-  margin-top:3px;
-  font-size:12px
-}
-
-/* =========================
-   BOTTOM NAV
-========================= */
-
-.bottom{
-  position:fixed;
-  bottom:0;
-  left:50%;
-  transform:translateX(-50%);
-  width:min(520px,100%);
-  height:65px;
-  z-index:50;
-  display:flex;
-  align-items:center;
-  justify-content:space-around;
-  background:#09070ee8;
-  border-top:1px solid #ffffff0b;
-  backdrop-filter:blur(18px)
-}
-
-.bottom button{
-  border:0;
-  background:none;
-  color:white;
-  min-width:54px;
-  font-size:11px;
-  opacity:.9
-}
-
-.bottom b{
-  display:block;
-  font-size:22px;
-  line-height:22px
-}
-
-.plus{
-  width:48px!important;
-  height:36px;
-  min-width:48px!important;
-  border-radius:11px!important;
-  background:linear-gradient(90deg,#ff2d75,#8b5cff)!important;
-  color:white!important;
-  font-size:27px!important
-}
-
-/* =========================
-   PANELS
-========================= */
-
-.panel{
-  display:none;
-  position:absolute;
-  inset:0;
-  z-index:70;
-  overflow-y:auto;
-  padding:65px 17px 90px;
-  background:
-    radial-gradient(circle at 10% 10%,#8b5cff20,transparent 35%),
-    radial-gradient(circle at 90% 75%,#ff2d7518,transparent 35%),
-    #100c16
-}
-
-.close{
-  position:absolute;
-  right:15px;
-  top:14px;
-  width:40px;
-  height:40px;
-  border:0;
-  border-radius:50%;
-  background:#27212f;
-  color:#fff;
-  font-size:23px
-}
-
-.panel h2{
-  margin:0 0 18px
-}
-
-.card{
-  padding:16px;
-  margin:10px 0;
-  border-radius:18px;
-  background:#1b1622;
-  border:1px solid #ffffff0d
+input,textarea{
+ width:100%;
+ padding:14px;
+ margin:6px 0;
+ border:1px solid #ffffff15;
+ border-radius:13px;
+ background:#0b0910;
+ color:white;
+ outline:none
 }
 
 .btn{
-  padding:12px 17px;
-  border:0;
-  border-radius:13px;
-  color:white;
-  background:linear-gradient(90deg,#ff2d75,#8b5cff);
-  font-weight:800
+ width:100%;
+ padding:14px;
+ margin-top:8px;
+ border:0;
+ border-radius:13px;
+ background:linear-gradient(90deg,#ff2d75,#8b5cff);
+ color:white;
+ font-weight:800
 }
 
-.fullBtn{
-  width:100%;
-  margin-top:8px
+.secondary{
+ background:#27212f
 }
 
-.card input,
-.card textarea,
-.card select{
-  width:100%;
-  padding:13px;
-  margin:7px 0;
-  border:1px solid #ffffff10;
-  border-radius:12px;
-  background:#0c0910;
-  color:white;
-  outline:none
+.msg{
+ text-align:center;
+ color:#ff709f;
+ margin-top:10px;
+ min-height:22px
 }
 
-/* =========================
-   PROFILE
-========================= */
+/* APP */
 
-.profileHead{
-  text-align:center;
-  padding:10px 0 18px
+#app{
+ display:none;
+ height:100%
 }
 
-.avatar{
-  width:92px;
-  height:92px;
-  border-radius:50%;
-  object-fit:cover;
-  border:3px solid #ff3f87;
-  background:#25202d
+.feed{
+ height:100%;
+ overflow-y:auto;
+ scroll-snap-type:y mandatory
 }
 
-.profileUsername{
-  font-size:22px;
-  font-weight:900;
-  margin-top:9px
+.post{
+ min-height:100dvh;
+ position:relative;
+ scroll-snap-align:start;
+ background:#111
 }
 
-.profileBio{
-  color:#aaa;
-  margin:5px 0 13px
+.media{
+ position:absolute;
+ inset:0;
+ width:100%;
+ height:100%;
+ object-fit:cover
 }
 
-.stats{
-  display:flex;
-  justify-content:center;
-  gap:30px;
-  margin:16px 0
+.overlay{
+ position:absolute;
+ inset:0;
+ background:
+ linear-gradient(#0008,transparent 30%),
+ linear-gradient(transparent 45%,#000e)
 }
 
-.stats div{
-  text-align:center
+.info{
+ position:absolute;
+ left:15px;
+ right:85px;
+ bottom:90px;
+ z-index:5
 }
 
-.stats b{
-  display:block;
-  font-size:18px
+.user{
+ font-weight:900;
+ font-size:18px
 }
 
-.stats span{
-  font-size:12px;
-  color:#aaa
+.caption{
+ margin-top:8px;
+ line-height:1.4
 }
 
-.profileActions{
-  display:flex;
-  gap:8px
+.actions{
+ position:absolute;
+ right:10px;
+ bottom:100px;
+ z-index:10;
+ display:flex;
+ flex-direction:column;
+ gap:15px
 }
 
-.profileActions button{
-  flex:1
+.action{
+ text-align:center
 }
 
-.profileTabs{
-  display:flex;
-  margin-top:20px;
-  border-bottom:1px solid #ffffff12
+.action button{
+ width:50px;
+ height:50px;
+ border:0;
+ border-radius:50%;
+ background:#ffffff25;
+ color:white;
+ font-size:22px
 }
 
-.profileTabs button{
-  flex:1;
-  padding:13px;
-  border:0;
-  background:none;
-  color:#aaa
+.action small{
+ display:block;
+ margin-top:3px
 }
 
-.profileTabs .selected{
-  color:#fff;
-  border-bottom:2px solid #ff2d75
+.liked{
+ color:#ff3f87!important
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:3px;
-  margin-top:3px
+.top{
+ position:fixed;
+ top:0;
+ left:50%;
+ transform:translateX(-50%);
+ width:min(520px,100%);
+ z-index:30;
+ padding:15px;
+ display:flex;
+ justify-content:space-between;
+ background:linear-gradient(#09070dcc,transparent)
 }
 
-.gridItem{
-  aspect-ratio:1;
-  background:#211b29;
-  overflow:hidden
+.top b{
+ font-size:25px
 }
 
-.gridItem img,
-.gridItem video{
-  width:100%;
-  height:100%;
-  object-fit:cover
+.bottom{
+ position:fixed;
+ bottom:0;
+ left:50%;
+ transform:translateX(-50%);
+ width:min(520px,100%);
+ height:65px;
+ z-index:40;
+ display:flex;
+ align-items:center;
+ justify-content:space-around;
+ background:#09070eee;
+ border-top:1px solid #ffffff10
 }
 
-/* =========================
-   SETTINGS
-========================= */
-
-.settingSection{
-  margin-top:20px
+.bottom button{
+ background:none;
+ border:0;
+ color:white;
+ font-size:12px
 }
 
-.settingTitle{
-  color:#ff5c95;
-  font-size:13px;
-  font-weight:800;
-  margin:18px 7px 7px;
-  text-transform:uppercase
+.bottom b{
+ display:block;
+ font-size:22px
 }
 
-.settingRow{
-  width:100%;
-  min-height:58px;
-  padding:11px 5px;
-  display:flex;
-  align-items:center;
-  gap:13px;
-  border:0;
-  border-bottom:1px solid #ffffff09;
-  background:none;
-  color:white;
-  text-align:left
+.plus{
+ width:48px;
+ height:38px;
+ border-radius:10px!important;
+ background:linear-gradient(90deg,#ff2d75,#8b5cff)!important;
+ font-size:25px!important
 }
 
-.settingIcon{
-  width:35px;
-  height:35px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:10px;
-  background:#27202f;
-  font-size:18px
+/* PANELS */
+
+.panel{
+ display:none;
+ position:absolute;
+ inset:0;
+ z-index:70;
+ overflow-y:auto;
+ padding:65px 16px 90px;
+ background:#100c16
 }
 
-.settingText{
-  flex:1
+.close{
+ position:absolute;
+ right:15px;
+ top:13px;
+ width:40px;
+ height:40px;
+ border:0;
+ border-radius:50%;
+ background:#29222f;
+ color:white;
+ font-size:22px
 }
 
-.settingText b{
-  display:block;
-  font-size:15px
+.card{
+ padding:16px;
+ margin:10px 0;
+ border-radius:18px;
+ background:#1b1622;
+ border:1px solid #ffffff0d
 }
 
-.settingText small{
-  color:#888;
-  font-size:11px
+.preview{
+ display:none;
+ width:100%;
+ max-height:350px;
+ margin-top:10px;
+ border-radius:15px;
+ overflow:hidden;
+ background:#050509
 }
 
-.arrow{
-  color:#777;
-  font-size:22px
-}
-
-/* =========================
-   EDIT PROFILE
-========================= */
-
-.editAvatarBox{
-  text-align:center;
-  padding:10px
-}
-
-.changePhoto{
-  margin-top:8px;
-  color:#ff5c95;
-  font-weight:800;
-  background:none;
-  border:0
-}
-
-/* =========================
-   COMMENTS
-========================= */
-
-.commentList{
-  max-height:50vh;
-  overflow-y:auto
-}
-
-.comment{
-  padding:10px 0;
-  border-bottom:1px solid #ffffff0d
-}
-
-.comment b{
-  display:block
-}
-
-.comment small{
-  color:#999
-}
-
-.commentInput{
-  display:flex;
-  gap:8px;
-  margin-top:12px
-}
-
-.commentInput input{
-  flex:1;
-  padding:12px;
-  border:0;
-  border-radius:12px;
-  background:#0b0910;
-  color:white
-}
-
-/* =========================
-   UPLOAD
-========================= */
-
-.previewBox{
-  width:100%;
-  max-height:380px;
-  border-radius:17px;
-  overflow:hidden;
-  background:#09070d;
-  display:none;
-  margin:10px 0
-}
-
-.previewBox img,
-.previewBox video{
-  width:100%;
-  max-height:380px;
-  object-fit:contain
+.preview img,
+.preview video{
+ width:100%;
+ max-height:350px;
+ object-fit:contain
 }
 
 .progress{
-  width:100%;
-  height:7px;
-  margin-top:12px;
-  overflow:hidden;
-  border-radius:20px;
-  background:#302a36
+ height:6px;
+ background:#332c38;
+ border-radius:10px;
+ margin-top:10px;
+ overflow:hidden
 }
 
-.progressBar{
-  width:0%;
-  height:100%;
-  background:linear-gradient(90deg,#ff2d75,#9d5cff)
+.bar{
+ width:0%;
+ height:100%;
+ background:#ff2d75
 }
 
-.uploadStatus{
-  color:#aaa;
-  font-size:13px;
-  text-align:center
+.avatar{
+ width:90px;
+ height:90px;
+ border-radius:50%;
+ object-fit:cover;
+ border:3px solid #ff3f87
 }
 
-/* =========================
-   TOAST
-========================= */
+.profile{
+ text-align:center
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:3px
+}
+
+.grid div{
+ aspect-ratio:1;
+ background:#211b29;
+ overflow:hidden
+}
+
+.grid img,.grid video{
+ width:100%;
+ height:100%;
+ object-fit:cover
+}
+
+.comment{
+ padding:10px 0;
+ border-bottom:1px solid #ffffff12
+}
 
 .toast{
-  position:fixed;
-  left:50%;
-  bottom:80px;
-  transform:translateX(-50%);
-  z-index:200;
-  display:none;
-  max-width:90%;
-  padding:11px 16px;
-  border-radius:14px;
-  color:#111;
-  background:#fff;
-  font-weight:800;
-  text-align:center
-}
-
-.loading{
-  text-align:center;
-  padding:50px;
-  color:#aaa
-}
-
-.empty{
-  height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:30px;
-  color:#aaa
-}
-
-/* =========================
-   SWITCH
-========================= */
-
-.switch{
-  width:44px;
-  height:25px;
-  border-radius:20px;
-  background:#444;
-  position:relative
-}
-
-.switch.on{
-  background:#ff2d75
-}
-
-.switch:after{
-  content:"";
-  width:19px;
-  height:19px;
-  position:absolute;
-  top:3px;
-  left:3px;
-  border-radius:50%;
-  background:white;
-  transition:.2s
-}
-
-.switch.on:after{
-  left:22px
+ display:none;
+ position:fixed;
+ z-index:200;
+ left:50%;
+ bottom:80px;
+ transform:translateX(-50%);
+ background:white;
+ color:#111;
+ padding:11px 16px;
+ border-radius:13px;
+ font-weight:800;
+ max-width:90%
 }
 </style>
 </head>
@@ -726,2772 +366,1037 @@ button{
 
 <div class="app">
 
-<!-- =========================
-     AUTH
-========================= -->
+<!-- LOGIN -->
 
-<div id="authScreen">
+<div id="auth">
 
-  <div class="authBox">
+<div class="authbox">
 
-    <div class="brand">Rivo</div>
+<div class="logo">Rivo</div>
 
-    <div class="subtitle">
-      Short videos. Real people.
-    </div>
+<div class="subtitle">
+Short videos. Real people.
+</div>
 
-    <input
-      id="email"
-      type="email"
-      placeholder="Gmail / Email address">
+<input id="email"
+type="email"
+placeholder="Email">
 
-    <input
-      id="password"
-      type="password"
-      placeholder="Password">
+<input id="password"
+type="password"
+placeholder="Password">
 
-    <button class="primary" onclick="login()">
-      Login
-    </button>
+<button class="btn"
+onclick="signup()">
+Create account
+</button>
 
-    <button class="secondary" onclick="signup()">
-      Create new account
-    </button>
+<button class="btn secondary"
+onclick="login()">
+Login
+</button>
 
-    <div id="authMsg" class="authMsg"></div>
+<div id="authMsg" class="msg"></div>
 
-  </div>
+</div>
+</div>
+
+
+<!-- MAIN -->
+
+<div id="app">
+
+<div class="top">
+<b>Rivo</b>
+<button onclick="openPanel('searchPanel')">🔎</button>
+</div>
+
+<div id="feed" class="feed"></div>
+
+
+<div class="bottom">
+
+<button onclick="loadFeed()">
+<b>⌂</b>
+Home
+</button>
+
+<button onclick="openPanel('searchPanel')">
+<b>🔎</b>
+Search
+</button>
+
+<button class="plus"
+onclick="openPanel('uploadPanel')">
++
+</button>
+
+<button onclick="openProfile()">
+<b>👤</b>
+Profile
+</button>
+
+<button onclick="logout()">
+<b>↪</b>
+Logout
+</button>
 
 </div>
 
 
-<!-- =========================
-     MAIN APP
-========================= -->
-
-<div id="mainApp">
-
-  <div class="top">
-
-    <div class="logo">Rivo</div>
-
-    <div class="tabs">
-      <span>Following</span>
-      <span class="active">For You</span>
-    </div>
-
-  </div>
-
-
-  <div id="feed" class="feed">
-
-    <div class="loading">
-      Rivo লোড হচ্ছে...
-    </div>
-
-  </div>
-
-
-  <div class="bottom">
-
-    <button onclick="closePanels()">
-      <b>⌂</b>
-      Home
-    </button>
-
-    <button onclick="showPanel('discoverPanel')">
-      <b>⌕</b>
-      Discover
-    </button>
-
-    <button
-      class="plus"
-      onclick="showPanel('uploadPanel')">
-      ＋
-    </button>
-
-    <button onclick="showPanel('inboxPanel')">
-      <b>♡</b>
-      Inbox
-    </button>
-
-    <button onclick="showPanel('profilePanel');loadProfile()">
-      <b>♙</b>
-      Profile
-    </button>
-
-  </div>
-
-
-<!-- =========================
-     UPLOAD PANEL
-========================= -->
+<!-- UPLOAD -->
 
 <div id="uploadPanel" class="panel">
 
-  <button class="close" onclick="closePanels()">×</button>
+<button class="close"
+onclick="closePanels()">×</button>
 
-  <h2>Create</h2>
+<h2>নতুন Post</h2>
 
-  <div class="card">
+<div class="card">
 
-    <p>
-      🎬 Video অথবা 🖼️ ছবি নির্বাচন করুন
-    </p>
+<input id="mediaFile"
+type="file"
+accept="image/*,video/*"
+onchange="previewFile()">
 
-    <input
-      id="mediaFile"
-      type="file"
-      accept="video/*,image/*"
-      onchange="previewMedia()">
+<div id="preview" class="preview"></div>
 
-    <div id="previewBox" class="previewBox"></div>
+<textarea id="caption"
+placeholder="কিছু লিখুন..."></textarea>
 
-    <textarea
-      id="postCaption"
-      rows="4"
-      placeholder="আপনার ক্যাপশন লিখুন..."></textarea>
+<div class="progress">
+<div id="bar" class="bar"></div>
+</div>
 
-    <button
-      class="btn fullBtn"
-      onclick="uploadPost()">
-      Post
-    </button>
+<button class="btn"
+onclick="uploadPost()">
+Post করুন
+</button>
 
-    <div class="progress">
-      <div
-        id="progressBar"
-        class="progressBar">
-      </div>
-    </div>
+<p id="uploadMsg"></p>
 
-    <p
-      id="uploadStatus"
-      class="uploadStatus">
-    </p>
+</div>
+</div>
 
-  </div>
+
+<!-- SEARCH -->
+
+<div id="searchPanel" class="panel">
+
+<button class="close"
+onclick="closePanels()">×</button>
+
+<h2>Search</h2>
+
+<div class="card">
+
+<input id="search"
+placeholder="Username লিখুন"
+oninput="searchUsers()">
+
+<div id="results"></div>
+
+</div>
 
 </div>
 
 
-<!-- =========================
-     DISCOVER
-========================= -->
-
-<div id="discoverPanel" class="panel">
-
-  <button class="close" onclick="closePanels()">×</button>
-
-  <h2>Discover</h2>
-
-  <div class="card">
-
-    <input
-      id="searchInput"
-      placeholder="🔎 Search Rivo">
-
-    <button
-      class="btn fullBtn"
-      onclick="searchRivo()">
-      Search
-    </button>
-
-  </div>
-
-  <div id="searchResults"></div>
-
-  <div class="card">
-    <b>#RivoChallenge</b>
-    <p>Trending on Rivo</p>
-  </div>
-
-  <div class="card">
-    <b>#BanglaVibes</b>
-    <p>বাংলা ভিডিও</p>
-  </div>
-
-  <div class="card">
-    <b>#Nature</b>
-    <p>Nature lovers</p>
-  </div>
-
-</div>
-
-
-<!-- =========================
-     INBOX
-========================= -->
-
-<div id="inboxPanel" class="panel">
-
-  <button class="close" onclick="closePanels()">×</button>
-
-  <h2>Inbox</h2>
-
-  <div class="card">
-    ❤️ Likes
-    <br>
-    <small>আপনার পোস্টে Like এলে এখানে দেখা যাবে।</small>
-  </div>
-
-  <div class="card">
-    💬 Comments
-    <br>
-    <small>আপনার পোস্টের Comment এখানে দেখা যাবে।</small>
-  </div>
-
-  <div class="card">
-    👤 Followers
-    <br>
-    <small>নতুন follower-এর activity এখানে থাকবে।</small>
-  </div>
-
-</div>
-
-
-<!-- =========================
-     PROFILE
-========================= -->
+<!-- PROFILE -->
 
 <div id="profilePanel" class="panel">
 
-  <button class="close" onclick="closePanels()">×</button>
+<button class="close"
+onclick="closePanels()">×</button>
 
-  <div class="profileHead">
-
-    <img
-      id="profileAvatar"
-      class="avatar"
-      src=""
-      alt="Profile">
-
-    <div
-      id="profileUsername"
-      class="profileUsername">
-      @rivo_user
-    </div>
-
-    <div
-      id="profileBio"
-      class="profileBio">
-      Rivo creator
-    </div>
-
-    <div class="stats">
-
-      <div>
-        <b id="followersCount">0</b>
-        <span>Followers</span>
-      </div>
-
-      <div>
-        <b id="followingCount">0</b>
-        <span>Following</span>
-      </div>
-
-      <div>
-        <b id="likesCount">0</b>
-        <span>Likes</span>
-      </div>
-
-    </div>
-
-    <div class="profileActions">
-
-      <button
-        class="btn"
-        onclick="showPanel('editProfilePanel');loadEditProfile()">
-        Edit Profile
-      </button>
-
-      <button
-        class="btn"
-        onclick="showPanel('settingsPanel')">
-        ⚙️ Settings
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <div class="profileTabs">
-
-    <button
-      id="tabPosts"
-      class="selected"
-      onclick="loadProfilePosts('posts')">
-      Posts
-    </button>
-
-    <button
-      id="tabLiked"
-      onclick="loadProfilePosts('liked')">
-      Liked
-    </button>
-
-    <button
-      id="tabSaved"
-      onclick="loadProfilePosts('saved')">
-      Saved
-    </button>
-
-  </div>
-
-  <div
-    id="profileGrid"
-    class="grid">
-  </div>
+<div id="profileContent"></div>
 
 </div>
 
 
-<!-- =========================
-     EDIT PROFILE
-========================= -->
+<!-- COMMENTS -->
 
-<div id="editProfilePanel" class="panel">
+<div id="commentPanel" class="panel">
 
-  <button
-    class="close"
-    onclick="showPanel('profilePanel');loadProfile()">
-    ×
-  </button>
+<button class="close"
+onclick="closePanels()">×</button>
 
-  <h2>Edit Profile</h2>
+<h2>Comments</h2>
 
-  <div class="card">
+<div id="comments"></div>
 
-    <div class="editAvatarBox">
+<div class="card">
 
-      <img
-        id="editAvatar"
-        class="avatar"
-        src=""
-        alt="Profile">
+<input id="commentInput"
+placeholder="Comment লিখুন">
 
-      <br>
-
-      <input
-        id="profilePhoto"
-        type="file"
-        accept="image/*">
-
-      <button
-        class="changePhoto"
-        onclick="document.getElementById('profilePhoto').click()">
-        Change profile photo
-      </button>
-
-    </div>
-
-    <input
-      id="editUsername"
-      placeholder="Username">
-
-    <textarea
-      id="editBio"
-      rows="4"
-      placeholder="Bio"></textarea>
-
-    <button
-      class="btn fullBtn"
-      onclick="saveProfile()">
-      Save Profile
-    </button>
-
-  </div>
+<button class="btn"
+onclick="sendComment()">
+Send
+</button>
 
 </div>
 
-
-<!-- =========================
-     SETTINGS
-========================= -->
-
-<div id="settingsPanel" class="panel">
-
-  <button class="close" onclick="closePanels()">×</button>
-
-  <h2>Settings and privacy</h2>
-
-  <div class="settingTitle">
-    Account
-  </div>
-
-  <button class="settingRow" onclick="showPanel('editProfilePanel');loadEditProfile()">
-
-    <div class="settingIcon">👤</div>
-
-    <div class="settingText">
-      <b>Manage account</b>
-      <small>Username, email and profile</small>
-    </div>
-
-    <div class="arrow">›</div>
-
-  </button>
-
-
-  <button class="settingRow" onclick="showPanel('editProfilePanel');loadEditProfile()">
-
-    <div class="settingIcon">✏️</div>
-
-    <div class="settingText">
-      <b>Edit profile</b>
-      <small>Profile photo, username and bio</small>
-    </div>
-
-    <div class="arrow">›</div>
-
-  </button>
-
-
-  <div class="settingTitle">
-    Privacy
-  </div>
-
-
-  <button class="settingRow" onclick="toast('Privacy settings শীঘ্রই আরও যোগ হবে')">
-
-    <div class="settingIcon">🔒</div>
-
-    <div class="settingText">
-      <b>Privacy</b>
-      <small>Control who can see your content</small>
-    </div>
-
-    <div class="arrow">›</div>
-
-  </button>
-
-
-  <button class="settingRow" onclick="toast('Blocked accounts')">
-
-    <div class="settingIcon">🚫</div>
-
-    <div class="settingText">
-      <b>Blocked accounts</b>
-      <small>Manage blocked users</small>
-    </div>
-
-    <div class="arrow">›</div>
-
-  </button>
-
-
-  <div class="settingTitle">
-    Notifications
-  </div>
-
-
-  <button class="settingRow" onclick="toggleSetting(this)">
-
-    <div class="settingIcon">🔔</div>
-
-    <div class="settingText">
-      <b>Push notifications</b>
-      <small>Likes, comments and followers</small>
-    </div>
-
-    <div class="switch on"></div>
-
-  </button>
-
-
-  <div class="settingTitle">
-    App
-  </div>
-
-
-  <button class="settingRow" onclick="toast('Language: বাংলা')">
-
-    <div class="settingIcon">🌐</div>
-
-    <div class="settingText">
-      <b>Language</b>
-      <small>বাংলা</small>
-    </div>
-
-    <div class="arrow">›</div>
-
-  </button>
-
-
-  <button class="settingRow" onclick="toggleSetting(this)">
-
-    <div class="settingIcon">💾</div>
-
-    <div class="settingText">
-      <b>Data Saver</b>
-      <small>Reduce mobile data usage</small>
-    </div>
-
-    <div class="switch"></div>
-
-  </button>
-
-
-  <button class="settingRow" onclick="toast('Appearance settings')">
-
-    <div class="settingIcon">🌙</div>
-
-    <div class="settingText">
-      <b>Appearance</b>
-      <small>Dark mode</small>
-    </div>
-
-    <div class="arrow">›</div>
-
-  </button>
-
-
-  <div class="settingTitle">
-    Support
-  </div>
-
-
-  <button class="settingRow" onclick="toast('Help & Support')">
-
-    <div class="settingIcon">❓</div>
-
-    <div class="settingText">
-      <b>Help & Support</b>
-      <small>Get help with Rivo</small>
-    </div>
-
-    <div class="arrow">›</div>
-
-  </button>
-
-
-  <button class="settingRow" onclick="toast('Rivo version 1.0')">
-
-    <div class="settingIcon">ℹ️</div>
-
-    <div class="settingText">
-      <b>About Rivo</b>
-      <small>Version 1.0</small>
-    </div>
-
-    <div class="arrow">›</div>
-
-  </button>
-
-
-  <button
-    class="btn fullBtn"
-    style="margin-top:25px"
-    onclick="logout()">
-    Logout
-  </button>
-
 </div>
 
-
-<!-- =========================
-     COMMENTS
-========================= -->
-
-<div id="commentsPanel" class="panel">
-
-  <button class="close" onclick="closePanels()">×</button>
-
-  <h2>Comments</h2>
-
-  <div
-    id="commentList"
-    class="commentList">
-  </div>
-
-  <div class="commentInput">
-
-    <input
-      id="commentText"
-      placeholder="Comment লিখুন...">
-
-    <button
-      class="btn"
-      onclick="addComment()">
-      Send
-    </button>
-
-  </div>
-
 </div>
-
 
 </div>
 
 <div id="toast" class="toast"></div>
 
 
-<!-- =========================
-     FIREBASE
-========================= -->
+<script>
 
-<script type="module">
+const SUPABASE_URL =
+"https://ayoactrisfcdhmhsnrwz.supabase.co";
 
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+const SUPABASE_KEY =
+"sb_publishable_pvPMH5zhPX3_vjarFMrYtw_9uZkagYX";
 
-
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  getDoc,
-  doc,
-  setDoc,
-  updateDoc,
-  increment,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-storage.js";
-
-
-/* =========================
-   FIREBASE CONFIG
-========================= */
-
-const firebaseConfig = {
-
-  apiKey:
-    "AIzaSyCW803F1tziGDy0DB3DNoF6IQLXgl__-28",
-
-  authDomain:
-    "rivo-4256a.firebaseapp.com",
-
-  projectId:
-    "rivo-4256a",
-
-  storageBucket:
-    "rivo-4256a.firebasestorage.app",
-
-  messagingSenderId:
-    "608273960517",
-
-  appId:
-    "1:608273960517:web:8e74a4e66e760119fbdd2c",
-
-  measurementId:
-    "G-FS0RQMPCFJ"
-
-};
-
-
-/* =========================
-   INITIALIZE
-========================= */
-
-const app =
-  initializeApp(firebaseConfig);
-
-const auth =
-  getAuth(app);
-
-const db =
-  getFirestore(app);
-
-const storage =
-  getStorage(app);
-
-let currentUser = null;
-let activePostId = null;
-
-
-/* =========================
-   DEFAULT AVATAR
-========================= */
-
-function defaultAvatar(email="Rivo"){
-
-  const letter =
-    encodeURIComponent(
-      (email[0] || "R").toUpperCase()
-    );
-
-  return "https://ui-avatars.com/api/?name="
-    + letter
-    + "&background=7c3cff&color=ffffff&size=200";
-}
-
-
-/* =========================
-   AUTH STATE
-========================= */
-
-onAuthStateChanged(
-  auth,
-  async user=>{
-
-    currentUser = user;
-
-    if(user){
-
-      document.getElementById(
-        "authScreen"
-      ).style.display="none";
-
-      document.getElementById(
-        "mainApp"
-      ).style.display="block";
-
-      await createUserProfile(user);
-
-      await loadVideos();
-
-    }else{
-
-      document.getElementById(
-        "authScreen"
-      ).style.display="flex";
-
-      document.getElementById(
-        "mainApp"
-      ).style.display="none";
-
-    }
-
-  }
+const client =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
 );
 
-
-/* =========================
-   SIGN UP
-========================= */
-
-window.signup = async function(){
-
-  const email =
-    document.getElementById(
-      "email"
-    ).value.trim();
-
-  const password =
-    document.getElementById(
-      "password"
-    ).value;
-
-  if(!email || !password){
-
-    authMessage(
-      "Email এবং password দিন"
-    );
-
-    return;
-  }
-
-  if(password.length < 6){
-
-    authMessage(
-      "Password কমপক্ষে ৬ অক্ষরের হতে হবে"
-    );
-
-    return;
-  }
-
-  try{
-
-    const result =
-      await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-    await createUserProfile(
-      result.user
-    );
-
-    toast(
-      "Account তৈরি হয়েছে ❤️"
-    );
-
-  }catch(error){
-
-    authMessage(
-      firebaseError(error)
-    );
-
-  }
-
-};
+let currentUser=null;
+let currentCommentPost=null;
 
 
-/* =========================
-   LOGIN
-========================= */
+/* =====================
+AUTH
+===================== */
 
-window.login = async function(){
+async function signup(){
 
-  const email =
-    document.getElementById(
-      "email"
-    ).value.trim();
+ const email=
+ document.getElementById("email").value.trim();
 
-  const password =
-    document.getElementById(
-      "password"
-    ).value;
+ const password=
+ document.getElementById("password").value;
 
-  if(!email || !password){
+ if(!email || !password){
+  msg("Email এবং Password দিন");
+  return;
+ }
 
-    authMessage(
-      "Email এবং password দিন"
-    );
+ const {data,error}=
+ await client.auth.signUp({
+  email,
+  password
+ });
 
-    return;
-  }
+ if(error){
+  msg(error.message);
+  return;
+ }
 
-  try{
+ if(data.user){
 
-    await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+  await client.from("profiles").upsert({
+   id:data.user.id,
+   username:email.split("@")[0],
+   display_name:email.split("@")[0],
+   bio:"",
+   avatar_url:""
+  });
 
-    authMessage("");
+ }
 
-    toast(
-      "Login সফল হয়েছে ❤️"
-    );
-
-  }catch(error){
-
-    authMessage(
-      firebaseError(error)
-    );
-
-  }
-
-};
+ msg("Account তৈরি হয়েছে। Email verify লাগতে পারে।");
+}
 
 
-/* =========================
-   USER PROFILE
-========================= */
+async function login(){
 
-async function createUserProfile(user){
+ const email=
+ document.getElementById("email").value.trim();
 
-  const userRef =
-    doc(
-      db,
-      "users",
-      user.uid
-    );
+ const password=
+ document.getElementById("password").value;
 
-  const existing =
-    await getDoc(userRef);
+ const {data,error}=
+ await client.auth.signInWithPassword({
+  email,
+  password
+ });
 
-  if(!existing.exists()){
+ if(error){
+  msg(error.message);
+  return;
+ }
 
-    await setDoc(
-      userRef,
-      {
+ currentUser=data.user;
 
-        uid:user.uid,
+ showApp();
+}
 
-        email:user.email || "",
 
-        username:
-          (user.email || "rivo_user")
-          .split("@")[0],
+async function logout(){
 
-        bio:"Rivo creator",
+ await client.auth.signOut();
 
-        photoURL:
-          defaultAvatar(user.email),
+ currentUser=null;
 
-        followers:0,
+ document.getElementById("app").style.display="none";
+ document.getElementById("auth").style.display="flex";
+}
 
-        following:0,
 
-        likes:0,
+function msg(text){
 
-        createdAt:
-          serverTimestamp()
-
-      }
-    );
-
-  }
+ document.getElementById("authMsg").textContent=text;
 
 }
 
 
-/* =========================
-   LOAD VIDEOS
-========================= */
+/* =====================
+START
+===================== */
 
-async function loadVideos(){
+async function start(){
 
-  const feed =
-    document.getElementById(
-      "feed"
-    );
+ const {data}=
+ await client.auth.getSession();
 
-  feed.innerHTML =
-    '<div class="loading">ভিডিও লোড হচ্ছে...</div>';
+ if(data.session){
 
-  try{
+  currentUser=data.session.user;
 
-    const snapshot =
-      await getDocs(
-        collection(
-          db,
-          "posts"
-        )
-      );
+  showApp();
 
-    const posts = [];
-
-    snapshot.forEach(item=>{
-
-      posts.push({
-
-        id:item.id,
-
-        ...item.data()
-
-      });
-
-    });
-
-
-    posts.sort(
-      (a,b)=>{
-
-        const aa =
-          a.createdAt?.seconds || 0;
-
-        const bb =
-          b.createdAt?.seconds || 0;
-
-        return bb-aa;
-
-      }
-    );
-
-
-    feed.innerHTML="";
-
-
-    if(posts.length===0){
-
-      feed.innerHTML=`
-
-        <div class="empty">
-
-          <div>
-
-            <h2>Rivo এখনো খালি ❤️</h2>
-
-            <p>
-              ＋ চাপ দিয়ে প্রথম ভিডিও বা ছবি Post করুন।
-            </p>
-
-          </div>
-
-        </div>
-
-      `;
-
-      return;
-
-    }
-
-
-    posts.forEach(
-      post=>{
-        createPost(
-          post,
-          feed
-        );
-      }
-    );
-
-  }catch(error){
-
-    console.error(error);
-
-    feed.innerHTML=`
-
-      <div class="empty">
-
-        <div>
-
-          <h2>Feed লোড হচ্ছে না</h2>
-
-          <p>
-            Firebase Firestore চালু আছে কিনা দেখুন।
-          </p>
-
-        </div>
-
-      </div>
-
-    `;
-
-  }
+ }
 
 }
 
 
-/* =========================
-   CREATE POST
-========================= */
+function showApp(){
 
-function createPost(
-  post,
-  feed
-){
+ document.getElementById("auth").style.display="none";
 
-  const wrapper =
-    document.createElement("div");
+ document.getElementById("app").style.display="block";
 
-  wrapper.className="post";
+ loadFeed();
 
-  const media =
-    post.type==="image"
-
-      ? document.createElement("img")
-
-      : document.createElement("video");
+}
 
 
-  media.className="postMedia";
+/* =====================
+FEED
+===================== */
 
-  media.src=post.url;
+async function loadFeed(){
 
-  if(post.type==="video"){
+ const feed=
+ document.getElementById("feed");
 
-    media.autoplay=true;
-    media.loop=true;
-    media.muted=true;
-    media.playsInline=true;
+ feed.innerHTML=
+ "<div style='padding:100px;text-align:center'>Loading...</div>";
+
+ const {data:posts,error}=
+ await client
+ .from("posts")
+ .select("*")
+ .order("created_at",{ascending:false});
+
+ if(error){
+
+  feed.innerHTML=
+  "<div style='padding:100px;text-align:center'>Post load হয়নি</div>";
+
+  return;
+ }
+
+ if(!posts || posts.length===0){
+
+  feed.innerHTML=
+  "<div style='padding:100px;text-align:center'>এখনো কোনো Post নেই।<br><br>প্রথম Post আপনিই দিন ❤️</div>";
+
+  return;
+ }
+
+ const userIds=
+ [...new Set(posts.map(p=>p.user_id))];
+
+ const {data:profiles}=
+ await client
+ .from("profiles")
+ .select("*")
+ .in("id",userIds);
+
+ const profileMap={};
+
+ (profiles||[]).forEach(p=>{
+  profileMap[p.id]=p;
+ });
+
+ feed.innerHTML="";
+
+ for(const post of posts){
+
+  const p=
+  profileMap[post.user_id]||{};
+
+  const {count:likeCount}=
+  await client
+  .from("likes")
+  .select("*",{count:"exact",head:true})
+  .eq("post_id",post.id);
+
+  let liked=false;
+
+  if(currentUser){
+
+   const {data:myLike}=
+   await client
+   .from("likes")
+   .select("post_id")
+   .eq("post_id",post.id)
+   .eq("user_id",currentUser.id)
+   .maybeSingle();
+
+   liked=!!myLike;
 
   }
 
+  const postEl=
+  document.createElement("div");
 
-  const overlay =
-    document.createElement("div");
+  postEl.className="post";
 
-  overlay.className=
-    "postOverlay";
+  const media=
+  post.media_type==="video"
+  ?
+  `<video class="media" src="${post.media_url}" controls playsinline></video>`
+  :
+  `<img class="media" src="${post.media_url}">`;
+
+  postEl.innerHTML=`
+
+  ${media}
+
+  <div class="overlay"></div>
+
+  <div class="info">
+
+   <div class="user">
+   @${escapeHtml(p.username||"user")}
+   </div>
+
+   <div class="caption">
+   ${escapeHtml(post.caption||"")}
+   </div>
+
+  </div>
+
+  <div class="actions">
+
+   <div class="action">
+
+    <button
+    class="${liked?'liked':''}"
+    onclick="toggleLike('${post.id}',this)">
+    ❤️
+    </button>
+
+    <small>${likeCount||0}</small>
+
+   </div>
+
+   <div class="action">
+
+    <button
+    onclick="openComments('${post.id}')">
+    💬
+    </button>
+
+   </div>
+
+   <div class="action">
+
+    <button
+    onclick="sharePost('${post.media_url}')">
+    ↗️
+    </button>
+
+   </div>
+
+  </div>
+  `;
+
+  feed.appendChild(postEl);
+
+ }
+
+}
 
 
-  const info =
-    document.createElement("div");
+/* =====================
+LIKE
+===================== */
 
-  info.className=
-    "postInfo";
+async function toggleLike(postId,button){
 
-  info.innerHTML=`
+ if(!currentUser){
+  toast("Login করুন");
+  return;
+ }
 
-    <div class="username">
-      @${escapeHtml(post.username || "rivo_user")}
-    </div>
+ const {data:existing}=
+ await client
+ .from("likes")
+ .select("*")
+ .eq("post_id",postId)
+ .eq("user_id",currentUser.id)
+ .maybeSingle();
 
-    <div class="caption">
-      ${escapeHtml(post.caption || "")}
-    </div>
+ if(existing){
 
-    <div class="postType">
-      ${post.type==="image" ? "🖼️ Photo" : "🎬 Original Video"}
-    </div>
+  await client
+  .from("likes")
+  .delete()
+  .eq("post_id",postId)
+  .eq("user_id",currentUser.id);
+
+  button.classList.remove("liked");
+
+ }else{
+
+  await client
+  .from("likes")
+  .insert({
+   post_id:postId,
+   user_id:currentUser.id
+  });
+
+  button.classList.add("liked");
+
+ }
+
+ loadFeed();
+
+}
+
+
+/* =====================
+UPLOAD PREVIEW
+===================== */
+
+function previewFile(){
+
+ const file=
+ document.getElementById("mediaFile").files[0];
+
+ const box=
+ document.getElementById("preview");
+
+ if(!file){
+  box.style.display="none";
+  return;
+ }
+
+ const url=
+ URL.createObjectURL(file);
+
+ if(file.type.startsWith("video")){
+
+  box.innerHTML=
+  `<video src="${url}" controls></video>`;
+
+ }else{
+
+  box.innerHTML=
+  `<img src="${url}">`;
+
+ }
+
+ box.style.display="block";
+}
+
+
+/* =====================
+UPLOAD
+===================== */
+
+async function uploadPost(){
+
+ if(!currentUser){
+  toast("Login করুন");
+  return;
+ }
+
+ const file=
+ document.getElementById("mediaFile").files[0];
+
+ const caption=
+ document.getElementById("caption").value.trim();
+
+ if(!file){
+
+  toast("ছবি অথবা ভিডিও নির্বাচন করুন");
+  return;
+ }
+
+ const extension=
+ file.name.split(".").pop();
+
+ const path=
+ `${currentUser.id}/${Date.now()}.${extension}`;
+
+ document.getElementById("uploadMsg").textContent=
+ "Upload হচ্ছে...";
+
+ const {error:uploadError}=
+ await client
+ .storage
+ .from("media")
+ .upload(path,file,{
+  contentType:file.type,
+  upsert:false
+ });
+
+ if(uploadError){
+
+  document.getElementById("uploadMsg").textContent=
+  uploadError.message;
+
+  return;
+ }
+
+ const {data:urlData}=
+ client
+ .storage
+ .from("media")
+ .getPublicUrl(path);
+
+ const mediaType=
+ file.type.startsWith("video")
+ ?"video"
+ :"image";
+
+ const {error}=
+ await client
+ .from("posts")
+ .insert({
+  user_id:currentUser.id,
+  media_url:urlData.publicUrl,
+  media_type:mediaType,
+  caption:caption
+ });
+
+ if(error){
+
+  document.getElementById("uploadMsg").textContent=
+  error.message;
+
+  return;
+ }
+
+ toast("Post হয়েছে ❤️");
+
+ document.getElementById("mediaFile").value="";
+ document.getElementById("caption").value="";
+ document.getElementById("preview").style.display="none";
+
+ closePanels();
+
+ loadFeed();
+
+}
+
+
+/* =====================
+COMMENTS
+===================== */
+
+async function openComments(postId){
+
+ currentCommentPost=postId;
+
+ openPanel("commentPanel");
+
+ const box=
+ document.getElementById("comments");
+
+ box.innerHTML="Loading...";
+
+ const {data:comments}=
+ await client
+ .from("comments")
+ .select("*")
+ .eq("post_id",postId)
+ .order("created_at",{ascending:true});
+
+ if(!comments||comments.length===0){
+
+  box.innerHTML=
+  "<p style='color:#aaa'>কোনো Comment নেই।</p>";
+
+  return;
+ }
+
+ const ids=
+ [...new Set(comments.map(c=>c.user_id))];
+
+ const {data:profiles}=
+ await client
+ .from("profiles")
+ .select("id,username")
+ .in("id",ids);
+
+ const map={};
+
+ (profiles||[]).forEach(p=>{
+  map[p.id]=p.username;
+ });
+
+ box.innerHTML="";
+
+ comments.forEach(c=>{
+
+  const div=
+  document.createElement("div");
+
+  div.className="comment";
+
+  div.innerHTML=`
+  <b>@${escapeHtml(map[c.user_id]||"user")}</b>
+  ${escapeHtml(c.body)}
+  `;
+
+  box.appendChild(div);
+
+ });
+
+}
+
+
+async function sendComment(){
+
+ if(!currentUser){
+
+  toast("Login করুন");
+  return;
+
+ }
+
+ const input=
+ document.getElementById("commentInput");
+
+ const body=input.value.trim();
+
+ if(!body)return;
+
+ const {error}=
+ await client
+ .from("comments")
+ .insert({
+  post_id:currentCommentPost,
+  user_id:currentUser.id,
+  body
+ });
+
+ if(error){
+
+  toast(error.message);
+  return;
+
+ }
+
+ input.value="";
+
+ openComments(currentCommentPost);
+
+}
+
+
+/* =====================
+SHARE
+===================== */
+
+async function sharePost(url){
+
+ try{
+
+  if(navigator.share){
+
+   await navigator.share({
+    title:"Rivo",
+    text:"Rivo-তে এই Post দেখুন",
+    url:url
+   });
+
+  }else{
+
+   await navigator.clipboard.writeText(url);
+
+   toast("Link copy হয়েছে");
+
+  }
+
+ }catch(e){}
+
+}
+
+
+/* =====================
+PROFILE
+===================== */
+
+async function openProfile(userId=null){
+
+ const id=
+ userId||currentUser.id;
+
+ openPanel("profilePanel");
+
+ const {data:p}=
+ await client
+ .from("profiles")
+ .select("*")
+ .eq("id",id)
+ .single();
+
+ const {data:posts}=
+ await client
+ .from("posts")
+ .select("*")
+ .eq("user_id",id)
+ .order("created_at",{ascending:false});
+
+ const avatar=
+ p?.avatar_url
+ ||
+ "https://ui-avatars.com/api/?name="+
+ encodeURIComponent(p?.username||"R");
+
+ const box=
+ document.getElementById("profileContent");
+
+ box.innerHTML=`
+
+ <div class="profile">
+
+ <img
+ class="avatar"
+ src="${avatar}">
+
+ <h2>
+ @${escapeHtml(p?.username||"user")}
+ </h2>
+
+ <p>
+ ${escapeHtml(p?.bio||"")}
+ </p>
+
+ <p>
+ ${posts?.length||0} Posts
+ </p>
+
+ ${id===currentUser.id
+ ?
+ `<button class="btn"
+ onclick="editProfile()">
+ Edit Profile
+ </button>`
+ :""}
+
+ </div>
+
+ <h3>Posts</h3>
+
+ <div class="grid" id="profileGrid"></div>
+ `;
+
+ const grid=
+ document.getElementById("profileGrid");
+
+ (posts||[]).forEach(post=>{
+
+  const item=
+  document.createElement("div");
+
+  if(post.media_type==="video"){
+
+   item.innerHTML=
+   `<video src="${post.media_url}" controls></video>`;
+
+  }else{
+
+   item.innerHTML=
+   `<img src="${post.media_url}">`;
+
+  }
+
+  grid.appendChild(item);
+
+ });
+
+}
+
+
+/* =====================
+EDIT PROFILE
+===================== */
+
+async function editProfile(){
+
+ const username=
+ prompt(
+ "Username:",
+ document.querySelector("#profileContent h2")
+ ?.textContent
+ ?.replace("@","")||""
+ );
+
+ if(username===null)return;
+
+ const bio=
+ prompt(
+ "Bio:"
+ );
+
+ const {error}=
+ await client
+ .from("profiles")
+ .update({
+  username:username.trim(),
+  bio:bio||""
+ })
+ .eq("id",currentUser.id);
+
+ if(error){
+
+  toast(error.message);
+  return;
+
+ }
+
+ openProfile();
+
+}
+
+
+/* =====================
+SEARCH
+===================== */
+
+async function searchUsers(){
+
+ const term=
+ document.getElementById("search")
+ .value
+ .trim()
+ .toLowerCase();
+
+ const results=
+ document.getElementById("results");
+
+ if(!term){
+
+  results.innerHTML="";
+  return;
+
+ }
+
+ const {data}=
+ await client
+ .from("profiles")
+ .select("*")
+ .ilike("username",`%${term}%`)
+ .limit(20);
+
+ results.innerHTML="";
+
+ (data||[]).forEach(p=>{
+
+  const div=
+  document.createElement("div");
+
+  div.className="card";
+
+  div.innerHTML=`
+
+  <b>
+  @${escapeHtml(p.username||"user")}
+  </b>
+
+  <p>
+  ${escapeHtml(p.bio||"")}
+  </p>
+
+  <button class="btn"
+  onclick="openProfile('${p.id}')">
+  Profile দেখুন
+  </button>
 
   `;
 
+  results.appendChild(div);
 
-  const actions =
-    document.createElement("div");
-
-  actions.className="actions";
-
-
-  const likeBtn =
-    document.createElement("button");
-
-  likeBtn.innerHTML="♡";
-
-
-  const likeSmall =
-    document.createElement("small");
-
-  likeSmall.textContent=
-    String(post.likes || 0);
-
-
-  const likeAction =
-    document.createElement("div");
-
-  likeAction.className="action";
-
-  likeAction.appendChild(
-    likeBtn
-  );
-
-  likeAction.appendChild(
-    likeSmall
-  );
-
-
-  likeBtn.onclick=
-    ()=>toggleLike(
-      post,
-      likeBtn,
-      likeSmall
-    );
-
-
-  const commentBtn =
-    document.createElement("button");
-
-  commentBtn.innerHTML="💬";
-
-
-  const commentSmall =
-    document.createElement("small");
-
-  commentSmall.textContent=
-    String(post.comments || 0);
-
-
-  const commentAction =
-    document.createElement("div");
-
-  commentAction.className="action";
-
-  commentAction.appendChild(
-    commentBtn
-  );
-
-  commentAction.appendChild(
-    commentSmall
-  );
-
-
-  commentBtn.onclick=
-    ()=>{
-      activePostId=post.id;
-      showPanel(
-        "commentsPanel"
-      );
-      loadComments();
-    };
-
-
-  const shareBtn =
-    document.createElement("button");
-
-  shareBtn.innerHTML="↗";
-
-
-  const shareSmall =
-    document.createElement("small");
-
-  shareSmall.textContent="Share";
-
-
-  const shareAction =
-    document.createElement("div");
-
-  shareAction.className="action";
-
-  shareAction.appendChild(
-    shareBtn
-  );
-
-  shareAction.appendChild(
-    shareSmall
-  );
-
-
-  shareBtn.onclick=
-    ()=>sharePost(post);
-
-
-  const saveBtn =
-    document.createElement("button");
-
-  saveBtn.innerHTML="🔖";
-
-
-  const saveSmall =
-    document.createElement("small");
-
-  saveSmall.textContent="Save";
-
-
-  const saveAction =
-    document.createElement("div");
-
-  saveAction.className="action";
-
-  saveAction.appendChild(
-    saveBtn
-  );
-
-  saveAction.appendChild(
-    saveSmall
-  );
-
-
-  saveBtn.onclick=
-    ()=>savePost(post);
-
-
-  actions.appendChild(
-    likeAction
-  );
-
-  actions.appendChild(
-    commentAction
-  );
-
-  actions.appendChild(
-    shareAction
-  );
-
-  actions.appendChild(
-    saveAction
-  );
-
-
-  wrapper.appendChild(media);
-
-  wrapper.appendChild(overlay);
-
-  wrapper.appendChild(info);
-
-  wrapper.appendChild(actions);
-
-  feed.appendChild(wrapper);
+ });
 
 }
 
 
-/* =========================
-   LIKE
-========================= */
+/* =====================
+PANELS
+===================== */
 
-async function toggleLike(
-  post,
-  button,
-  count
-){
+function openPanel(id){
 
-  if(!currentUser){
+ document
+ .querySelectorAll(".panel")
+ .forEach(x=>x.style.display="none");
 
-    toast(
-      "আগে Login করুন"
-    );
+ document.getElementById(id).style.display="block";
 
-    return;
-  }
+}
 
-  try{
+function closePanels(){
 
-    const likeRef =
-      doc(
-        db,
-        "posts",
-        post.id,
-        "likes",
-        currentUser.uid
-      );
-
-    const existing =
-      await getDoc(likeRef);
-
-    const postRef =
-      doc(
-        db,
-        "posts",
-        post.id
-      );
-
-    if(existing.exists()){
-
-      await updateDoc(
-        postRef,
-        {
-          likes:increment(-1)
-        }
-      );
-
-      await updateDoc(
-        likeRef,
-        {
-          active:false
-        }
-      );
-
-      button.classList.remove(
-        "liked"
-      );
-
-      count.textContent=
-        Math.max(
-          0,
-          Number(count.textContent)-1
-        );
-
-    }else{
-
-      await setDoc(
-        likeRef,
-        {
-          uid:currentUser.uid,
-          createdAt:serverTimestamp()
-        }
-      );
-
-      await updateDoc(
-        postRef,
-        {
-          likes:increment(1)
-        }
-      );
-
-      button.classList.add(
-        "liked"
-      );
-
-      count.textContent=
-        Number(count.textContent)+1;
-
-    }
-
-  }catch(error){
-
-    console.error(error);
-
-    toast(
-      "Like করা যাচ্ছে না"
-    );
-
-  }
+ document
+ .querySelectorAll(".panel")
+ .forEach(x=>x.style.display="none");
 
 }
 
 
-/* =========================
-   COMMENTS
-========================= */
+/* =====================
+HELPERS
+===================== */
 
-async function loadComments(){
+function toast(text){
 
-  const list =
-    document.getElementById(
-      "commentList"
-    );
+ const t=
+ document.getElementById("toast");
 
-  list.innerHTML=
-    '<div class="loading">Comments লোড হচ্ছে...</div>';
+ t.textContent=text;
 
-  try{
+ t.style.display="block";
 
-    const snapshot =
-      await getDocs(
-        collection(
-          db,
-          "posts",
-          activePostId,
-          "comments"
-        )
-      );
-
-    const comments=[];
-
-    snapshot.forEach(item=>{
-
-      comments.push({
-        id:item.id,
-        ...item.data()
-      });
-
-    });
-
-    comments.sort(
-      (a,b)=>{
-
-        const aa=
-          a.createdAt?.seconds || 0;
-
-        const bb=
-          b.createdAt?.seconds || 0;
-
-        return aa-bb;
-
-      }
-    );
-
-    list.innerHTML="";
-
-    if(comments.length===0){
-
-      list.innerHTML=
-        '<div class="empty" style="height:150px">এখনো কোনো Comment নেই ❤️</div>';
-
-      return;
-
-    }
-
-    comments.forEach(c=>{
-
-      const div=
-        document.createElement("div");
-
-      div.className="comment";
-
-      div.innerHTML=`
-
-        <b>
-          @${escapeHtml(c.username || "user")}
-        </b>
-
-        <div>
-          ${escapeHtml(c.text || "")}
-        </div>
-
-      `;
-
-      list.appendChild(div);
-
-    });
-
-  }catch(error){
-
-    console.error(error);
-
-    list.innerHTML=
-      '<div class="empty" style="height:150px">Comment লোড করা যাচ্ছে না</div>';
-
-  }
+ setTimeout(()=>{
+  t.style.display="none";
+ },2500);
 
 }
-
-
-window.addComment =
-  async function(){
-
-    const input =
-      document.getElementById(
-        "commentText"
-      );
-
-    const text =
-      input.value.trim();
-
-    if(!text){
-
-      toast(
-        "Comment লিখুন"
-      );
-
-      return;
-    }
-
-    if(!currentUser){
-
-      toast(
-        "আগে Login করুন"
-      );
-
-      return;
-    }
-
-    try{
-
-      const profile =
-        await getDoc(
-          doc(
-            db,
-            "users",
-            currentUser.uid
-          )
-        );
-
-      const data=
-        profile.exists()
-          ? profile.data()
-          : {};
-
-      await addDoc(
-        collection(
-          db,
-          "posts",
-          activePostId,
-          "comments"
-        ),
-        {
-
-          uid:currentUser.uid,
-
-          username:
-            data.username ||
-            currentUser.email.split("@")[0],
-
-          text:text,
-
-          createdAt:
-            serverTimestamp()
-
-        }
-      );
-
-
-      await updateDoc(
-        doc(
-          db,
-          "posts",
-          activePostId
-        ),
-        {
-          comments:increment(1)
-        }
-      );
-
-
-      input.value="";
-
-      await loadComments();
-
-      toast(
-        "Comment হয়েছে ❤️"
-      );
-
-    }catch(error){
-
-      console.error(error);
-
-      toast(
-        "Comment করা যাচ্ছে না"
-      );
-
-    }
-
-  };
-
-
-/* =========================
-   SHARE
-========================= */
-
-async function sharePost(post){
-
-  const url =
-    post.url;
-
-  try{
-
-    if(
-      navigator.share
-    ){
-
-      await navigator.share({
-
-        title:"Rivo",
-
-        text:
-          post.caption ||
-          "Rivo-তে এই পোস্টটি দেখুন ❤️",
-
-        url:url
-
-      });
-
-    }else{
-
-      await navigator.clipboard.writeText(
-        url
-      );
-
-      toast(
-        "Link Copy হয়েছে"
-      );
-
-    }
-
-  }catch(error){
-
-    console.log(error);
-
-  }
-
-}
-
-
-/* =========================
-   SAVE
-========================= */
-
-async function savePost(post){
-
-  if(!currentUser){
-
-    toast(
-      "আগে Login করুন"
-    );
-
-    return;
-  }
-
-  try{
-
-    await setDoc(
-      doc(
-        db,
-        "users",
-        currentUser.uid,
-        "saved",
-        post.id
-      ),
-      {
-
-        postId:post.id,
-
-        createdAt:
-          serverTimestamp()
-
-      }
-    );
-
-    toast(
-      "Saved 🔖"
-    );
-
-  }catch(error){
-
-    console.error(error);
-
-    toast(
-      "Save করা যাচ্ছে না"
-    );
-
-  }
-
-}
-
-
-/* =========================
-   UPLOAD PREVIEW
-========================= */
-
-window.previewMedia =
-  function(){
-
-    const file =
-      document.getElementById(
-        "mediaFile"
-      ).files[0];
-
-    const box =
-      document.getElementById(
-        "previewBox"
-      );
-
-    box.innerHTML="";
-
-    if(!file){
-
-      box.style.display="none";
-
-      return;
-    }
-
-    const url=
-      URL.createObjectURL(file);
-
-    let media;
-
-    if(
-      file.type.startsWith("image/")
-    ){
-
-      media=
-        document.createElement("img");
-
-    }else{
-
-      media=
-        document.createElement("video");
-
-      media.controls=true;
-
-    }
-
-    media.src=url;
-
-    box.appendChild(media);
-
-    box.style.display="block";
-
-  };
-
-
-/* =========================
-   UPLOAD POST
-========================= */
-
-window.uploadPost =
-  async function(){
-
-    if(!currentUser){
-
-      toast(
-        "আগে Login করুন"
-      );
-
-      return;
-    }
-
-    const file =
-      document.getElementById(
-        "mediaFile"
-      ).files[0];
-
-    const caption =
-      document.getElementById(
-        "postCaption"
-      ).value.trim();
-
-    const status =
-      document.getElementById(
-        "uploadStatus"
-      );
-
-    const progress =
-      document.getElementById(
-        "progressBar"
-      );
-
-
-    if(!file){
-
-      toast(
-        "ভিডিও অথবা ছবি নির্বাচন করুন"
-      );
-
-      return;
-    }
-
-
-    if(
-      !file.type.startsWith("video/") &&
-      !file.type.startsWith("image/")
-    ){
-
-      toast(
-        "শুধু ছবি অথবা ভিডিও দেওয়া যাবে"
-      );
-
-      return;
-    }
-
-
-    try{
-
-      status.textContent=
-        "Upload শুরু হচ্ছে...";
-
-      progress.style.width="0%";
-
-
-      const profile =
-        await getDoc(
-          doc(
-            db,
-            "users",
-            currentUser.uid
-          )
-        );
-
-
-      const userData =
-        profile.exists()
-          ? profile.data()
-          : {};
-
-
-      const type =
-        file.type.startsWith("image/")
-          ? "image"
-          : "video";
-
-
-      const extension =
-        file.name
-          .split(".")
-          .pop();
-
-
-      const fileName =
-        Date.now()
-        + "_"
-        + Math.random()
-          .toString(36)
-          .substring(2)
-        + "."
-        + extension;
-
-
-      const storageRef =
-        ref(
-          storage,
-          "posts/"
-          + currentUser.uid
-          + "/"
-          + fileName
-        );
-
-
-      const uploadTask =
-        uploadBytesResumable(
-          storageRef,
-          file,
-          {
-            contentType:file.type
-          }
-        );
-
-
-      uploadTask.on(
-
-        "state_changed",
-
-        snapshot=>{
-
-          const percent =
-            Math.round(
-              snapshot.bytesTransferred /
-              snapshot.totalBytes *
-              100
-            );
-
-          progress.style.width=
-            percent+"%";
-
-          status.textContent=
-            "Upload হচ্ছে... "
-            + percent
-            + "%";
-
-        },
-
-        error=>{
-
-          console.error(error);
-
-          status.textContent=
-            "Upload হয়নি";
-
-          toast(
-            "Upload Error: "
-            + firebaseError(error)
-          );
-
-        },
-
-        async ()=>{
-
-          const url =
-            await getDownloadURL(
-              uploadTask.snapshot.ref
-            );
-
-
-          await addDoc(
-            collection(
-              db,
-              "posts"
-            ),
-            {
-
-              uid:currentUser.uid,
-
-              username:
-                userData.username ||
-                currentUser.email.split("@")[0],
-
-              caption:caption,
-
-              url:url,
-
-              type:type,
-
-              likes:0,
-
-              comments:0,
-
-              createdAt:
-                serverTimestamp()
-
-            }
-          );
-
-
-          status.textContent=
-            "Post সফল হয়েছে ❤️";
-
-
-          document.getElementById(
-            "mediaFile"
-          ).value="";
-
-          document.getElementById(
-            "postCaption"
-          ).value="";
-
-          document.getElementById(
-            "previewBox"
-          ).innerHTML="";
-
-          document.getElementById(
-            "previewBox"
-          ).style.display="none";
-
-
-          progress.style.width="0%";
-
-
-          toast(
-            "Post সফল হয়েছে ❤️"
-          );
-
-
-          closePanels();
-
-          await loadVideos();
-
-        }
-
-      );
-
-    }catch(error){
-
-      console.error(error);
-
-      status.textContent=
-        "Upload করা যাচ্ছে না";
-
-      toast(
-        firebaseError(error)
-      );
-
-    }
-
-  };
-
-
-/* =========================
-   PROFILE
-========================= */
-
-window.loadProfile =
-  async function(){
-
-    if(!currentUser)return;
-
-    try{
-
-      const snap =
-        await getDoc(
-          doc(
-            db,
-            "users",
-            currentUser.uid
-          )
-        );
-
-      if(!snap.exists())return;
-
-      const data=
-        snap.data();
-
-
-      document.getElementById(
-        "profileAvatar"
-      ).src =
-        data.photoURL ||
-        defaultAvatar(data.email);
-
-
-      document.getElementById(
-        "profileUsername"
-      ).textContent =
-        "@"
-        + (
-          data.username ||
-          "rivo_user"
-        );
-
-
-      document.getElementById(
-        "profileBio"
-      ).textContent =
-        data.bio ||
-        "Rivo creator";
-
-
-      document.getElementById(
-        "followersCount"
-      ).textContent =
-        data.followers || 0;
-
-
-      document.getElementById(
-        "followingCount"
-      ).textContent =
-        data.following || 0;
-
-
-      document.getElementById(
-        "likesCount"
-      ).textContent =
-        data.likes || 0;
-
-
-      await loadProfilePosts(
-        "posts"
-      );
-
-    }catch(error){
-
-      console.error(error);
-
-    }
-
-  };
-
-
-/* =========================
-   PROFILE POSTS
-========================= */
-
-window.loadProfilePosts =
-  async function(type){
-
-    const grid =
-      document.getElementById(
-        "profileGrid"
-      );
-
-    grid.innerHTML=
-      '<div class="loading">লোড হচ্ছে...</div>';
-
-
-    document
-      .querySelectorAll(
-        ".profileTabs button"
-      )
-      .forEach(
-        b=>b.classList.remove(
-          "selected"
-        )
-      );
-
-
-    if(type==="posts"){
-
-      document.getElementById(
-        "tabPosts"
-      ).classList.add(
-        "selected"
-      );
-
-    }
-
-    if(type==="liked"){
-
-      document.getElementById(
-        "tabLiked"
-      ).classList.add(
-        "selected"
-      );
-
-    }
-
-    if(type==="saved"){
-
-      document.getElementById(
-        "tabSaved"
-      ).classList.add(
-        "selected"
-      );
-
-    }
-
-
-    try{
-
-      const snapshot =
-        await getDocs(
-          collection(
-            db,
-            "posts"
-          )
-        );
-
-
-      const posts=[];
-
-
-      snapshot.forEach(
-        item=>{
-
-          const data=
-            item.data();
-
-          if(
-            type==="posts" &&
-            data.uid===currentUser.uid
-          ){
-
-            posts.push({
-              id:item.id,
-              ...data
-            });
-
-          }
-
-        }
-      );
-
-
-      grid.innerHTML="";
-
-
-      if(posts.length===0){
-
-        grid.innerHTML=
-          '<div class="empty" style="grid-column:1/4;height:180px">এখনো কোনো Post নেই</div>';
-
-        return;
-
-      }
-
-
-      posts.forEach(
-        post=>{
-
-          const div=
-            document.createElement(
-              "div"
-            );
-
-          div.className=
-            "gridItem";
-
-
-          if(post.type==="image"){
-
-            const img=
-              document.createElement(
-                "img"
-              );
-
-            img.src=post.url;
-
-            div.appendChild(img);
-
-          }else{
-
-            const video=
-              document.createElement(
-                "video"
-              );
-
-            video.src=post.url;
-
-            video.muted=true;
-
-            video.preload="metadata";
-
-            div.appendChild(video);
-
-          }
-
-
-          grid.appendChild(div);
-
-        }
-      );
-
-    }catch(error){
-
-      console.error(error);
-
-      grid.innerHTML=
-        '<div class="empty" style="grid-column:1/4;height:180px">Posts লোড করা যাচ্ছে না</div>';
-
-    }
-
-  };
-
-
-/* =========================
-   EDIT PROFILE LOAD
-========================= */
-
-window.loadEditProfile =
-  async function(){
-
-    if(!currentUser)return;
-
-    const snap =
-      await getDoc(
-        doc(
-          db,
-          "users",
-          currentUser.uid
-        )
-      );
-
-
-    if(!snap.exists())return;
-
-
-    const data=
-      snap.data();
-
-
-    document.getElementById(
-      "editUsername"
-    ).value =
-      data.username || "";
-
-
-    document.getElementById(
-      "editBio"
-    ).value =
-      data.bio || "";
-
-
-    document.getElementById(
-      "editAvatar"
-    ).src =
-      data.photoURL ||
-      defaultAvatar(data.email);
-
-  };
-
-
-/* =========================
-   SAVE PROFILE
-========================= */
-
-window.saveProfile =
-  async function(){
-
-    if(!currentUser)return;
-
-
-    const username =
-      document.getElementById(
-        "editUsername"
-      ).value.trim();
-
-
-    const bio =
-      document.getElementById(
-        "editBio"
-      ).value.trim();
-
-
-    const photoFile =
-      document.getElementById(
-        "profilePhoto"
-      ).files[0];
-
-
-    try{
-
-      let photoURL=null;
-
-
-      if(photoFile){
-
-        const extension =
-          photoFile.name
-            .split(".")
-            .pop();
-
-
-        const photoRef =
-          ref(
-            storage,
-            "profilePhotos/"
-            + currentUser.uid
-            + "/profile."
-            + extension
-          );
-
-
-        const task =
-          uploadBytesResumable(
-            photoRef,
-            photoFile,
-            {
-              contentType:
-                photoFile.type
-            }
-          );
-
-
-        await new Promise(
-          (resolve,reject)=>{
-
-            task.on(
-              "state_changed",
-              ()=>{},
-              reject,
-              resolve
-            );
-
-          }
-        );
-
-
-        photoURL =
-          await getDownloadURL(
-            task.snapshot.ref
-          );
-
-      }
-
-
-      const updates={
-
-        username:
-          username ||
-          currentUser.email.split("@")[0],
-
-        bio:bio
-
-      };
-
-
-      if(photoURL){
-
-        updates.photoURL=
-          photoURL;
-
-      }
-
-
-      await updateDoc(
-        doc(
-          db,
-          "users",
-          currentUser.uid
-        ),
-        updates
-      );
-
-
-      toast(
-        "Profile আপডেট হয়েছে ❤️"
-      );
-
-
-      await loadProfile();
-
-
-      showPanel(
-        "profilePanel"
-      );
-
-    }catch(error){
-
-      console.error(error);
-
-      toast(
-        "Profile update হয়নি: "
-        + firebaseError(error)
-      );
-
-    }
-
-  };
-
-
-/* =========================
-   SEARCH
-========================= */
-
-window.searchRivo =
-  async function(){
-
-    const term =
-      document.getElementById(
-        "searchInput"
-      ).value
-      .trim()
-      .toLowerCase();
-
-
-    const result =
-      document.getElementById(
-        "searchResults"
-      );
-
-
-    if(!term){
-
-      result.innerHTML="";
-
-      return;
-
-    }
-
-
-    result.innerHTML=
-      '<div class="loading">Search হচ্ছে...</div>';
-
-
-    try{
-
-      const snapshot =
-        await getDocs(
-          collection(
-            db,
-            "users"
-          )
-        );
-
-
-      result.innerHTML="";
-
-
-      let found=0;
-
-
-      snapshot.forEach(
-        item=>{
-
-          const data=
-            item.data();
-
-
-          const username=
-            (
-              data.username || ""
-            ).toLowerCase();
-
-
-          if(
-            username.includes(term)
-          ){
-
-            found++;
-
-
-            const card=
-              document.createElement(
-                "div"
-              );
-
-            card.className="card";
-
-
-            card.innerHTML=`
-
-              <b>
-                @${escapeHtml(data.username)}
-              </b>
-
-              <p>
-                ${escapeHtml(data.bio || "")}
-              </p>
-
-            `;
-
-
-            result.appendChild(card);
-
-          }
-
-        }
-      );
-
-
-      if(!found){
-
-        result.innerHTML=
-          '<div class="card">কোনো user পাওয়া যায়নি।</div>';
-
-      }
-
-    }catch(error){
-
-      console.error(error);
-
-      result.innerHTML=
-        '<div class="card">Search কাজ করছে না।</div>';
-
-    }
-
-  };
-
-
-/* =========================
-   PANELS
-========================= */
-
-window.showPanel =
-  function(id){
-
-    closePanels();
-
-    const panel =
-      document.getElementById(id);
-
-    if(panel){
-
-      panel.style.display="block";
-
-    }
-
-  };
-
-
-window.closePanels =
-  function(){
-
-    document
-      .querySelectorAll(
-        ".panel"
-      )
-      .forEach(
-        p=>p.style.display="none"
-      );
-
-  };
-
-
-/* =========================
-   LOGOUT
-========================= */
-
-window.logout =
-  async function(){
-
-    try{
-
-      await signOut(auth);
-
-      closePanels();
-
-      toast(
-        "Logout হয়েছে"
-      );
-
-    }catch(error){
-
-      toast(
-        "Logout হয়নি"
-      );
-
-    }
-
-  };
-
-
-/* =========================
-   SETTINGS SWITCH
-========================= */
-
-window.toggleSetting =
-  function(row){
-
-    const sw =
-      row.querySelector(
-        ".switch"
-      );
-
-    if(sw){
-
-      sw.classList.toggle(
-        "on"
-      );
-
-    }
-
-  };
-
-
-/* =========================
-   AUTH MESSAGE
-========================= */
-
-function authMessage(text){
-
-  document.getElementById(
-    "authMsg"
-  ).textContent=text || "";
-
-}
-
-
-/* =========================
-   TOAST
-========================= */
-
-window.toast =
-  function(text){
-
-    const el =
-      document.getElementById(
-        "toast"
-      );
-
-    el.textContent=text;
-
-    el.style.display="block";
-
-
-    setTimeout(
-      ()=>{
-        el.style.display="none";
-      },
-      3000
-    );
-
-  };
-
-
-/* =========================
-   FIREBASE ERROR
-========================= */
-
-function firebaseError(error){
-
-  const code =
-    error?.code || "";
-
-
-  if(
-    code.includes(
-      "auth/invalid-credential"
-    )
-  ){
-
-    return "Email অথবা password ভুল।";
-
-  }
-
-
-  if(
-    code.includes(
-      "auth/email-already-in-use"
-    )
-  ){
-
-    return "এই Email দিয়ে Account আগে থেকেই আছে।";
-
-  }
-
-
-  if(
-    code.includes(
-      "auth/invalid-email"
-    )
-  ){
-
-    return "সঠিক Email দিন।";
-
-  }
-
-
-  if(
-    code.includes(
-      "auth/weak-password"
-    )
-  ){
-
-    return "Password কমপক্ষে ৬ অক্ষরের দিন।";
-
-  }
-
-
-  if(
-    code.includes(
-      "storage/unauthorized"
-    )
-  ){
-
-    return "Firebase Storage permission নেই।";
-
-  }
-
-
-  if(
-    code.includes(
-      "storage/unknown"
-    )
-  ){
-
-    return "Firebase Storage চালু আছে কিনা দেখুন।";
-
-  }
-
-
-  if(
-    code.includes(
-      "permission-denied"
-    )
-  ){
-
-    return "Firebase Firestore permission নেই।";
-
-  }
-
-
-  return (
-    error?.message ||
-    "কাজটি করা যাচ্ছে না।"
-  );
-
-}
-
-
-/* =========================
-   ESCAPE HTML
-========================= */
 
 function escapeHtml(value){
 
-  return String(value || "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+ return String(value||"")
+ .replaceAll("&","&amp;")
+ .replaceAll("<","&lt;")
+ .replaceAll(">","&gt;")
+ .replaceAll('"',"&quot;")
+ .replaceAll("'","&#039;");
 
 }
+
+
+/* START */
+
+start();
 
 </script>
 
