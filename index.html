@@ -1,1522 +1,688 @@
-<!doctype html>
-<html lang="bn">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-
-<title>RIVO — Short Video</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-:root{
-  --bg:#050609;
-  --card:#101219;
-  --line:#272a35;
-  --muted:#969aa8;
-  --pink:#ff1f69;
-  --pink2:#ff3d83;
-  --purple:#8b5cf6;
-  --blue:#45b8ff;
-  --white:#fff;
-}
-
-*{box-sizing:border-box}
-
-html,body{
-  margin:0;
-  background:#000;
-  color:#fff;
-  font-family:Arial,Helvetica,sans-serif;
-}
-
-body{
-  min-height:100vh;
-}
-
-button,input,textarea,select{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-.app{
-  width:min(520px,100%);
-  min-height:100vh;
-  margin:auto;
-  background:var(--bg);
-  position:relative;
-  overflow:hidden;
-}
-
-.topbar{
-  position:fixed;
-  top:0;
-  left:50%;
-  transform:translateX(-50%);
-  z-index:50;
-  width:min(520px,100%);
-  height:62px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 14px;
-  background:linear-gradient(#050609f2,#050609b8,transparent);
-}
-
-.brand{
-  font-size:27px;
-  font-weight:1000;
-  letter-spacing:-2px;
-  background:linear-gradient(
-    90deg,
-    #ff206c,
-    #a855f7,
-    #42b9ff
-  );
-  -webkit-background-clip:text;
-  color:transparent;
-}
-
-.topcenter{
-  display:flex;
-  gap:18px;
-}
-
-.topcenter button{
-  background:none;
-  border:0;
-  color:#888;
-  font-weight:800;
-}
-
-.topcenter button.on{
-  color:#fff;
-}
-
-.round{
-  width:38px;
-  height:38px;
-  border-radius:50%;
-  border:1px solid #ffffff16;
-  background:#11131a;
-  color:#fff;
-  display:grid;
-  place-items:center;
-  font-size:19px;
-}
-
-main{
-  padding-bottom:76px;
-}
-
-.screen{
-  display:none;
-  min-height:100vh;
-}
-
-.screen.on{
-  display:block;
-}
-
-.feed{
-  height:100vh;
-  overflow-y:auto;
-  scroll-snap-type:y mandatory;
-  scrollbar-width:none;
-}
-
-.feed::-webkit-scrollbar{
-  display:none;
-}
-
-.video-card{
-  height:100vh;
-  position:relative;
-  scroll-snap-align:start;
-  background:#111;
-  overflow:hidden;
-}
-
-.video-card video{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  background:#111;
-}
-
-.vignette{
-  position:absolute;
-  inset:0;
-  background:
-    linear-gradient(
-      180deg,
-      #0008 0,
-      transparent 35%,
-      transparent 55%,
-      #000e 100%
-    );
-}
-
-.center-play{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  width:72px;
-  height:72px;
-  border:0;
-  border-radius:50%;
-  background:#0009;
-  color:#fff;
-  font-size:30px;
-  display:grid;
-  place-items:center;
-  z-index:10;
-}
-
-.video-copy{
-  position:absolute;
-  left:16px;
-  right:82px;
-  bottom:24px;
-  z-index:5;
-}
-
-.user-row{
-  display:flex;
-  align-items:center;
-  gap:9px;
-}
-
-.avatar{
-  width:45px;
-  height:45px;
-  border-radius:50%;
-  object-fit:cover;
-  background:
-    linear-gradient(
-      135deg,
-      #ff206c,
-      #8b5cf6
-    );
-  border:2px solid #fff;
-}
-
-.username{
-  font-weight:900;
-}
-
-.verified{
-  color:#42b9ff;
-}
-
-.follow-btn{
-  margin-left:3px;
-  background:var(--pink);
-  border:0;
-  border-radius:9px;
-  padding:7px 12px;
-  color:#fff;
-  font-weight:900;
-  font-size:12px;
-}
-
-.caption{
-  font-size:14px;
-  line-height:1.4;
-  margin-top:9px;
-}
-
-.hashtags{
-  font-size:13px;
-  margin-top:5px;
-  color:#ddd;
-}
-
-.sound{
-  font-size:12px;
-  margin-top:8px;
-  color:#ddd;
-}
-
-.side-actions{
-  position:absolute;
-  z-index:8;
-  right:10px;
-  bottom:95px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:5px;
-}
-
-.side-btn{
-  width:50px;
-  height:50px;
-  border:0;
-  border-radius:50%;
-  background:#11131acc;
-  color:#fff;
-  display:grid;
-  place-items:center;
-  font-size:23px;
-  backdrop-filter:blur(8px);
-}
-
-.side-btn.active{
-  color:#ff3d83;
-}
-
-.side-label{
-  font-size:10px;
-  color:#fff;
-  margin-bottom:7px;
-}
-
-.sound-disc{
-  width:43px;
-  height:43px;
-  border-radius:50%;
-  border:4px solid #111;
-  background:linear-gradient(135deg,#222,#777);
-  display:grid;
-  place-items:center;
-}
-
-.bottom{
-  position:fixed;
-  bottom:0;
-  left:50%;
-  transform:translateX(-50%);
-  z-index:60;
-  width:min(520px,100%);
-  height:76px;
-  display:flex;
-  align-items:center;
-  justify-content:space-around;
-  background:#08090df5;
-  border-top:1px solid #20222b;
-  backdrop-filter:blur(18px);
-}
-
-.nav{
-  border:0;
-  background:none;
-  color:#8f929e;
-  font-size:10px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:4px;
-}
-
-.nav.on{
-  color:#fff;
-}
-
-.upload-pill{
-  width:49px;
-  height:40px;
-  border-radius:12px;
-  background:linear-gradient(
-    135deg,
-    #ff1f69,
-    #9c4dff
-  );
-  color:#fff;
-  font-size:26px;
-  display:grid;
-  place-items:center;
-}
-
-.page{
-  padding:78px 14px 94px;
-  min-height:100vh;
-}
-
-.page-title{
-  font-size:27px;
-  font-weight:950;
-  margin-bottom:16px;
-}
-
-.searchbox,
-.field{
-  width:100%;
-  background:#171920;
-  border:1px solid #292c37;
-  color:#fff;
-  border-radius:13px;
-  padding:13px;
-  margin:6px 0;
-  outline:none;
-}
-
-.field:focus,
-.searchbox:focus{
-  border-color:#ff2d75;
-}
-
-.trend{
-  display:flex;
-  gap:8px;
-  overflow:auto;
-  margin:15px 0;
-}
-
-.trend span{
-  white-space:nowrap;
-  padding:9px 13px;
-  border-radius:20px;
-  background:#15171e;
-  border:1px solid #252832;
-  font-size:12px;
-}
-
-.user-list{
-  display:flex;
-  flex-direction:column;
-  gap:9px;
-}
-
-.user-item{
-  display:flex;
-  align-items:center;
-  gap:11px;
-  padding:10px;
-  border-radius:14px;
-  background:#101219;
-}
-
-.user-item .grow{
-  flex:1;
-}
-
-.small-follow{
-  background:#ff1f69;
-  border:0;
-  color:#fff;
-  padding:8px 13px;
-  border-radius:9px;
-  font-weight:900;
-  font-size:12px;
-}
-
-.profile{
-  padding:78px 14px 94px;
-}
-
-.profile-top{
-  text-align:center;
-}
-
-.big-avatar{
-  width:94px;
-  height:94px;
-  border-radius:50%;
-  object-fit:cover;
-  border:3px solid #ff2d75;
-  background:linear-gradient(
-    135deg,
-    #ff1f69,
-    #8b5cf6
-  );
-}
-
-.profile-name{
-  font-size:22px;
-  font-weight:950;
-  margin-top:10px;
-}
-
-.bio{
-  color:#c6c8d0;
-  font-size:13px;
-  margin:7px auto;
-}
-
-.stats{
-  display:flex;
-  justify-content:center;
-  gap:35px;
-  margin:18px 0;
-}
-
-.stat{
-  text-align:center;
-}
-
-.stat b{
-  display:block;
-  font-size:18px;
-}
-
-.stat span{
-  color:#8e919d;
-  font-size:11px;
-}
-
-.profile-actions{
-  display:flex;
-  justify-content:center;
-  gap:8px;
-}
-
-.outline{
-  border:1px solid #343741;
-  background:#181a21;
-  color:#fff;
-  border-radius:10px;
-  padding:10px 18px;
-  font-weight:900;
-}
-
-.mini-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:3px;
-  margin-top:22px;
-}
-
-.mini{
-  aspect-ratio:3/4;
-  background:#161820;
-  overflow:hidden;
-}
-
-.mini video{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.modal{
-  position:fixed;
-  inset:0;
-  z-index:100;
-  background:#000c;
-  display:none;
-  align-items:flex-end;
-}
-
-.modal.open{
-  display:flex;
-}
-
-.sheet{
-  width:min(520px,100%);
-  max-height:92vh;
-  overflow:auto;
-  background:#101218;
-  border-radius:24px 24px 0 0;
-  padding:17px;
-  border-top:1px solid #292b34;
-}
-
-.sheet-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:14px;
-}
-
-.close{
-  width:38px;
-  height:38px;
-  border-radius:50%;
-  border:0;
-  background:#23252d;
-  color:#fff;
-  font-size:21px;
-}
-
-.primary{
-  width:100%;
-  padding:14px;
-  border:0;
-  border-radius:13px;
-  background:linear-gradient(
-    90deg,
-    #ff1f69,
-    #9a4cff
-  );
-  color:#fff;
-  font-weight:950;
-  margin-top:8px;
-}
-
-.secondary{
-  width:100%;
-  padding:13px;
-  border:1px solid #30323d;
-  border-radius:13px;
-  background:#191b22;
-  color:#fff;
-  font-weight:900;
-  margin-top:8px;
-}
-
-.preview{
-  width:100%;
-  aspect-ratio:9/14;
-  background:#050507;
-  border-radius:16px;
-  overflow:hidden;
-  margin:8px 0;
-}
-
-.preview video{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.row{
-  display:flex;
-  gap:8px;
-}
-
-.row>*{
-  flex:1;
-}
-
-.live-preview{
-  width:100%;
-  aspect-ratio:9/14;
-  object-fit:cover;
-  background:#000;
-  border-radius:17px;
-}
-
-.live-title{
-  font-size:24px;
-  font-weight:950;
-}
-
-.live-status{
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:8px;
-  background:#ff315e;
-  font-size:11px;
-  font-weight:900;
-  margin:8px 0;
-}
-
-.coins{
-  font-size:20px;
-  font-weight:900;
-  color:#ffd75a;
-  margin:10px 0 15px;
-}
-
-.gift{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  background:#202027;
-  border-radius:14px;
-  padding:12px;
-  margin:8px 0;
-}
-
-.gift-icon{
-  font-size:31px;
-}
-
-.gift-info{
-  flex:1;
-}
-
-.gift-send{
-  border:0;
-  background:#8b3dff;
-  color:#fff;
-  padding:9px 13px;
-  border-radius:10px;
-  font-weight:900;
-}
-
-.chat{
-  max-height:180px;
-  overflow:auto;
-  background:#08090d;
-  border-radius:14px;
-  padding:10px;
-  margin-top:10px;
-}
-
-.chat-line{
-  padding:5px 0;
-  font-size:13px;
-}
-
-.toast{
-  position:fixed;
-  z-index:150;
-  bottom:92px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#f5f5f5;
-  color:#111;
-  border-radius:12px;
-  padding:10px 14px;
-  font-size:12px;
-  font-weight:900;
-  display:none;
-}
-
-.toast.show{
-  display:block;
-}
-</style>
-</head>
-
-<body>
-
-<div class="app">
-
-<header class="topbar">
-  <div class="brand">RIVO</div>
-
-  <div class="topcenter">
-    <button id="forYou" class="on">For You</button>
-    <button id="following">Following</button>
-  </div>
-
-  <button class="round" onclick="go('discover')">⌕</button>
-</header>
-
-<main>
-
-<section id="home" class="screen on">
-  <div class="feed" id="feed"></div>
-</section>
-
-<section id="discover" class="screen">
-
-  <div class="page">
-
-    <div class="page-title">Discover</div>
-
-    <input
-      id="search"
-      class="searchbox"
-      placeholder="Search users, videos, hashtags"
-    >
-
-    <div class="trend">
-      <span>#rivo</span>
-      <span>#foryou</span>
-      <span>#bangladesh</span>
-      <span>#viral</span>
-      <span>#trending</span>
-    </div>
-
-    <h3>Popular Users</h3>
-
-    <div id="users" class="user-list"></div>
-
-  </div>
-
-</section>
-
-<section id="profile" class="screen">
-  <div id="profileView"></div>
-</section>
-
-</main>
-
-<nav class="bottom">
-
-<button class="nav on" onclick="go('home')">
-  <b>⌂</b>
-  Home
-</button>
-
-<button class="nav" onclick="go('discover')">
-  <b>⌕</b>
-  Discover
-</button>
-
-<button class="nav" onclick="openUpload()">
-  <b class="upload-pill">+</b>
-  Upload
-</button>
-
-<button class="nav" onclick="openLive()">
-  <b>🔴</b>
-  Live
-</button>
-
-<button class="nav" onclick="go('profile')">
-  <b>♙</b>
-  Profile
-</button>
-
-</nav>
-
-</div>
-
-
-<!-- UPLOAD -->
-
-<div class="modal" id="uploadModal">
-
-<div class="sheet">
-
-<div class="sheet-head">
-  <b>Upload Video</b>
-  <button class="close" onclick="closeModal('uploadModal')">×</button>
-</div>
-
-<input
-  id="videoFile"
-  class="field"
-  type="file"
-  accept="video/*"
-  capture="environment"
->
-
-<div class="preview">
-  <video id="editVideo" controls playsinline></video>
-</div>
-
-<div class="row">
-
-<label>
-Speed
-<input
- id="speed"
- type="range"
- min=".5"
- max="2"
- step=".1"
- value="1"
->
-</label>
-
-<label>
-Volume
-<input
- id="volume"
- type="range"
- min="0"
- max="1"
- step=".05"
- value="1"
->
-</label>
-
-</div>
-
-<select id="filter" class="field">
-
-<option value="none">Original</option>
-<option value="brightness(1.2)">Bright</option>
-<option value="contrast(1.25) saturate(1.3)">Vivid</option>
-<option value="grayscale(1)">Black & White</option>
-<option value="sepia(.7)">Warm</option>
-<option value="hue-rotate(25deg)">Cool</option>
-
-</select>
-
-<input
- id="audioFile"
- class="field"
- type="file"
- accept="audio/*"
->
-
-<input
- id="caption"
- class="field"
- placeholder="Write caption..."
->
-
-<input
- id="hashtags"
- class="field"
- placeholder="#rivo #foryou"
->
-
-<select id="privacy" class="field">
-
-<option value="Public">Public</option>
-<option value="Followers">Followers Only</option>
-<option value="Private">Only Me</option>
-
-</select>
-
-<button class="primary" onclick="uploadVideo()">
-  Post Video
-</button>
-
-</div>
-</div>
-
-
-<!-- LIVE -->
-
-<div class="modal" id="liveModal">
-
-<div class="sheet">
-
-<div class="sheet-head">
-
-<div>
-  <div class="live-title">RIVO Live</div>
-  <span id="liveStatus" class="live-status">
-    OFFLINE
-  </span>
-</div>
-
-<button class="close" onclick="closeModal('liveModal')">
-×
-</button>
-
-</div>
-
-<input
- id="liveTitle"
- class="field"
- placeholder="Live title"
- value="RIVO Live"
-/>
-
-<video
- id="liveCamera"
- class="live-preview"
- autoplay
- muted
- playsinline
-></video>
-
-<button class="primary" onclick="startLive()">
-🔴 Start Live
-</button>
-
-<button class="secondary" onclick="stopLive()">
-End Live
-</button>
-
-<div class="chat" id="liveChat"></div>
-
-<button class="secondary" onclick="openGifts()">
-🎁 Send Gifts
-</button>
-
-</div>
-</div>
-
-
-<!-- GIFTS -->
-
-<div class="modal" id="giftModal">
-
-<div class="sheet">
-
-<div class="sheet-head">
-
-<b>🎁 Gifts & Coins</b>
-
-<button class="close" onclick="closeModal('giftModal')">
-×
-</button>
-
-</div>
-
-<div class="coins">
-🪙 Coins:
-<span id="coins">0</span>
-</div>
-
-<div id="giftList"></div>
-
-<h3>Buy Coins</h3>
-
-<button
- class="secondary"
- onclick="buyCoins(100)"
->
-100 Coins
-</button>
-
-<button
- class="secondary"
- onclick="buyCoins(500)"
->
-500 Coins
-</button>
-
-<button
- class="secondary"
- onclick="buyCoins(1000)"
->
-1,000 Coins
-</button>
-
-<button
- class="secondary"
- onclick="buyCoins(10000)"
->
-10,000 Coins
-</button>
-
-<p class="muted">
-Demo purchase এখন coins যোগ করবে।
-আসল টাকা দিয়ে purchase চালু করতে payment backend লাগবে।
-</p>
-
-</div>
-</div>
-
-
-<!-- PROFILE EDIT -->
-
-<div class="modal" id="profileModal">
-
-<div class="sheet">
-
-<div class="sheet-head">
-
-<b>Edit Profile</b>
-
-<button
- class="close"
- onclick="closeModal('profileModal')"
->
-×
-</button>
-
-</div>
-
-<input
- id="profilePhoto"
- class="field"
- type="file"
- accept="image/*"
->
-
-<input
- id="profileName"
- class="field"
- placeholder="Full name"
->
-
-<input
- id="profileUsername"
- class="field"
- placeholder="Username"
->
-
-<textarea
- id="profileBio"
- class="field"
- placeholder="Bio"
-></textarea>
-
-<button class="primary" onclick="saveProfile()">
-Save Profile
-</button>
-
-</div>
-</div>
-
-
-<div id="toast" class="toast"></div>
-
-
-<script>
-
-const SUPABASE_URL =
-"https://ayoactrisfcdhmhsnrwz.supabase.co";
-
-const SUPABASE_KEY =
-"sb_publishable_pvPMH5zhPX3_vjarFMrYtw_9uZkagYX";
-
-const db =
-window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY,
-  {
-    auth:{
-      persistSession:true,
-      autoRefreshToken:true,
-      detectSessionInUrl:true
-    }
-  }
+-- =========================================================
+-- RIVO COMPLETE DATABASE SETUP
+-- Existing RIVO tables are preserved.
+-- =========================================================
+
+-- VIDEO AUDIO
+ALTER TABLE public.videos
+ADD COLUMN IF NOT EXISTS audio_url text DEFAULT '';
+
+-- Make sure visibility exists
+ALTER TABLE public.videos
+ADD COLUMN IF NOT EXISTS visibility text DEFAULT 'Public';
+
+-- =========================================================
+-- STORAGE BUCKETS
+-- =========================================================
+
+INSERT INTO storage.buckets (id, name, public)
+VALUES
+  ('videos','videos',true),
+  ('avatars','avatars',true),
+  ('audio','audio',true)
+ON CONFLICT (id)
+DO UPDATE SET public = true;
+
+
+-- =========================================================
+-- PROFILES
+-- =========================================================
+
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "rivo_profiles_public_read"
+ON public.profiles;
+
+CREATE POLICY "rivo_profiles_public_read"
+ON public.profiles
+FOR SELECT
+TO public
+USING (true);
+
+DROP POLICY IF EXISTS "rivo_profiles_insert_own"
+ON public.profiles;
+
+CREATE POLICY "rivo_profiles_insert_own"
+ON public.profiles
+FOR INSERT
+TO authenticated
+WITH CHECK (id = auth.uid());
+
+DROP POLICY IF EXISTS "rivo_profiles_update_own"
+ON public.profiles;
+
+CREATE POLICY "rivo_profiles_update_own"
+ON public.profiles
+FOR UPDATE
+TO authenticated
+USING (id = auth.uid())
+WITH CHECK (id = auth.uid());
+
+
+-- =========================================================
+-- AUTO CREATE PROFILE
+-- =========================================================
+
+CREATE OR REPLACE FUNCTION public.rivo_create_profile()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+
+  INSERT INTO public.profiles
+  (
+    id,
+    username,
+    full_name,
+    avatar_url,
+    bio
+  )
+  VALUES
+  (
+    NEW.id,
+    'rivo_' || substr(replace(NEW.id::text,'-',''),1,10),
+    COALESCE(
+      NEW.raw_user_meta_data->>'full_name',
+      ''
+    ),
+    '',
+    ''
+  )
+  ON CONFLICT (id) DO NOTHING;
+
+  INSERT INTO public.wallets
+  (
+    user_id,
+    coins
+  )
+  VALUES
+  (
+    NEW.id,
+    0
+  )
+  ON CONFLICT (user_id) DO NOTHING;
+
+  RETURN NEW;
+
+END;
+$$;
+
+DROP TRIGGER IF EXISTS rivo_auth_profile_trigger
+ON auth.users;
+
+CREATE TRIGGER rivo_auth_profile_trigger
+AFTER INSERT ON auth.users
+FOR EACH ROW
+EXECUTE FUNCTION public.rivo_create_profile();
+
+
+-- =========================================================
+-- VIDEOS
+-- =========================================================
+
+ALTER TABLE public.videos ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "rivo_videos_read"
+ON public.videos;
+
+CREATE POLICY "rivo_videos_read"
+ON public.videos
+FOR SELECT
+TO public
+USING
+(
+  status = 'published'
+  AND
+  (
+    visibility = 'Public'
+
+    OR user_id = auth.uid()
+
+    OR
+    (
+      visibility = 'Followers'
+      AND
+      EXISTS
+      (
+        SELECT 1
+        FROM public.follows f
+        WHERE f.follower_id = auth.uid()
+        AND f.following_id = videos.user_id
+      )
+    )
+  )
 );
 
-let me = null;
-let profile = null;
+DROP POLICY IF EXISTS "rivo_videos_insert"
+ON public.videos;
 
-let currentVideo = null;
+CREATE POLICY "rivo_videos_insert"
+ON public.videos
+FOR INSERT
+TO authenticated
+WITH CHECK (user_id = auth.uid());
 
-let liveStream = null;
-let liveId = null;
-let liveChannel = null;
+DROP POLICY IF EXISTS "rivo_videos_update"
+ON public.videos;
 
+CREATE POLICY "rivo_videos_update"
+ON public.videos
+FOR UPDATE
+TO authenticated
+USING (user_id = auth.uid())
+WITH CHECK (user_id = auth.uid());
 
-const $ = id =>
-document.getElementById(id);
+DROP POLICY IF EXISTS "rivo_videos_delete"
+ON public.videos;
 
-
-function toast(text){
-
-  $("toast").textContent = text;
-
-  $("toast").classList.add("show");
-
-  setTimeout(()=>{
-    $("toast").classList.remove("show");
-  },2200);
-
-}
-
-
-function openModal(id){
-
-  $(id).classList.add("open");
-
-}
+CREATE POLICY "rivo_videos_delete"
+ON public.videos
+FOR DELETE
+TO authenticated
+USING (user_id = auth.uid());
 
 
-function closeModal(id){
+-- =========================================================
+-- LIKES
+-- =========================================================
 
-  $(id).classList.remove("open");
+ALTER TABLE public.likes ENABLE ROW LEVEL SECURITY;
 
-}
+DROP POLICY IF EXISTS "rivo_likes_read"
+ON public.likes;
 
+CREATE POLICY "rivo_likes_read"
+ON public.likes
+FOR SELECT
+TO public
+USING (true);
 
-function go(id){
+DROP POLICY IF EXISTS "rivo_likes_insert"
+ON public.likes;
 
-  document
-  .querySelectorAll(".screen")
-  .forEach(x=>x.classList.remove("on"));
+CREATE POLICY "rivo_likes_insert"
+ON public.likes
+FOR INSERT
+TO authenticated
+WITH CHECK (user_id = auth.uid());
 
-  $(id).classList.add("on");
+DROP POLICY IF EXISTS "rivo_likes_delete"
+ON public.likes;
 
-  document
-  .querySelectorAll(".nav")
-  .forEach(x=>x.classList.remove("on"));
-
-  if(id==="home") loadFeed();
-
-  if(id==="discover") loadUsers();
-
-  if(id==="profile") renderProfile();
-
-}
-
-
-async function getUser(){
-
-  const {data} =
-  await db.auth.getUser();
-
-  me = data?.user || null;
-
-  if(me){
-
-    await getProfile();
-
-    await loadCoins();
-
-  }
-
-}
+CREATE POLICY "rivo_likes_delete"
+ON public.likes
+FOR DELETE
+TO authenticated
+USING (user_id = auth.uid());
 
 
-async function getProfile(){
+-- =========================================================
+-- FOLLOWS
+-- =========================================================
 
-  if(!me) return;
+ALTER TABLE public.follows ENABLE ROW LEVEL SECURITY;
 
-  const r =
-  await db
-  .from("profiles")
-  .select("*")
-  .eq("id",me.id)
-  .maybeSingle();
+DROP POLICY IF EXISTS "rivo_follows_read"
+ON public.follows;
 
-  profile = r.data || null;
+CREATE POLICY "rivo_follows_read"
+ON public.follows
+FOR SELECT
+TO public
+USING (true);
 
-}
+DROP POLICY IF EXISTS "rivo_follows_insert"
+ON public.follows;
+
+CREATE POLICY "rivo_follows_insert"
+ON public.follows
+FOR INSERT
+TO authenticated
+WITH CHECK (follower_id = auth.uid());
+
+DROP POLICY IF EXISTS "rivo_follows_delete"
+ON public.follows;
+
+CREATE POLICY "rivo_follows_delete"
+ON public.follows
+FOR DELETE
+TO authenticated
+USING (follower_id = auth.uid());
 
 
-async function loadFeed(){
+-- =========================================================
+-- COMMENTS
+-- =========================================================
 
-  const feed = $("feed");
+ALTER TABLE public.comments ENABLE ROW LEVEL SECURITY;
 
-  if(!me){
+DROP POLICY IF EXISTS "rivo_comments_read"
+ON public.comments;
 
-    feed.innerHTML = demoCard();
+CREATE POLICY "rivo_comments_read"
+ON public.comments
+FOR SELECT
+TO public
+USING (true);
 
-    return;
+DROP POLICY IF EXISTS "rivo_comments_insert"
+ON public.comments;
 
-  }
+CREATE POLICY "rivo_comments_insert"
+ON public.comments
+FOR INSERT
+TO authenticated
+WITH CHECK (user_id = auth.uid());
 
-  const r =
-  await db
-  .from("videos")
-  .select("*")
-  .eq("status","published")
-  .order("created_at",{ascending:false})
-  .limit(30);
+DROP POLICY IF EXISTS "rivo_comments_delete"
+ON public.comments;
 
-  if(r.error || !r.data?.length){
+CREATE POLICY "rivo_comments_delete"
+ON public.comments
+FOR DELETE
+TO authenticated
+USING (user_id = auth.uid());
 
-    feed.innerHTML = demoCard();
 
-    return;
+-- =========================================================
+-- SHARES
+-- =========================================================
 
-  }
+ALTER TABLE public.shares ENABLE ROW LEVEL SECURITY;
 
-  const ids =
-  [...new Set(
-    r.data.map(v=>v.user_id)
-  )];
+DROP POLICY IF EXISTS "rivo_shares_read"
+ON public.shares;
 
-  const p =
-  await db
-  .from("profiles")
-  .select("id,username,full_name,avatar_url")
-  .in("id",ids);
+CREATE POLICY "rivo_shares_read"
+ON public.shares
+FOR SELECT
+TO public
+USING (true);
 
-  const pm =
-  new Map(
-    (p.data||[]).map(x=>[x.id,x])
+DROP POLICY IF EXISTS "rivo_shares_insert"
+ON public.shares;
+
+CREATE POLICY "rivo_shares_insert"
+ON public.shares
+FOR INSERT
+TO authenticated
+WITH CHECK (user_id = auth.uid());
+
+
+-- =========================================================
+-- WALLETS / COINS
+-- =========================================================
+
+ALTER TABLE public.wallets ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "rivo_wallet_read"
+ON public.wallets;
+
+CREATE POLICY "rivo_wallet_read"
+ON public.wallets
+FOR SELECT
+TO authenticated
+USING (user_id = auth.uid());
+
+
+-- Create wallets for existing users
+INSERT INTO public.wallets(user_id,coins)
+SELECT id,0
+FROM auth.users
+ON CONFLICT (user_id) DO NOTHING;
+
+
+-- =========================================================
+-- DEMO COIN PURCHASE
+-- =========================================================
+
+CREATE OR REPLACE FUNCTION public.add_demo_coins(
+  p_amount bigint
+)
+RETURNS bigint
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  new_balance bigint;
+BEGIN
+
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'Login required';
+  END IF;
+
+  IF p_amount <= 0 OR p_amount > 100000 THEN
+    RAISE EXCEPTION 'Invalid coin amount';
+  END IF;
+
+  INSERT INTO public.wallets
+  (
+    user_id,
+    coins
+  )
+  VALUES
+  (
+    auth.uid(),
+    p_amount
+  )
+  ON CONFLICT (user_id)
+  DO UPDATE
+  SET
+    coins =
+      public.wallets.coins + EXCLUDED.coins,
+    updated_at = now();
+
+  SELECT coins
+  INTO new_balance
+  FROM public.wallets
+  WHERE user_id = auth.uid();
+
+  RETURN new_balance;
+
+END;
+$$;
+
+GRANT EXECUTE
+ON FUNCTION public.add_demo_coins(bigint)
+TO authenticated;
+
+
+-- =========================================================
+-- LIVE STREAMS
+-- =========================================================
+
+ALTER TABLE public.live_streams ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "rivo_live_read"
+ON public.live_streams;
+
+CREATE POLICY "rivo_live_read"
+ON public.live_streams
+FOR SELECT
+TO public
+USING
+(
+  status = 'live'
+  OR host_id = auth.uid()
+);
+
+DROP POLICY IF EXISTS "rivo_live_insert"
+ON public.live_streams;
+
+CREATE POLICY "rivo_live_insert"
+ON public.live_streams
+FOR INSERT
+TO authenticated
+WITH CHECK (host_id = auth.uid());
+
+DROP POLICY IF EXISTS "rivo_live_update"
+ON public.live_streams;
+
+CREATE POLICY "rivo_live_update"
+ON public.live_streams
+FOR UPDATE
+TO authenticated
+USING (host_id = auth.uid())
+WITH CHECK (host_id = auth.uid());
+
+
+-- =========================================================
+-- GIFTS
+-- =========================================================
+
+ALTER TABLE public.gifts ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "rivo_gifts_read"
+ON public.gifts;
+
+CREATE POLICY "rivo_gifts_read"
+ON public.gifts
+FOR SELECT
+TO public
+USING (true);
+
+
+INSERT INTO public.gifts(name,emoji,points)
+VALUES
+  ('Rose','🌹',1),
+  ('Heart','❤️',10),
+  ('Gift','🎁',100),
+  ('Diamond','💎',1000),
+  ('Crown','👑',5000),
+  ('Rocket','🚀',10000)
+ON CONFLICT DO NOTHING;
+
+
+-- =========================================================
+-- LIVE GIFTS
+-- =========================================================
+
+ALTER TABLE public.live_gifts ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "rivo_live_gifts_read"
+ON public.live_gifts;
+
+CREATE POLICY "rivo_live_gifts_read"
+ON public.live_gifts
+FOR SELECT
+TO public
+USING (true);
+
+DROP POLICY IF EXISTS "rivo_live_gifts_insert"
+ON public.live_gifts;
+
+CREATE POLICY "rivo_live_gifts_insert"
+ON public.live_gifts
+FOR INSERT
+TO authenticated
+WITH CHECK (sender_id = auth.uid());
+
+
+-- =========================================================
+-- SEND GIFT
+-- Coins are deducted server-side.
+-- =========================================================
+
+CREATE OR REPLACE FUNCTION public.send_gift(
+  p_live_id uuid,
+  p_points integer
+)
+RETURNS bigint
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  host_user uuid;
+  current_coins bigint;
+  new_balance bigint;
+BEGIN
+
+  IF auth.uid() IS NULL THEN
+    RAISE EXCEPTION 'Login required';
+  END IF;
+
+  IF p_points <= 0 OR p_points > 10000 THEN
+    RAISE EXCEPTION 'Invalid gift';
+  END IF;
+
+  SELECT host_id
+  INTO host_user
+  FROM public.live_streams
+  WHERE id = p_live_id
+  AND status = 'live'
+  FOR UPDATE;
+
+  IF host_user IS NULL THEN
+    RAISE EXCEPTION 'Live is not active';
+  END IF;
+
+  INSERT INTO public.wallets(user_id,coins)
+  VALUES(auth.uid(),0)
+  ON CONFLICT (user_id) DO NOTHING;
+
+  SELECT coins
+  INTO current_coins
+  FROM public.wallets
+  WHERE user_id = auth.uid()
+  FOR UPDATE;
+
+  IF current_coins < p_points THEN
+    RAISE EXCEPTION 'Not enough coins';
+  END IF;
+
+  UPDATE public.wallets
+  SET
+    coins = coins - p_points,
+    updated_at = now()
+  WHERE user_id = auth.uid()
+  RETURNING coins INTO new_balance;
+
+  INSERT INTO public.live_gifts
+  (
+    live_id,
+    sender_id,
+    receiver_id,
+    points
+  )
+  VALUES
+  (
+    p_live_id,
+    auth.uid(),
+    host_user,
+    p_points
   );
 
-  feed.innerHTML =
-  r.data.map(v=>{
-
-    const user =
-    pm.get(v.user_id)||{};
-
-    return `
-
-<article class="video-card">
-
-<video
- src="${escapeHtml(v.video_url)}"
- playsinline
- loop
- preload="metadata"
-></video>
-
-<div class="vignette"></div>
-
-<button class="center-play">
-▶
-</button>
-
-<div class="video-copy">
-
-<div class="user-row">
-
-<img
- class="avatar"
- src="${escapeHtml(user.avatar_url||"")}"
->
-
-<div class="username">
-@${escapeHtml(user.username||"user")}
-<span class="verified">●</span>
-</div>
-
-<button
- class="follow-btn"
- onclick="followUser('${v.user_id}',this)"
->
-Follow
-</button>
-
-</div>
-
-<div class="caption">
-${escapeHtml(v.caption||"")}
-</div>
-
-<div class="hashtags">
-${escapeHtml(v.hashtags||"")}
-</div>
-
-<div class="sound">
-♫ Original Sound — RIVO
-</div>
-
-</div>
-
-
-<div class="side-actions">
-
-<button
- class="side-btn"
- onclick="likeVideo('${v.id}',this)"
->
-♡
-</button>
-
-<span class="side-label">
-Like
-</span>
-
-<button
- class="side-btn"
- onclick="openComments('${v.id}')"
->
-💬
-</button>
-
-<span class="side-label">
-Comment
-</span>
-
-<button
- class="side-btn"
- onclick="shareVideo('${v.id}')"
->
-↗
-</button>
-
-<span class="side-label">
-Share
-</span>
-
-<div class="sound-disc">
-♫
-</div>
-
-</div>
-
-</article>
-
-`;
-
-  }).join("");
-
-
-  document
-  .querySelectorAll(".video-card")
-  .forEach(card=>{
-
-    const video =
-    card.querySelector("video");
-
-    const play =
-    card.querySelector(".center-play");
-
-    const toggle = ()=>{
-
-      if(video.paused){
-
-        video.play().catch(()=>{});
-
-      }else{
-
-        video.pause();
-
-      }
-
-    };
-
-    play.onclick = toggle;
-
-    video.onclick = toggle;
-
-    video.onplay = ()=>{
-      play.textContent="❚❚";
-    };
-
-    video.onpause = ()=>{
-      play.textContent="▶";
-    };
-
-  });
-
-}
-
-
-function demoCard(){
-
-return `
-
-<article class="video-card">
-
-<div
- style="
- position:absolute;
- inset:0;
- display:flex;
- align-items:center;
- justify-content:center;
- background:
- radial-gradient(
- circle at 70% 20%,
- #7c3aed,
- #25153c 30%,
- #090a0f 70%
- );
-"
->
-
-<div style="text-align:center">
-
-<div
- style="
- font-size:72px;
- font-weight:1000;
- letter-spacing:-6px;
- background:
- linear-gradient(
- 90deg,
- #ff1f69,
- #a855f7,
- #45b8ff
- );
- -webkit-background-clip:text;
- color:transparent;
- "
->
-RIVO
-</div>
-
-<div>
-Short videos. Made for everyone.
-</div>
-
-</div>
-
-</div>
-
-<div class="vignette"></div>
-
-<button class="center-play">
-▶
-</button>
-
-<div class="video-copy">
-
-<div class="user-row">
-
-<div
- class="avatar"
- style="
- display:grid;
- place-items:center;
- font-weight:1000
- "
->
-R
-</div>
-
-<div class="username">
-@rivo_official
-</div>
-
-<button
- class="follow-btn"
- onclick="go('discover')"
->
-Explore
-</button>
-
-</div>
-
-<div class="caption">
-Welcome to RIVO ❤️ Upload your first video and build your community.
-</div>
-
-<div class="hashtags">
-#rivo #foryou #bangladesh
-</div>
-
-</div>
-
-<div class="side-actions">
-
-<button
- class="side-btn"
- onclick="toast('Login required')"
->
-♡
-</button>
-
-<span class="side-label">
-12.4K
-</span>
-
-<button
- class="side-btn"
- onclick="toast('Comments')"
->
-💬
-</button>
-
-<span class="side-label">
-128
-</span>
-
-<button
- class="side-btn"
- onclick="shareVideo(null)"
->
-↗
-</button>
-
-<span class="side-label">
-256
-</span>
-
-<div class="sound-disc">
-♫
-</div>
-
-</div>
-
-</article>
-
-`;
-
-}
-
-
-async function likeVideo(id,button){
-
-  if(!me){
-
-    toast("Login required");
-
-    return;
-
-  }
-
-  const q =
-  await db
-  .from("likes")
-  .select("*")
-  .eq("user_id",me.id)
-  .eq("video_id",id)
-  .maybeSingle();
-
-  if(q.data){
-
-    await db
-    .from("likes")
-    .delete()
-    .eq("user_id",me.id)
-    .eq("video_id",id);
-
-    button.textContent="♡";
-
-  }else{
-
-    await db
-   
+  RETURN new_balance;
+
+END;
+$$;
+
+GRANT EXECUTE
+ON FUNCTION public.send_gift(uuid,integer)
+TO authenticated;
+
+
+-- =========================================================
+-- STORAGE POLICIES
+-- =========================================================
+
+DROP POLICY IF EXISTS "rivo_public_video_read"
+ON storage.objects;
+
+CREATE POLICY "rivo_public_video_read"
+ON storage.objects
+FOR SELECT
+TO public
+USING (bucket_id = 'videos');
+
+
+DROP POLICY IF EXISTS "rivo_video_upload"
+ON storage.objects;
+
+CREATE POLICY "rivo_video_upload"
+ON storage.objects
+FOR INSERT
+TO authenticated
+WITH CHECK
+(
+  bucket_id = 'videos'
+  AND
+  (storage.foldername(name))[1] = auth.uid()::text
+);
+
+
+DROP POLICY IF EXISTS "rivo_video_delete"
+ON storage.objects;
+
+CREATE POLICY "rivo_video_delete"
+ON storage.objects
+FOR DELETE
+TO authenticated
+USING
+(
+  bucket_id = 'videos'
+  AND
+  (storage.foldername(name))[1] = auth.uid()::text
+);
+
+
+DROP POLICY IF EXISTS "rivo_public_avatar_read"
+ON storage.objects;
+
+CREATE POLICY "rivo_public_avatar_read"
+ON storage.objects
+FOR SELECT
+TO public
+USING (bucket_id = 'avatars');
+
+
+DROP POLICY IF EXISTS "rivo_avatar_upload"
+ON storage.objects;
+
+CREATE POLICY "rivo_avatar_upload"
+ON storage.objects
+FOR INSERT
+TO authenticated
+WITH CHECK
+(
+  bucket_id = 'avatars'
+  AND
+  (storage.foldername(name))[1] = auth.uid()::text
+);
+
+
+DROP POLICY IF EXISTS "rivo_avatar_update"
+ON storage.objects;
+
+CREATE POLICY "rivo_avatar_update"
+ON storage.objects
+FOR UPDATE
+TO authenticated
+USING
+(
+  bucket_id = 'avatars'
+  AND
+  (storage.foldername(name))[1] = auth.uid()::text
+)
+WITH CHECK
+(
+  bucket_id = 'avatars'
+  AND
+  (storage.foldername(name))[1] = auth.uid()::text
+);
+
+
+DROP POLICY IF EXISTS "rivo_public_audio_read"
+ON storage.objects;
+
+CREATE POLICY "rivo_public_audio_read"
+ON storage.objects
+FOR SELECT
+TO public
+USING (bucket_id = 'audio');
+
+
+DROP POLICY IF EXISTS "rivo_audio_upload"
+ON storage.objects;
+
+CREATE POLICY "rivo_audio_upload"
+ON storage.objects
+FOR INSERT
+TO authenticated
+WITH CHECK
+(
+  bucket_id = 'audio'
+  AND
+  (storage.foldername(name))[1] = auth.uid()::text
+);
+
+
+-- =========================================================
+-- FINISH
+-- =========================================================
+
+SELECT 'RIVO DATABASE READY' AS status;
