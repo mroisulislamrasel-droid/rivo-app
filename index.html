@@ -2,718 +2,3784 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>RIVO</title>
+<meta name="viewport"
+content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>RIVO - Short Video Platform</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;background:#050505;color:#fff;font-family:Arial,sans-serif}
-button,input,textarea,select{font:inherit}
-button{cursor:pointer}
-.app{max-width:520px;min-height:100vh;margin:auto;background:#080808;position:relative}
-.hidden{display:none!important}
 
-.top{
- position:fixed;top:0;left:50%;transform:translateX(-50%);
- width:min(520px,100%);height:64px;z-index:20;
- display:flex;align-items:center;justify-content:space-between;
- padding:0 15px;background:rgba(5,5,5,.96)
+*{
+ box-sizing:border-box;
+ -webkit-tap-highlight-color:transparent;
 }
 
-/* NEW PREMIUM RIVO LOGO */
+html,body{
+ margin:0;
+ padding:0;
+ background:#050609;
+ color:#fff;
+ font-family:Arial,Helvetica,sans-serif;
+}
+
+button,input,textarea,select{
+ font:inherit;
+}
+
+button{
+ cursor:pointer;
+}
+
+.hidden{
+ display:none!important;
+}
+
+#app{
+ min-height:100vh;
+ max-width:520px;
+ margin:auto;
+ background:#08090d;
+ position:relative;
+ overflow:hidden;
+}
+
+/* =========================
+   RIVO LOGO
+========================= */
+
 .logo{
- display:flex;align-items:center;gap:7px;
- font-size:25px;font-weight:900;letter-spacing:2px
-}
-.logoMark{
- width:32px;height:32px;border-radius:11px;
- background:linear-gradient(135deg,#ff176f,#7a52ff,#00d9ff);
- display:flex;align-items:center;justify-content:center;
- transform:rotate(-8deg);
- box-shadow:0 5px 18px rgba(255,23,111,.3)
-}
-.logoMark:after{
- content:"R";font-size:21px;font-weight:900;color:#fff;
- transform:rotate(8deg)
-}
-.logoText{
- background:linear-gradient(90deg,#ff3d83,#8c62ff,#31ddff);
- -webkit-background-clip:text;color:transparent
+ display:flex;
+ align-items:center;
+ gap:8px;
+ font-size:25px;
+ font-weight:900;
+ letter-spacing:1px;
 }
 
-.tabs{display:flex;gap:18px}
-.tabs button{background:none;border:0;color:#777;font-weight:bold}
-.tabs .active{color:#fff}
-
-.feed{padding-top:65px;padding-bottom:78px;min-height:100vh}
-
-.card{
- position:relative;margin:7px;height:calc(100vh - 150px);
- min-height:520px;border-radius:18px;overflow:hidden;background:#111
-}
-.video{width:100%;height:100%;object-fit:cover;background:#111}
-.play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
-.play span{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);font-size:29px}
-
-.actions{
- position:absolute;right:10px;bottom:125px;
- display:flex;flex-direction:column;gap:10px;z-index:5
-}
-.action{
- width:54px;min-height:57px;border:0;border-radius:17px;
- background:rgba(0,0,0,.5);color:#fff;
- display:flex;flex-direction:column;align-items:center;justify-content:center;
- backdrop-filter:blur(8px)
-}
-.action b{font-size:22px}
-.action small{font-size:10px;margin-top:3px}
-.action.liked{color:#ff286f}
-.follow{background:linear-gradient(135deg,#ff176f,#734fff);font-size:11px;font-weight:bold}
-
-.info{position:absolute;left:14px;right:75px;bottom:17px;text-shadow:0 2px 6px #000}
-.user{display:flex;align-items:center;gap:9px}
-.avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid #fff;background:#333}
-.caption{margin-top:7px;font-size:14px}
-.audio{margin-top:6px;color:#ddd;font-size:12px}
-
-.bottom{
- position:fixed;bottom:0;left:50%;transform:translateX(-50%);
- width:min(520px,100%);height:70px;z-index:30;
- display:flex;justify-content:space-around;align-items:center;
- background:rgba(7,7,7,.97);border-top:1px solid #222
-}
-.nav{border:0;background:none;color:#888;display:flex;flex-direction:column;align-items:center;gap:3px}
-.nav b{font-size:22px}.nav span{font-size:10px}.nav.active{color:#fff}
-.uploadBtn{width:55px;height:43px;border:0;border-radius:13px;background:linear-gradient(90deg,#ff176f,#7551ff);color:#fff;font-size:27px}
-
-.modal{position:fixed;inset:0;z-index:100;display:none;align-items:flex-end;background:rgba(0,0,0,.78)}
-.modal.show{display:flex}
-.sheet{width:min(520px,100%);max-height:94vh;overflow:auto;background:#111;border-radius:24px 24px 0 0;padding:20px}
-.close{float:right;width:38px;height:38px;border:0;border-radius:50%;background:#252525;color:#fff;font-size:20px}
-.field{width:100%;padding:13px;margin:8px 0;border:1px solid #333;border-radius:12px;background:#181818;color:#fff}
-.primary{width:100%;padding:14px;border:0;border-radius:13px;color:#fff;font-weight:bold;background:linear-gradient(90deg,#ff176f,#7551ff)}
-.secondary{width:100%;padding:13px;margin-top:8px;border:1px solid #333;border-radius:13px;color:#fff;background:#181818}
-.row{display:flex;gap:9px}.row>*{flex:1}
-
-.preview{width:100%;max-height:330px;border-radius:15px;background:#000;object-fit:contain}
-.comment{padding:12px 0;border-bottom:1px solid #292929}
-.comment b{display:block;margin-bottom:4px}
-
-.coin{margin:12px 0;padding:15px;border-radius:15px;background:#17130a;border:1px solid #624900}
-.coin strong{color:#ffd54a;font-size:25px}
-.gifts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.gift{padding:14px 5px;border-radius:15px;border:1px solid #333;background:#1a1a1a;color:#fff}
-.gift div{font-size:29px}
-
-.settingsTitle{
- font-size:27px;font-weight:800;margin:8px 0 20px
-}
-.settingSection{
- margin-top:20px;color:#888;font-size:12px;
- text-transform:uppercase;font-weight:bold
-}
-.settingItem{
- width:100%;padding:17px 3px;border:0;border-bottom:1px solid #292929;
- background:none;color:#fff;display:flex;align-items:center;
- justify-content:space-between;text-align:left
-}
-.settingLeft{display:flex;align-items:center;gap:13px}
-.settingIcon{
- width:38px;height:38px;border-radius:11px;
- background:#1d1d1d;display:flex;align-items:center;justify-content:center;font-size:20px
-}
-.arrow{color:#666;font-size:20px}
-
-.toggle{
- width:48px;height:27px;border-radius:20px;background:#444;
- padding:3px;border:0
-}
-.toggle i{
- display:block;width:21px;height:21px;border-radius:50%;background:#fff;transition:.2s
-}
-.toggle.on{background:#ff176f}
-.toggle.on i{margin-left:21px}
-
-.liveScreen{
- position:fixed;inset:0;background:#000;z-index:90;
- display:none;flex-direction:column
-}
-.liveScreen.show{display:flex}
-.liveVideo{width:100%;height:100%;object-fit:cover}
-.liveTop{
- position:absolute;top:0;left:0;right:0;
- padding:18px;display:flex;justify-content:space-between;z-index:5
-}
-.liveBadge{background:#ff174f;padding:8px 12px;border-radius:12px;font-weight:bold}
-.liveClose{width:42px;height:42px;border:0;border-radius:50%;background:#0009;color:#fff;font-size:20px}
-.liveBottom{
- position:absolute;bottom:20px;left:15px;right:15px;z-index:5
-}
-.liveTitle{font-size:18px;font-weight:bold;text-shadow:0 2px 5px #000}
-.liveActions{display:flex;gap:10px;margin-top:12px}
-.liveAction{
- border:0;border-radius:14px;padding:12px 17px;
- background:#0009;color:#fff
+.logo-icon{
+ width:35px;
+ height:35px;
+ border-radius:12px;
+ background:linear-gradient(
+   135deg,
+   #ff1b6b,
+   #ff4b2b,
+   #8b4dff,
+   #16d9ff
+ );
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ position:relative;
+ box-shadow:0 5px 22px #ff176955;
 }
 
-.auth{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:25px;background:radial-gradient(circle at 20% 20%,#32102b,transparent 35%),radial-gradient(circle at 80% 70%,#141c52,transparent 35%),#050505}
-.authBox{width:100%;max-width:400px;padding:28px;border-radius:25px;background:#121212;border:1px solid #292929}
-.notice{position:fixed;top:72px;left:50%;transform:translateX(-50%);z-index:200;padding:12px 18px;border-radius:12px;background:#242424;display:none}
-.notice.show{display:block}
-.empty{text-align:center;color:#777;padding:80px 20px}
+.logo-icon:after{
+ content:"▶";
+ font-size:18px;
+ color:#fff;
+ margin-left:2px;
+}
+
+.logo-text{
+ background:linear-gradient(
+  90deg,
+  #fff,
+  #ff4b9b,
+  #9c73ff
+ );
+ -webkit-background-clip:text;
+ color:transparent;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+ position:fixed;
+ top:0;
+ left:50%;
+ transform:translateX(-50%);
+ width:min(520px,100%);
+ height:65px;
+ background:rgba(5,6,9,.92);
+ backdrop-filter:blur(15px);
+ z-index:50;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 15px;
+ border-bottom:1px solid #191b23;
+}
+
+.header-tabs{
+ display:flex;
+ gap:18px;
+ position:absolute;
+ left:50%;
+ transform:translateX(-50%);
+}
+
+.header-tabs button{
+ background:none;
+ border:0;
+ color:#777;
+ font-weight:bold;
+ padding:8px 4px;
+}
+
+.header-tabs button.active{
+ color:#fff;
+ border-bottom:2px solid #ff3c86;
+}
+
+/* =========================
+   FEED
+========================= */
+
+.feed{
+ padding-top:66px;
+ padding-bottom:80px;
+ min-height:100vh;
+}
+
+.video-card{
+ height:calc(100vh - 145px);
+ min-height:540px;
+ margin:7px;
+ border-radius:20px;
+ overflow:hidden;
+ position:relative;
+ background:#101116;
+}
+
+.video-card video{
+ width:100%;
+ height:100%;
+ object-fit:cover;
+}
+
+.video-gradient{
+ position:absolute;
+ inset:0;
+ background:linear-gradient(
+  transparent 45%,
+  rgba(0,0,0,.8)
+ );
+ pointer-events:none;
+}
+
+.video-actions{
+ position:absolute;
+ right:10px;
+ bottom:105px;
+ display:flex;
+ flex-direction:column;
+ gap:9px;
+ z-index:5;
+}
+
+.video-action{
+ width:52px;
+ min-height:55px;
+ border:0;
+ border-radius:17px;
+ color:#fff;
+ background:rgba(0,0,0,.48);
+ backdrop-filter:blur(8px);
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+}
+
+.video-action span{
+ font-size:22px;
+}
+
+.video-action small{
+ margin-top:3px;
+ font-size:10px;
+}
+
+.video-action.liked{
+ color:#ff397b;
+}
+
+.follow-btn{
+ background:linear-gradient(
+  135deg,
+  #ff176f,
+  #813cff
+ );
+ font-size:11px;
+ font-weight:bold;
+}
+
+.video-info{
+ position:absolute;
+ left:15px;
+ right:72px;
+ bottom:15px;
+ z-index:4;
+}
+
+.creator{
+ display:flex;
+ align-items:center;
+ gap:9px;
+}
+
+.creator-avatar{
+ width:42px;
+ height:42px;
+ border-radius:50%;
+ object-fit:cover;
+ border:2px solid #fff;
+}
+
+.creator-name{
+ font-weight:bold;
+}
+
+.verified{
+ color:#42a5ff;
+}
+
+.caption{
+ margin-top:7px;
+ font-size:14px;
+ line-height:1.35;
+}
+
+.sound{
+ margin-top:6px;
+ color:#ddd;
+ font-size:12px;
+}
+
+/* =========================
+   BOTTOM NAV
+========================= */
+
+.bottom-nav{
+ position:fixed;
+ bottom:0;
+ left:50%;
+ transform:translateX(-50%);
+ width:min(520px,100%);
+ height:72px;
+ background:rgba(7,8,12,.97);
+ border-top:1px solid #1d1e26;
+ z-index:60;
+ display:flex;
+ justify-content:space-around;
+ align-items:center;
+}
+
+.nav-btn{
+ border:0;
+ background:none;
+ color:#777;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ gap:4px;
+}
+
+.nav-btn span:first-child{
+ font-size:21px;
+}
+
+.nav-btn small{
+ font-size:10px;
+}
+
+.nav-btn.active{
+ color:#fff;
+}
+
+.add-btn{
+ width:54px;
+ height:43px;
+ border:0;
+ border-radius:13px;
+ color:#000;
+ background:linear-gradient(
+  90deg,
+  #fff,
+  #ff3f8b
+ );
+ font-size:28px;
+ font-weight:bold;
+}
+
+/* =========================
+   SCREEN SYSTEM
+========================= */
+
+.screen{
+ position:fixed;
+ inset:0;
+ z-index:100;
+ background:#08090d;
+ display:none;
+ overflow-y:auto;
+}
+
+.screen.show{
+ display:block;
+}
+
+.screen-header{
+ height:65px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 16px;
+ border-bottom:1px solid #1d1f27;
+ background:#0a0b10;
+ position:sticky;
+ top:0;
+ z-index:5;
+}
+
+.screen-header h2{
+ margin:0;
+ font-size:18px;
+}
+
+.back-btn{
+ border:0;
+ background:none;
+ color:#fff;
+ font-size:25px;
+}
+
+/* =========================
+   DISCOVER
+========================= */
+
+.search-box{
+ margin:15px;
+ background:#171921;
+ border:1px solid #292c37;
+ border-radius:14px;
+ padding:13px 15px;
+ color:#aaa;
+}
+
+.search-box input{
+ width:100%;
+ background:none;
+ border:0;
+ outline:none;
+ color:#fff;
+}
+
+.section-title{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding:15px;
+}
+
+.section-title h3{
+ margin:0;
+}
+
+.section-title small{
+ color:#ff4c92;
+}
+
+.challenge{
+ margin:0 15px;
+ border-radius:15px;
+ padding:20px;
+ min-height:130px;
+ background:
+ linear-gradient(
+  135deg,
+  #35104e,
+  #13275a
+ );
+}
+
+.hashtag{
+ padding:14px 15px;
+ border-bottom:1px solid #20222a;
+ display:flex;
+ gap:15px;
+ align-items:center;
+}
+
+.hash{
+ font-size:25px;
+ color:#aaa;
+}
+
+.creator-row{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ padding:12px 15px;
+}
+
+.creator-row img{
+ width:44px;
+ height:44px;
+ border-radius:50%;
+ object-fit:cover;
+}
+
+.creator-row-info{
+ flex:1;
+}
+
+.creator-row button{
+ border:1px solid #ff3180;
+ color:#ff4c92;
+ background:none;
+ border-radius:9px;
+ padding:7px 13px;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profile-cover{
+ padding:25px 15px;
+ text-align:center;
+}
+
+.profile-photo{
+ width:95px;
+ height:95px;
+ border-radius:50%;
+ object-fit:cover;
+ border:3px solid #fff;
+}
+
+.profile-name{
+ font-size:19px;
+ font-weight:bold;
+ margin-top:10px;
+}
+
+.profile-stats{
+ display:flex;
+ justify-content:center;
+ gap:35px;
+ margin:22px 0;
+}
+
+.profile-stat strong{
+ display:block;
+ font-size:17px;
+}
+
+.profile-stat small{
+ color:#aaa;
+}
+
+.edit-profile{
+ background:#202129;
+ color:#fff;
+ border:0;
+ padding:11px 25px;
+ border-radius:10px;
+}
+
+.profile-bio{
+ color:#aaa;
+ line-height:1.5;
+ margin:18px 25px;
+}
+
+.profile-tabs{
+ display:flex;
+ justify-content:space-around;
+ border-bottom:1px solid #252731;
+}
+
+.profile-tabs button{
+ flex:1;
+ padding:15px;
+ background:none;
+ border:0;
+ color:#777;
+}
+
+.profile-tabs button.active{
+ color:#fff;
+ border-bottom:2px solid #ff3984;
+}
+
+.profile-grid{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:3px;
+ padding:3px;
+}
+
+.profile-video{
+ aspect-ratio:3/4;
+ background:#15161c;
+ overflow:hidden;
+ position:relative;
+}
+
+.profile-video img,
+.profile-video video{
+ width:100%;
+ height:100%;
+ object-fit:cover;
+}
+
+.profile-video span{
+ position:absolute;
+ bottom:7px;
+ left:7px;
+ font-size:11px;
+}
+
+/* =========================
+   UPLOAD
+========================= */
+
+.upload-body{
+ padding:18px;
+}
+
+.upload-preview{
+ width:100%;
+ aspect-ratio:9/14;
+ border-radius:15px;
+ object-fit:cover;
+ background:#111;
+}
+
+.input{
+ width:100%;
+ padding:14px;
+ margin-top:11px;
+ background:#171921;
+ border:1px solid #292c37;
+ border-radius:12px;
+ color:#fff;
+ outline:none;
+}
+
+textarea.input{
+ min-height:90px;
+ resize:none;
+}
+
+.primary{
+ width:100%;
+ padding:15px;
+ border:0;
+ border-radius:12px;
+ color:#fff;
+ background:linear-gradient(
+  90deg,
+  #ff176f,
+  #793fff
+ );
+ font-weight:bold;
+ margin-top:12px;
+}
+
+.option-row{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding:16px 0;
+ border-bottom:1px solid #20222a;
+}
+
+.switch{
+ width:48px;
+ height:27px;
+ border:0;
+ border-radius:20px;
+ background:#41434d;
+ padding:3px;
+}
+
+.switch i{
+ display:block;
+ width:21px;
+ height:21px;
+ border-radius:50%;
+ background:#fff;
+ transition:.2s;
+}
+
+.switch.on{
+ background:#21d36b;
+}
+
+.switch.on i{
+ margin-left:21px;
+}
+
+/* =========================
+   INBOX
+========================= */
+
+.inbox-icons{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ padding:18px 10px;
+}
+
+.inbox-icon{
+ text-align:center;
+}
+
+.inbox-icon div{
+ width:48px;
+ height:48px;
+ margin:auto;
+ border-radius:50%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:22px;
+ background:linear-gradient(135deg,#ff2e7d,#8c45ff);
+}
+
+.inbox-icon small{
+ display:block;
+ margin-top:7px;
+ color:#aaa;
+}
+
+.message{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ padding:14px 16px;
+ border-bottom:1px solid #1e2028;
+}
+
+.message img{
+ width:45px;
+ height:45px;
+ border-radius:50%;
+ object-fit:cover;
+}
+
+.message-info{
+ flex:1;
+}
+
+.message-info strong{
+ display:block;
+}
+
+.message-info small{
+ color:#777;
+}
+
+/* =========================
+   SETTINGS
+========================= */
+
+.settings-section{
+ margin-top:20px;
+}
+
+.settings-section-title{
+ color:#777;
+ font-size:12px;
+ padding:0 16px 8px;
+ text-transform:uppercase;
+}
+
+.settings-item{
+ width:100%;
+ border:0;
+ background:none;
+ color:#fff;
+ display:flex;
+ align-items:center;
+ gap:13px;
+ padding:16px;
+ border-bottom:1px solid #1d1f26;
+ text-align:left;
+}
+
+.settings-icon{
+ width:39px;
+ height:39px;
+ border-radius:11px;
+ background:#191b23;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:20px;
+}
+
+.settings-info{
+ flex:1;
+}
+
+.settings-info small{
+ display:block;
+ color:#777;
+ margin-top:3px;
+}
+
+.settings-arrow{
+ color:#666;
+ font-size:20px;
+}
+
+.danger{
+ color:#ff3f73!important;
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+.dashboard{
+ padding:15px;
+}
+
+.analytics-card{
+ padding:20px;
+ border-radius:18px;
+ background:linear-gradient(
+  135deg,
+  #29134f,
+  #171d55
+ );
+ margin-bottom:12px;
+}
+
+.analytics-number{
+ font-size:32px;
+ font-weight:bold;
+ margin:8px 0;
+}
+
+.analytics-grid{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:8px;
+}
+
+.analytics-small{
+ background:#151620;
+ border-radius:12px;
+ padding:13px 8px;
+}
+
+.analytics-small strong{
+ display:block;
+ font-size:18px;
+}
+
+.analytics-small small{
+ color:#777;
+}
+
+/* =========================
+   ADMIN
+========================= */
+
+.admin-layout{
+ display:flex;
+ min-height:calc(100vh - 65px);
+}
+
+.admin-sidebar{
+ width:180px;
+ background:#0d0e13;
+ border-right:1px solid #22242d;
+ padding-top:10px;
+}
+
+.admin-sidebar button{
+ width:100%;
+ border:0;
+ background:none;
+ color:#999;
+ text-align:left;
+ padding:14px;
+}
+
+.admin-sidebar button.active{
+ color:#ff4388;
+ background:#18121c;
+}
+
+.admin-content{
+ flex:1;
+ padding:15px;
+ overflow:auto;
+}
+
+.admin-grid{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:8px;
+}
+
+.admin-stat{
+ padding:14px;
+ border-radius:12px;
+ background:#15161d;
+}
+
+.admin-stat small{
+ color:#777;
+}
+
+.admin-stat strong{
+ display:block;
+ font-size:20px;
+ margin-top:7px;
+}
+
+.report{
+ background:#15161d;
+ padding:14px;
+ border-radius:12px;
+ margin-top:10px;
+}
+
+.report button{
+ margin-top:8px;
+ border:1px solid #333;
+ background:#20212a;
+ color:#fff;
+ padding:8px 12px;
+ border-radius:8px;
+}
+
+/* =========================
+   AUTH
+========================= */
+
+.auth{
+ min-height:100vh;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:20px;
+ background:
+ radial-gradient(
+  circle at 20% 20%,
+  #351032,
+  transparent 35%
+ ),
+ radial-gradient(
+  circle at 80% 80%,
+  #18214e,
+  transparent 35%
+ ),
+ #050609;
+}
+
+.auth-box{
+ width:100%;
+ max-width:390px;
+ padding:30px;
+ border-radius:25px;
+ background:#111218;
+ border:1px solid #292b35;
+}
+
+.auth-box .logo{
+ justify-content:center;
+ font-size:38px;
+}
+
+.auth-box p{
+ text-align:center;
+ color:#888;
+}
+
+.error{
+ color:#ff4c80;
+ text-align:center;
+ margin-top:10px;
+}
+
+.toast{
+ position:fixed;
+ top:75px;
+ left:50%;
+ transform:translateX(-50%);
+ background:#24252d;
+ padding:12px 18px;
+ border-radius:12px;
+ z-index:300;
+ display:none;
+}
+
+.toast.show{
+ display:block;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:390px){
+
+ .video-actions{
+  right:6px;
+ }
+
+ .video-action{
+  width:48px;
+ }
+
+ .header-tabs{
+  gap:10px;
+ }
+
+ .profile-stats{
+  gap:20px;
+ }
+
+ .admin-sidebar{
+  width:145px;
+ }
+
+}
+
 </style>
 </head>
 
 <body>
 
-<div id="notice" class="notice"></div>
+<div id="toast" class="toast"></div>
+
+<!-- =========================
+     AUTH
+========================= -->
 
 <div id="auth" class="auth">
-<div class="authBox">
-<div class="logo" style="justify-content:center;font-size:38px">
-<div class="logoMark"></div><div class="logoText">RIVO</div>
+
+<div class="auth-box">
+
+<div class="logo">
+<div class="logo-icon"></div>
+<div class="logo-text">Rivo</div>
 </div>
-<p style="text-align:center;color:#aaa">Create. Watch. Connect.</p>
-<input id="email" class="field" type="email" placeholder="Email">
-<input id="password" class="field" type="password" placeholder="Password">
-<button class="primary" onclick="login()">Login</button>
-<button class="secondary" onclick="signup()">Create Account</button>
+
+<p>Short Video Platform</p>
+
+<input
+ id="email"
+ class="input"
+ type="email"
+ placeholder="Email"
+>
+
+<input
+ id="password"
+ class="input"
+ type="password"
+ placeholder="Password"
+>
+
+<button
+ class="primary"
+ onclick="login()"
+>
+Login
+</button>
+
+<button
+ class="primary"
+ style="background:#202129"
+ onclick="signup()"
+>
+Create Account
+</button>
+
+<div id="authError" class="error"></div>
+
 </div>
 </div>
 
-<div id="app" class="app hidden">
+<!-- =========================
+     MAIN APP
+========================= -->
 
-<header class="top">
-<div class="logo"><div class="logoMark"></div><div class="logoText">RIVO</div></div>
-<div class="tabs">
-<button class="active" onclick="loadFeed()">For You</button>
-<button onclick="loadFollowing()">Friends</button>
+<div id="app" class="hidden">
+
+<header class="header">
+
+<div class="logo">
+<div class="logo-icon"></div>
+<div class="logo-text">Rivo</div>
 </div>
-<button onclick="openCoins()" style="width:42px;height:42px;border:0;border-radius:50%;background:#171717;color:#fff">🪙</button>
+
+<div class="header-tabs">
+
+<button
+ id="forYouTab"
+ class="active"
+ onclick="showFeed('foryou')"
+>
+For You
+</button>
+
+<button
+ id="followingTab"
+ onclick="showFeed('following')"
+>
+Following
+</button>
+
+</div>
+
+<button
+ onclick="openInbox()"
+ style="
+ border:0;
+ background:none;
+ color:#fff;
+ font-size:21px;
+ "
+>
+♧
+</button>
+
 </header>
 
-<main id="feed" class="feed"></main>
+<div id="feed" class="feed"></div>
 
-<nav class="bottom">
-<button class="nav active" onclick="loadFeed()"><b>⌂</b><span>Home</span></button>
-<button class="nav" onclick="discover()"><b>⌕</b><span>Discover</span></button>
-<button class="uploadBtn" onclick="openUpload()">＋</button>
-<button class="nav" onclick="openLive()"><b>🔴</b><span>Live</span></button>
-<button class="nav" onclick="openProfile()"><b>♙</b><span>Profile</span></button>
+<nav class="bottom-nav">
+
+<button
+ class="nav-btn active"
+ onclick="showFeed('forYou')"
+>
+<span>⌂</span>
+<small>Home</small>
+</button>
+
+<button
+ class="nav-btn"
+ onclick="openDiscover()"
+>
+<span>⌕</span>
+<small>Discover</small>
+</button>
+
+<button
+ class="add-btn"
+ onclick="openUpload()"
+>
++
+</button>
+
+<button
+ class="nav-btn"
+ onclick="openInbox()"
+>
+<span>▣</span>
+<small>Inbox</small>
+</button>
+
+<button
+ class="nav-btn"
+ onclick="openProfile()"
+>
+<span>♙</span>
+<small>Profile</small>
+</button>
+
 </nav>
+
 </div>
 
-<!-- LIVE FULL SCREEN -->
-<div id="liveScreen" class="liveScreen">
-<video id="liveCamera" class="liveVideo" autoplay muted playsinline></video>
+<!-- =========================
+     DISCOVER
+========================= -->
 
-<div class="liveTop">
-<div class="liveBadge">● LIVE</div>
-<button class="liveClose" onclick="stopLive()">×</button>
+<div id="discoverScreen" class="screen">
+
+<div class="screen-header">
+
+<button
+ class="back-btn"
+ onclick="closeScreen('discoverScreen')"
+>
+‹
+</button>
+
+<h2>Discover</h2>
+
+<div></div>
+
 </div>
 
-<div class="liveBottom">
-<div id="liveTitleShow" class="liveTitle">RIVO Live</div>
-<div class="liveActions">
-<button class="liveAction" onclick="openGifts()">🎁 Gift</button>
-<button class="liveAction" onclick="openCoins()">🪙 Coins</button>
-<button class="liveAction" onclick="openSettings()">⚙️</button>
-</div>
-</div>
+<div class="search-box">
+
+<input
+ id="searchInput"
+ placeholder="Search users, videos, hashtags"
+ oninput="searchAll()"
+>
+
 </div>
 
-<!-- UPLOAD -->
-<div id="uploadModal" class="modal">
-<div class="sheet">
-<button class="close" onclick="closeModal('uploadModal')">×</button>
-<h2>🎬 Create Video</h2>
-<input id="videoFile" class="field" type="file" accept="video/*" capture="environment" onchange="previewVideo()">
-<video id="videoPreview" class="preview" controls playsinline></video>
-<input id="caption" class="field" placeholder="Write caption...">
-<input id="hashtags" class="field" placeholder="#hashtags">
-<select id="visibility" class="field">
-<option value="Public">🌎 Public</option>
-<option value="Followers">👥 Followers</option>
-<option value="Private">🔒 Only Me</option>
+<div class="challenge">
+
+<h2>#RivoChallenge</h2>
+
+<p>Join the challenge and win exciting prizes!</p>
+
+<button
+ class="primary"
+ style="width:auto;padding:9px 18px"
+>
+Join Now
+</button>
+
+</div>
+
+<div class="section-title">
+
+<h3>Trending Hashtags</h3>
+
+<small>See all</small>
+
+</div>
+
+<div id="hashtags"></div>
+
+<div class="section-title">
+
+<h3>Suggested Creators</h3>
+
+<small>See all</small>
+
+</div>
+
+<div id="suggestedCreators"></div>
+
+</div>
+
+<!-- =========================
+     INBOX
+========================= -->
+
+<div id="inboxScreen" class="screen">
+
+<div class="screen-header">
+
+<button
+ class="back-btn"
+ onclick="closeScreen('inboxScreen')"
+>
+‹
+</button>
+
+<h2>Inbox</h2>
+
+<button
+ style="border:0;background:none;color:#fff;font-size:20px"
+>
+♧
+</button>
+
+</div>
+
+<div class="inbox-icons">
+
+<div class="inbox-icon">
+<div>♥</div>
+<small>Likes</small>
+</div>
+
+<div class="inbox-icon">
+<div>●</div>
+<small>Comments</small>
+</div>
+
+<div class="inbox-icon">
+<div>♙</div>
+<small>Follows</small>
+</div>
+
+<div class="inbox-icon">
+<div>@</div>
+<small>Mentions</small>
+</div>
+
+</div>
+
+<div class="section-title">
+<h3>Messages</h3>
+</div>
+
+<div id="messages"></div>
+
+</div>
+
+<!-- =========================
+     PROFILE
+========================= -->
+
+<div id="profileScreen" class="screen">
+
+<div class="screen-header">
+
+<button
+ class="back-btn"
+ onclick="closeScreen('profileScreen')"
+>
+‹
+</button>
+
+<h2>Profile</h2>
+
+<button
+ onclick="openSettings()"
+ style="border:0;background:none;color:#fff;font-size:20px"
+>
+⚙
+</button>
+
+</div>
+
+<div class="profile-cover">
+
+<img
+ id="profilePhoto"
+ class="profile-photo"
+ src=""
+>
+
+<div id="profileUsername" class="profile-name">
+@rivo_user
+</div>
+
+<div class="profile-stats">
+
+<div class="profile-stat">
+<strong id="followingCount">0</strong>
+<small>Following</small>
+</div>
+
+<div class="profile-stat">
+<strong id="followersCount">0</strong>
+<small>Followers</small>
+</div>
+
+<div class="profile-stat">
+<strong id="likesCount">0</strong>
+<small>Likes</small>
+</div>
+
+</div>
+
+<button
+ class="edit-profile"
+ onclick="openEditProfile()"
+>
+Edit Profile
+</button>
+
+<div id="profileBio" class="profile-bio"></div>
+
+</div>
+
+<div class="profile-tabs">
+
+<button class="active">
+▦
+</button>
+
+<button>
+▣
+</button>
+
+<button>
+♡
+</button>
+
+</div>
+
+<div id="profileGrid" class="profile-grid"></div>
+
+</div>
+
+<!-- =========================
+     EDIT PROFILE
+========================= -->
+
+<div id="editProfileScreen" class="screen">
+
+<div class="screen-header">
+
+<button
+ class="back-btn"
+ onclick="closeScreen('editProfileScreen')"
+>
+‹
+</button>
+
+<h2>Edit Profile</h2>
+
+<div></div>
+
+</div>
+
+<div style="padding:20px">
+
+<div style="text-align:center">
+
+<img
+ id="editAvatar"
+ class="profile-photo"
+>
+
+</div>
+
+<input
+ id="avatarFile"
+ class="input"
+ type="file"
+ accept="image/*"
+>
+
+<input
+ id="editFullName"
+ class="input"
+ placeholder="Full name"
+>
+
+<input
+ id="editUsername"
+ class="input"
+ placeholder="Username"
+>
+
+<textarea
+ id="editBio"
+ class="input"
+ placeholder="Bio"
+></textarea>
+
+<button
+ class="primary"
+ onclick="saveProfile()"
+>
+Save Profile
+</button>
+
+</div>
+
+</div>
+
+<!-- =========================
+     UPLOAD
+========================= -->
+
+<div id="uploadScreen" class="screen">
+
+<div class="screen-header">
+
+<button
+ class="back-btn"
+ onclick="closeScreen('uploadScreen')"
+>
+‹
+</button>
+
+<h2>Upload Video</h2>
+
+<div></div>
+
+</div>
+
+<div class="upload-body">
+
+<input
+ id="videoFile"
+ class="input"
+ type="file"
+ accept="video/*"
+ capture="environment"
+ onchange="previewVideo()"
+>
+
+<video
+ id="uploadPreview"
+ class="upload-preview"
+ controls
+ playsinline
+></video>
+
+<textarea
+ id="caption"
+ class="input"
+ placeholder="Write a caption..."
+></textarea>
+
+<input
+ id="hashtagsInput"
+ class="input"
+ placeholder="#hashtags"
+>
+
+<input
+ id="audioFile"
+ class="input"
+ type="file"
+ accept="audio/*"
+>
+
+<select
+ id="visibility"
+ class="input"
+>
+<option value="Public">
+Who can watch this video — Public
+</option>
+
+<option value="Followers">
+Followers
+</option>
+
+<option value="Private">
+Only Me
+</option>
+
 </select>
-<label style="color:#aaa">🎵 Select Audio</label>
-<input id="audioFile" class="field" type="file" accept="audio/*">
-<select id="filter" class="field" onchange="applyFilter()">
-<option value="">Normal</option>
-<option value="contrast">Contrast</option>
-<option value="bright">Bright</option>
-<option value="gray">Black & White</option>
-<option value="warm">Warm</option>
-</select>
-<button class="primary" onclick="uploadVideo()">Upload Video</button>
-</div>
-</div>
 
-<!-- COMMENTS -->
-<div id="commentModal" class="modal">
-<div class="sheet">
-<button class="close" onclick="closeModal('commentModal')">×</button>
-<h2>💬 Comments</h2>
-<div id="comments"></div>
-<div class="row">
-<input id="commentText" class="field" placeholder="Write comment...">
-<button class="primary" style="max-width:100px" onclick="sendComment()">Send</button>
-</div>
-</div>
-</div>
+<div class="option-row">
 
-<!-- PROFILE -->
-<div id="profileModal" class="modal">
-<div class="sheet">
-<button class="close" onclick="closeModal('profileModal')">×</button>
-<div style="text-align:center;padding:15px">
-<img id="profileAvatar" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid #fff">
-<h2 id="profileName"></h2>
-<p id="profileBio" style="color:#aaa"></p>
-<input id="avatarFile" class="field" type="file" accept="image/*">
-<input id="fullName" class="field" placeholder="Full name">
-<input id="bio" class="field" placeholder="Bio">
-<button class="primary" onclick="saveProfile()">Save Profile</button>
-<div class="coin">🪙 RIVO Coins<br><strong id="coinBalance">0</strong></div>
-<button class="secondary" onclick="openCoins()">Buy Coins</button>
-<button class="secondary" onclick="openSettings()">⚙️ Settings</button>
-</div>
-</div>
-</div>
+<span>Allow comments</span>
 
-<!-- COINS -->
-<div id="coinModal" class="modal">
-<div class="sheet">
-<button class="close" onclick="closeModal('coinModal')">×</button>
-<h2>🪙 RIVO Coins</h2>
-<div class="coin">Balance: <strong id="coinBalance2">0</strong></div>
-<button class="secondary" onclick="buyCoins(100)">100 Coins</button>
-<button class="secondary" onclick="buyCoins(500)">500 Coins</button>
-<button class="secondary" onclick="buyCoins(1000)">1,000 Coins</button>
-<button class="secondary" onclick="buyCoins(5000)">5,000 Coins</button>
-<button class="secondary" onclick="buyCoins(10000)">10,000 Coins</button>
-</div>
-</div>
-
-<!-- GIFTS -->
-<div id="giftModal" class="modal">
-<div class="sheet">
-<button class="close" onclick="closeModal('giftModal')">×</button>
-<h2>🎁 Gifts</h2>
-<div id="giftList" class="gifts"></div>
-</div>
-</div>
-
-<!-- SETTINGS -->
-<div id="settingsModal" class="modal">
-<div class="sheet">
-
-<button class="close" onclick="closeModal('settingsModal')">×</button>
-
-<div class="settingsTitle">⚙️ Settings</div>
-
-<div class="settingSection">Account</div>
-
-<button class="settingItem" onclick="openProfile()">
-<div class="settingLeft"><div class="settingIcon">👤</div><div>Profile</div></div>
-<div class="arrow">›</div>
-</button>
-
-<button class="settingItem" onclick="notice('Account settings coming soon')">
-<div class="settingLeft"><div class="settingIcon">🔐</div><div>Account & Security</div></div>
-<div class="arrow">›</div>
-</button>
-
-<div class="settingSection">Privacy</div>
-
-<button class="settingItem" onclick="toggleSetting('private_account')">
-<div class="settingLeft"><div class="settingIcon">🔒</div><div>Private Account</div></div>
-<button id="privateToggle" class="toggle"><i></i></button>
-</button>
-
-<button class="settingItem" onclick="openBlocked()">
-<div class="settingLeft"><div class="settingIcon">🚫</div><div>Blocked Users</div></div>
-<div class="arrow">›</div>
-</button>
-
-<div class="settingSection">Content</div>
-
-<button class="settingItem" onclick="notice('Video settings active')">
-<div class="settingLeft"><div class="settingIcon">🎥</div><div>Video Settings</div></div>
-<div class="arrow">›</div>
-</button>
-
-<button class="settingItem" onclick="toggleSetting('allow_comments')">
-<div class="settingLeft"><div class="settingIcon">💬</div><div>Allow Comments</div></div>
-<button id="commentToggle" class="toggle on"><i></i></button>
-</button>
-
-<button class="settingItem" onclick="toggleSetting('allow_gifts')">
-<div class="settingLeft"><div class="settingIcon">🎁</div><div>Allow Gifts</div></div>
-<button id="giftToggle" class="toggle on"><i></i></button>
-</button>
-
-<div class="settingSection">Notifications</div>
-
-<button class="settingItem" onclick="toggleSetting('notifications')">
-<div class="settingLeft"><div class="settingIcon">🔔</div><div>Notifications</div></div>
-<button id="notificationToggle" class="toggle on"><i></i></button>
-</button>
-
-<div class="settingSection">Other</div>
-
-<button class="settingItem" onclick="notice('Language: English')">
-<div class="settingLeft"><div class="settingIcon">🌐</div><div>Language</div></div>
-<div class="arrow">›</div>
-</button>
-
-<button class="settingItem" onclick="notice('RIVO Help Center')">
-<div class="settingLeft"><div class="settingIcon">❓</div><div>Help & Support</div></div>
-<div class="arrow">›</div>
-</button>
-
-<button class="settingItem" onclick="logout()">
-<div class="settingLeft"><div class="settingIcon">🚪</div><div style="color:#ff456d">Log Out</div></div>
-<div class="arrow">›</div>
+<button
+ id="commentsSwitch"
+ class="switch on"
+ onclick="toggleSwitch(this)"
+>
+<i></i>
 </button>
 
 </div>
+
+<div class="option-row">
+
+<span>Allow Duet</span>
+
+<button
+ id="duetSwitch"
+ class="switch on"
+ onclick="toggleSwitch(this)"
+>
+<i></i>
+</button>
+
 </div>
 
-<!-- BLOCKED -->
-<div id="blockedModal" class="modal">
-<div class="sheet">
-<button class="close" onclick="closeModal('blockedModal')">×</button>
-<h2>🚫 Blocked Users</h2>
+<div class="option-row">
+
+<span>Allow Stitch</span>
+
+<button
+ id="stitchSwitch"
+ class="switch on"
+ onclick="toggleSwitch(this)"
+>
+<i></i>
+</button>
+
+</div>
+
+<button
+ class="primary"
+ onclick="uploadVideo()"
+>
+Post Video
+</button>
+
+<button
+ class="primary"
+ style="background:#202129"
+ onclick="saveDraft()"
+>
+Drafts
+</button>
+
+</div>
+
+</div>
+
+<!-- =========================
+     SETTINGS
+========================= -->
+
+<div id="settingsScreen" class="screen">
+
+<div class="screen-header">
+
+<button
+ class="back-btn"
+ onclick="closeScreen('settingsScreen')"
+>
+‹
+</button>
+
+<h2>Settings</h2>
+
+<div></div>
+
+</div>
+
+<div class="settings-section">
+
+<div class="settings-section-title">
+Account
+</div>
+
+<button
+ class="settings-item"
+ onclick="openEditProfile()"
+>
+
+<div class="settings-icon">👤</div>
+
+<div class="settings-info">
+Profile
+<small>Edit your profile</small>
+</div>
+
+<div class="settings-arrow">›</div>
+
+</button>
+
+<button
+ class="settings-item"
+ onclick="toast('Account security')"
+>
+
+<div class="settings-icon">🔐</div>
+
+<div class="settings-info">
+Account & Security
+<small>Password and account security</small>
+</div>
+
+<div class="settings-arrow">›</div>
+
+</button>
+
+</div>
+
+<div class="settings-section">
+
+<div class="settings-section-title">
+Privacy
+</div>
+
+<button
+ class="settings-item"
+ onclick="toggleUserSetting('private_account')"
+>
+
+<div class="settings-icon">🔒</div>
+
+<div class="settings-info">
+Private Account
+<small>Control who can see your content</small>
+</div>
+
+<div id="privateSwitch" class="switch">
+<i></i>
+</div>
+
+</button>
+
+<button
+ class="settings-item"
+ onclick="openBlocked()"
+>
+
+<div class="settings-icon">🚫</div>
+
+<div class="settings-info">
+Blocked Users
+<small>Manage blocked accounts</small>
+</div>
+
+<div class="settings-arrow">›</div>
+
+</button>
+
+</div>
+
+<div class="settings-section">
+
+<div class="settings-section-title">
+Content
+</div>
+
+<button
+ class="settings-item"
+ onclick="toggleUserSetting('allow_comments')"
+>
+
+<div class="settings-icon">💬</div>
+
+<div class="settings-info">
+Comments
+<small>Allow people to comment</small>
+</div>
+
+<div id="commentsSettingSwitch" class="switch on">
+<i></i>
+</div>
+
+</button>
+
+<button
+ class="settings-item"
+ onclick="toggleUserSetting('allow_duet')"
+>
+
+<div class="settings-icon">🎬</div>
+
+<div class="settings-info">
+Duet
+<small>Allow Duet on your videos</small>
+</div>
+
+<div id="duetSettingSwitch" class="switch on">
+<i></i>
+</div>
+
+</button>
+
+<button
+ class="settings-item"
+ onclick="toggleUserSetting('allow_stitch')"
+>
+
+<div class="settings-icon">✂</div>
+
+<div class="settings-info">
+Stitch
+<small>Allow Stitch on your videos</small>
+</div>
+
+<div id="stitchSettingSwitch" class="switch on">
+<i></i>
+</div>
+
+</button>
+
+</div>
+
+<div class="settings-section">
+
+<div class="settings-section-title">
+Notifications
+</div>
+
+<button
+ class="settings-item"
+ onclick="toggleUserSetting('notifications')"
+>
+
+<div class="settings-icon">🔔</div>
+
+<div class="settings-info">
+Notifications
+<small>Likes, comments and followers</small>
+</div>
+
+<div id="notificationSwitch" class="switch on">
+<i></i>
+</div>
+
+</button>
+
+</div>
+
+<div class="settings-section">
+
+<div class="settings-section-title">
+Support
+</div>
+
+<button
+ class="settings-item"
+ onclick="toast('RIVO Help Center')"
+>
+
+<div class="settings-icon">❓</div>
+
+<div class="settings-info">
+Help & Support
+</div>
+
+<div class="settings-arrow">›</div>
+
+</button>
+
+<button
+ class="settings-item"
+ onclick="toast('RIVO Privacy Policy')"
+>
+
+<div class="settings-icon">📄</div>
+
+<div class="settings-info">
+Privacy Policy
+</div>
+
+<div class="settings-arrow">›</div>
+
+</button>
+
+<button
+ class="settings-item"
+ onclick="logout()"
+>
+
+<div class="settings-icon">🚪</div>
+
+<div class="settings-info danger">
+Log Out
+</div>
+
+</button>
+
+</div>
+
+</div>
+
+<!-- =========================
+     BLOCKED
+========================= -->
+
+<div id="blockedScreen" class="screen">
+
+<div class="screen-header">
+
+<button
+ class="back-btn"
+ onclick="closeScreen('blockedScreen')"
+>
+‹
+</button>
+
+<h2>Blocked Users</h2>
+
+<div></div>
+
+</div>
+
 <div id="blockedList"></div>
+
 </div>
+
+<!-- =========================
+     CREATOR DASHBOARD
+========================= -->
+
+<div id="dashboardScreen" class="screen">
+
+<div class="screen-header">
+
+<button
+ class="back-btn"
+ onclick="closeScreen('dashboardScreen')"
+>
+‹
+</button>
+
+<h2>Creator Dashboard</h2>
+
+<div></div>
+
+</div>
+
+<div class="dashboard">
+
+<div class="analytics-card">
+
+<small>Total Views</small>
+
+<div
+ id="dashboardViews"
+ class="analytics-number"
+>
+0
+</div>
+
+<span style="color:#4ee68a">
++12.5%
+</span>
+
+</div>
+
+<div class="analytics-grid">
+
+<div class="analytics-small">
+<small>Followers</small>
+<strong id="dashboardFollowers">0</strong>
+</div>
+
+<div class="analytics-small">
+<small>Likes</small>
+<strong id="dashboardLikes">0</strong>
+</div>
+
+<div class="analytics-small">
+<small>Videos</small>
+<strong id="dashboardVideos">0</strong>
+</div>
+
+</div>
+
+<div class="section-title">
+<h3>Recent Videos</h3>
+</div>
+
+<div id="dashboardVideosList"></div>
+
+</div>
+
+</div>
+
+<!-- =========================
+     ADMIN PANEL
+========================= -->
+
+<div id="adminScreen" class="screen">
+
+<div class="screen-header">
+
+<button
+ class="back-btn"
+ onclick="closeScreen('adminScreen')"
+>
+‹
+</button>
+
+<h2>Rivo Admin Panel</h2>
+
+<div></div>
+
+</div>
+
+<div class="admin-layout">
+
+<aside class="admin-sidebar">
+
+<button class="active">
+▣ Dashboard
+</button>
+
+<button onclick="adminUsers()">
+♙ Users
+</button>
+
+<button onclick="adminVideos()">
+▶ Videos
+</button>
+
+<button onclick="adminReports()">
+⚠ Reports
+</button>
+
+<button onclick="adminComments()">
+● Comments
+</button>
+
+<button onclick="toast('Earnings management')">
+৳ Earnings
+</button>
+
+<button onclick="toast('Withdrawals management')">
+৳ Withdrawals
+</button>
+
+<button onclick="openSettings()">
+⚙ Settings
+</button>
+
+<button onclick="logout()">
+↪ Logout
+</button>
+
+</aside>
+
+<section
+ id="adminContent"
+ class="admin-content"
+>
+
+<h3>Dashboard</h3>
+
+<div class="admin-grid">
+
+<div class="admin-stat">
+<small>Total Users</small>
+<strong id="adminUsersCount">0</strong>
+</div>
+
+<div class="admin-stat">
+<small>Total Videos</small>
+<strong id="adminVideosCount">0</strong>
+</div>
+
+<div class="admin-stat">
+<small>Total Views</small>
+<strong id="adminViewsCount">0</strong>
+</div>
+
+<div class="admin-stat">
+<small>Total Reports</small>
+<strong id="adminReportsCount">0</strong>
+</div>
+
+</div>
+
+<div class="section-title">
+<h3>Reports</h3>
+</div>
+
+<div id="adminReportsList"></div>
+
+</section>
+
+</div>
+
 </div>
 
 <script>
-const SUPABASE_URL="https://ayoactrisfcdhmhsnrwz.supabase.co";
-const SUPABASE_KEY="sb_publishable_pvPMH5zhPX3_vjarFMrYtw_9uZkagYX";
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-let currentUser=null,currentProfile=null,currentVideo=null;
-let liveStream=null,liveId=null;
+/* ======================================================
+   SUPABASE
+====================================================== */
 
-const $=id=>document.getElementById(id);
+const SUPABASE_URL =
+"https://ayoactrisfcdhmhsnrwz.supabase.co";
 
-function notice(t){
- const n=$("notice");n.textContent=t;n.classList.add("show");
- setTimeout(()=>n.classList.remove("show"),2500)
+const SUPABASE_KEY =
+"sb_publishable_pvPMH5zhPX3_vjarFMrYtw_9uZkagYX";
+
+const db =
+supabase.createClient(
+ SUPABASE_URL,
+ SUPABASE_KEY
+);
+
+let user=null;
+let profile=null;
+let currentVideo=null;
+let settings=null;
+
+/* ======================================================
+   HELPERS
+====================================================== */
+
+function toast(message){
+
+ const el=document.getElementById("toast");
+
+ el.textContent=message;
+
+ el.classList.add("show");
+
+ setTimeout(()=>{
+  el.classList.remove("show");
+ },2500);
+
 }
-function closeModal(id){$(id).classList.remove("show")}
 
-async function init(){
- const {data:{session}}=await sb.auth.getSession();
- if(session){currentUser=session.user;await loadProfile();showApp()}
- else $("auth").classList.remove("hidden")
+function closeScreen(id){
+
+ document.getElementById(id).classList.remove("show");
+
 }
 
-function showApp(){$("auth").classList.add("hidden");$("app").classList.remove("hidden");loadFeed()}
+function showScreen(id){
+
+ document.getElementById(id).classList.add("show");
+
+}
+
+function escapeHTML(text){
+
+ return String(text || "")
+ .replaceAll("&","&amp;")
+ .replaceAll("<","&lt;")
+ .replaceAll(">","&gt;")
+ .replaceAll('"',"&quot;");
+
+}
+
+function toggleSwitch(el){
+
+ el.classList.toggle("on");
+
+}
+
+/* ======================================================
+   AUTH
+====================================================== */
 
 async function signup(){
- const email=$("email").value.trim(),password=$("password").value;
- if(!email||!password)return notice("Email এবং password দিন");
- const {error}=await sb.auth.signUp({email,password});
- notice(error?error.message:"Account তৈরি হয়েছে")
+
+ const email=
+ document.getElementById("email").value.trim();
+
+ const password=
+ document.getElementById("password").value;
+
+ if(!email || !password){
+
+  return showAuthError(
+   "Email এবং password দিন"
+  );
+
+ }
+
+ const {error}=await db.auth.signUp({
+  email,
+  password
+ });
+
+ if(error){
+
+  return showAuthError(error.message);
+
+ }
+
+ toast("Account created");
+
+}
+
+function showAuthError(message){
+
+ document.getElementById(
+  "authError"
+ ).textContent=message;
+
 }
 
 async function login(){
- const {data,error}=await sb.auth.signInWithPassword({
-  email:$("email").value.trim(),password:$("password").value
+
+ const email=
+ document.getElementById("email").value.trim();
+
+ const password=
+ document.getElementById("password").value;
+
+ const {data,error}=
+ await db.auth.signInWithPassword({
+  email,
+  password
  });
- if(error)return notice(error.message);
- currentUser=data.user;await loadProfile();showApp()
+
+ if(error){
+
+  return showAuthError(error.message);
+
+ }
+
+ user=data.user;
+
+ await loadProfile();
+
+ await loadSettings();
+
+ await startApp();
+
 }
 
 async function logout(){
- await stopLive();
- await sb.auth.signOut();
- location.reload()
+
+ await db.auth.signOut();
+
+ location.reload();
+
 }
+
+/* ======================================================
+   PROFILE
+====================================================== */
 
 async function loadProfile(){
- let {data}=await sb.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
- if(!data){
-  const username="rivo_"+currentUser.id.replaceAll("-","").slice(0,10);
-  const r=await sb.from("profiles").insert({
-   id:currentUser.id,username,full_name:"",avatar_url:"",bio:""
-  }).select().single();
-  data=r.data
- }
- currentProfile=data
-}
 
-function escapeHtml(t){
- return String(t||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;")
-}
+ const {data}=await db
+ .from("profiles")
+ .select("*")
+ .eq("id",user.id)
+ .maybeSingle();
 
-async function loadFeed(){
- const feed=$("feed");
- feed.innerHTML='<div class="empty">Loading RIVO...</div>';
+ if(data){
 
- const {data,error}=await sb.from("videos")
- .select("*").eq("status","published")
- .eq("visibility","Public")
- .order("created_at",{ascending:false});
+  profile=data;
 
- if(error)return feed.innerHTML='<div class="empty">ভিডিও লোড হয়নি</div>';
- feed.innerHTML="";
- if(!data?.length)return feed.innerHTML='<div class="empty"><h2>Welcome to RIVO</h2><p>＋ চাপ দিয়ে প্রথম ভিডিও Upload করুন.</p></div>';
- for(const v of data)await renderVideo(v)
-}
+ }else{
 
-async function renderVideo(video){
- const feed=$("feed");
- const {data:p}=await sb.from("profiles").select("*").eq("id",video.user_id).maybeSingle();
- const {count:likes}=await sb.from("likes").select("*",{count:"exact",head:true}).eq("video_id",video.id);
- const {count:comments}=await sb.from("comments").select("*",{count:"exact",head:true}).eq("video_id",video.id);
- const {count:shares}=await sb.from("shares").select("*",{count:"exact",head:true}).eq("video_id",video.id);
+  const username=
+  "rivo_"+user.id
+  .replaceAll("-","")
+  .slice(0,10);
 
- let liked=false,following=false;
- if(currentUser){
-  const {data:l}=await sb.from("likes").select("*").eq("user_id",currentUser.id).eq("video_id",video.id).maybeSingle();
-  liked=!!l;
-  if(video.user_id!==currentUser.id){
-   const {data:f}=await sb.from("follows").select("*").eq("follower_id",currentUser.id).eq("following_id",video.user_id).maybeSingle();
-   following=!!f
-  }
+  const {data:newProfile}=
+  await db
+  .from("profiles")
+  .insert({
+   id:user.id,
+   username,
+   full_name:"",
+   avatar_url:"",
+   bio:""
+  })
+  .select()
+  .single();
+
+  profile=newProfile;
+
  }
 
- const card=document.createElement("article");
- card.className="card";
- card.innerHTML=`
- <video class="video" src="${video.video_url}" playsinline loop preload="metadata"></video>
- <div class="play"><span>▶</span></div>
- <div class="actions">
- <button class="action ${liked?"liked":""}" onclick="toggleLike('${video.id}')"><b>♥</b><small>${likes||0}</small></button>
- <button class="action" onclick="openComments('${video.id}')"><b>💬</b><small>${comments||0}</small></button>
- <button class="action" onclick="shareVideo('${video.id}','${video.video_url}')"><b>↗</b><small>${shares||0}</small></button>
- ${video.user_id!==currentUser?.id?`<button class="action follow" onclick="toggleFollow('${video.user_id}',this)">${following?"Following":"Follow"}</button>`:""}
- <button class="action" onclick="openGifts()"><b>🎁</b><small>Gift</small></button>
- </div>
- <div class="info">
- <div class="user"><img class="avatar" src="${p?.avatar_url||"https://ui-avatars.com/api/?name=RIVO"}"><b>@${p?.username||"rivo_user"}</b></div>
- <div class="caption">${escapeHtml(video.caption)}</div>
- <div class="audio">🎵 ${video.audio_url?"Custom Audio":"RIVO Audio"}</div>
- </div>`;
-
- const vid=card.querySelector(".video");
- vid.onclick=()=>vid.paused?vid.play():vid.pause();
- feed.appendChild(card)
-}
-
-async function toggleLike(id){
- const {data:x}=await sb.from("likes").select("*").eq("user_id",currentUser.id).eq("video_id",id).maybeSingle();
- if(x)await sb.from("likes").delete().eq("user_id",currentUser.id).eq("video_id",id);
- else await sb.from("likes").insert({user_id:currentUser.id,video_id:id});
- loadFeed()
-}
-
-async function toggleFollow(id,b){
- const {data:x}=await sb.from("follows").select("*").eq("follower_id",currentUser.id).eq("following_id",id).maybeSingle();
- if(x){await sb.from("follows").delete().eq("follower_id",currentUser.id).eq("following_id",id);b.textContent="Follow"}
- else{await sb.from("follows").insert({follower_id:currentUser.id,following_id:id});b.textContent="Following"}
-}
-
-async function openComments(id){
- currentVideo=id;$("commentModal").classList.add("show");
- const {data}=await sb.from("comments").select("*").eq("video_id",id).order("created_at",{ascending:false});
- const box=$("comments");box.innerHTML="";
- for(const c of data||[]){
-  const {data:p}=await sb.from("profiles").select("username").eq("id",c.user_id).maybeSingle();
-  box.innerHTML+=`<div class="comment"><b>@${p?.username||"user"}</b>${escapeHtml(c.body)}</div>`
- }
-}
-
-async function sendComment(){
- const text=$("commentText").value.trim();
- if(!text)return;
- await sb.from("comments").insert({video_id:currentVideo,user_id:currentUser.id,body:text});
- $("commentText").value="";openComments(currentVideo)
-}
-
-async function shareVideo(id,url){
- await sb.from("shares").insert({video_id:id,user_id:currentUser.id});
- try{
-  if(navigator.share)await navigator.share({title:"RIVO Video",url});
-  else{await navigator.clipboard.writeText(url);notice("Video link copied")}
- }catch(e){}
-}
-
-function openUpload(){$("uploadModal").classList.add("show")}
-function previewVideo(){const f=$("videoFile").files[0];if(f)$("videoPreview").src=URL.createObjectURL(f)}
-function applyFilter(){
- const v=$("videoPreview"),f=$("filter").value;
- v.style.filter=f==="contrast"?"contrast(1.35)":f==="bright"?"brightness(1.3)":f==="gray"?"grayscale(1)":f==="warm"?"sepia(.35) saturate(1.3)":""
-}
-
-async function uploadVideo(){
- const file=$("videoFile").files[0];
- if(!file)return notice("ভিডিও নির্বাচন করুন");
- notice("Uploading...");
- const path=`${currentUser.id}/${Date.now()}_${file.name.replaceAll(" ","_")}`;
- const {error}=await sb.storage.from("videos").upload(path,file);
- if(error)return notice(error.message);
- const url=sb.storage.from("videos").getPublicUrl(path).data.publicUrl;
- await sb.from("videos").insert({
-  user_id:currentUser.id,video_url:url,thumbnail_url:"",
-  caption:$("caption").value,hashtags:$("hashtags").value,
-  views:0,status:"published",visibility:$("visibility").value,audio_url:""
- });
- closeModal("uploadModal");notice("Video uploaded");loadFeed()
 }
 
 async function openProfile(){
+
  await loadProfile();
- $("profileAvatar").src=currentProfile?.avatar_url||"https://ui-avatars.com/api/?name=RIVO";
- $("profileName").textContent="@"+currentProfile.username;
- $("profileBio").textContent=currentProfile.bio||"";
- $("fullName").value=currentProfile.full_name||"";
- $("bio").value=currentProfile.bio||"";
- await updateCoins();
- $("profileModal").classList.add("show")
+
+ document.getElementById(
+  "profilePhoto"
+ ).src=
+ profile.avatar_url ||
+ "https://ui-avatars.com/api/?name=Rivo";
+
+ document.getElementById(
+  "profileUsername"
+ ).textContent=
+ "@"+(profile.username || "rivo_user");
+
+ document.getElementById(
+  "profileBio"
+ ).textContent=
+ profile.bio || "RIVO Creator";
+
+ const {count:followers}=
+ await db
+ .from("follows")
+ .select("*",{count:"exact",head:true})
+ .eq("following_id",user.id);
+
+ const {count:following}=
+ await db
+ .from("follows")
+ .select("*",{count:"exact",head:true})
+ .eq("follower_id",user.id);
+
+ const {data:videos}=
+ await db
+ .from("videos")
+ .select("id")
+ .eq("user_id",user.id);
+
+ document.getElementById(
+  "followersCount"
+ ).textContent=followers || 0;
+
+ document.getElementById(
+  "followingCount"
+ ).textContent=following || 0;
+
+ let totalLikes=0;
+
+ for(const v of videos || []){
+
+  const {count}=
+  await db
+  .from("likes")
+  .select("*",{count:"exact",head:true})
+  .eq("video_id",v.id);
+
+  totalLikes += count || 0;
+
+ }
+
+ document.getElementById(
+  "likesCount"
+ ).textContent=totalLikes;
+
+ await loadProfileVideos();
+
+ showScreen("profileScreen");
+
+}
+
+async function loadProfileVideos(){
+
+ const {data}=await db
+ .from("videos")
+ .select("*")
+ .eq("user_id",user.id)
+ .order("created_at",{ascending:false});
+
+ const grid=
+ document.getElementById("profileGrid");
+
+ grid.innerHTML="";
+
+ for(const v of data || []){
+
+  const div=document.createElement("div");
+
+  div.className="profile-video";
+
+  div.innerHTML=`
+
+   <video
+    src="${v.video_url}"
+    muted
+    playsinline
+   ></video>
+
+   <span>▶ ${v.views || 0}</span>
+
+  `;
+
+  grid.appendChild(div);
+
+ }
+
+}
+
+/* ======================================================
+   EDIT PROFILE
+====================================================== */
+
+function openEditProfile(){
+
+ closeScreen("profileScreen");
+
+ document.getElementById(
+  "editAvatar"
+ ).src=
+ profile.avatar_url ||
+ "https://ui-avatars.com/api/?name=Rivo";
+
+ document.getElementById(
+  "editFullName"
+ ).value=
+ profile.full_name || "";
+
+ document.getElementById(
+  "editUsername"
+ ).value=
+ profile.username || "";
+
+ document.getElementById(
+  "editBio"
+ ).value=
+ profile.bio || "";
+
+ showScreen("editProfileScreen");
+
 }
 
 async function saveProfile(){
- let avatar=currentProfile.avatar_url||"";
- const f=$("avatarFile").files[0];
- if(f){
-  const path=`${currentUser.id}/avatar_${Date.now()}.${f.name.split(".").pop()}`;
-  const {error}=await sb.storage.from("avatars").upload(path,f,{upsert:true});
-  if(error)return notice(error.message);
-  avatar=sb.storage.from("avatars").getPublicUrl(path).data.publicUrl
+
+ let avatar=
+ profile.avatar_url || "";
+
+ const file=
+ document.getElementById(
+  "avatarFile"
+ ).files[0];
+
+ if(file){
+
+  const path=
+  `${user.id}/avatar_${Date.now()}.${file.name.split(".").pop()}`;
+
+  const {error}=
+  await db.storage
+  .from("avatars")
+  .upload(path,file,{upsert:true});
+
+  if(error){
+
+   return toast(error.message);
+
+  }
+
+  avatar=
+  db.storage
+  .from("avatars")
+  .getPublicUrl(path)
+  .data.publicUrl;
+
  }
- await sb.from("profiles").update({
-  full_name:$("fullName").value,bio:$("bio").value,avatar_url:avatar
- }).eq("id",currentUser.id);
- await loadProfile();closeModal("profileModal");notice("Profile updated");loadFeed()
-}
 
-async function updateCoins(){
- const {data}=await sb.from("wallets").select("coins").eq("user_id",currentUser.id).maybeSingle();
- $("coinBalance").textContent=data?.coins||0;
- $("coinBalance2").textContent=data?.coins||0
-}
+ const {error}=
+ await db
+ .from("profiles")
+ .update({
+  full_name:
+   document.getElementById("editFullName").value,
 
-function openCoins(){closeModal("profileModal");$("coinModal").classList.add("show");updateCoins()}
+  username:
+   document.getElementById("editUsername").value,
 
-async function buyCoins(n){
- const {error}=await sb.rpc("add_demo_coins",{p_amount:n});
- if(error)return notice(error.message);
- notice("+"+n+" coins added");updateCoins()
-}
+  bio:
+   document.getElementById("editBio").value,
 
-async function openGifts(){
- $("giftModal").classList.add("show");
- const {data}=await sb.from("gifts").select("*").order("points");
- const box=$("giftList");box.innerHTML="";
- for(const g of data||[]){
-  const b=document.createElement("button");b.className="gift";
-  b.innerHTML=`<div>${g.emoji}</div><b>${g.name}</b><br><small>${g.points} coins</small>`;
-  b.onclick=()=>notice("Live-এর সময় Gift পাঠানো যাবে");
-  box.appendChild(b)
+  avatar_url:avatar
+
+ })
+ .eq("id",user.id);
+
+ if(error){
+
+  return toast(error.message);
+
  }
+
+ await loadProfile();
+
+ closeScreen("editProfileScreen");
+
+ toast("Profile updated");
+
+ openProfile();
+
 }
 
-/* NEW FULL LIVE SCREEN */
-async function openLive(){
- if(!currentUser)return notice("Login করুন");
+/* ======================================================
+   FEED
+====================================================== */
+
+async function showFeed(type){
+
+ document.getElementById(
+  "forYouTab"
+ ).classList.toggle(
+  "active",
+  type==="forYou" || type==="forYou"
+ );
+
+ document.getElementById(
+  "followingTab"
+ ).classList.toggle(
+  "active",
+  type==="following"
+ );
+
+ const feed=
+ document.getElementById("feed");
+
+ feed.innerHTML=
+ `<div style="padding:100px;text-align:center;color:#777">
+ Loading RIVO...
+ </div>`;
+
+ let query=
+ db
+ .from("videos")
+ .select("*")
+ .eq("status","published")
+ .order("created_at",{ascending:false});
+
+ if(type==="following"){
+
+  const {data:follows}=
+  await db
+  .from("follows")
+  .select("following_id")
+  .eq("follower_id",user.id);
+
+  const ids=
+  (follows || [])
+  .map(x=>x.following_id);
+
+  if(!ids.length){
+
+   feed.innerHTML=
+   `<div style="padding:100px;text-align:center;color:#777">
+    Follow some creators first.
+   </div>`;
+
+   return;
+
+  }
+
+  query=query.in("user_id",ids);
+
+ }
+
+ const {data,error}=await query;
+
+ if(error){
+
+  feed.innerHTML=
+  `<div style="padding:100px;text-align:center">
+   ${escapeHTML(error.message)}
+  </div>`;
+
+  return;
+
+ }
+
+ feed.innerHTML="";
+
+ for(const video of data || []){
+
+  await renderVideo(video);
+
+ }
+
+ if(!data?.length){
+
+  feed.innerHTML=
+  `<div style="padding:100px;text-align:center;color:#777">
+   No videos yet.
+  </div>`;
+
+ }
+
+}
+
+/* ======================================================
+   RENDER VIDEO
+====================================================== */
+
+async function renderVideo(video){
+
+ const {data:p}=
+ await db
+ .from("profiles")
+ .select("*")
+ .eq("id",video.user_id)
+ .maybeSingle();
+
+ const {count:likeCount}=
+ await db
+ .from("likes")
+ .select("*",{count:"exact",head:true})
+ .eq("video_id",video.id);
+
+ const {count:commentCount}=
+ await db
+ .from("comments")
+ .select("*",{count:"exact",head:true})
+ .eq("video_id",video.id);
+
+ const {count:shareCount}=
+ await db
+ .from("shares")
+ .select("*",{count:"exact",head:true})
+ .eq("video_id",video.id);
+
+ const {data:likedRow}=
+ await db
+ .from("likes")
+ .select("id")
+ .eq("video_id",video.id)
+ .eq("user_id",user.id)
+ .maybeSingle();
+
+ const {data:followRow}=
+ await db
+ .from("follows")
+ .select("id")
+ .eq("follower_id",user.id)
+ .eq("following_id",video.user_id)
+ .maybeSingle();
+
+ const card=
+ document.createElement("article");
+
+ card.className="video-card";
+
+ card.innerHTML=`
+
+ <video
+  src="${video.video_url}"
+  playsinline
+  loop
+  preload="metadata"
+ ></video>
+
+ <div class="video-gradient"></div>
+
+ <div class="video-actions">
+
+  <button
+   class="video-action ${likedRow?"liked":""}"
+   onclick="toggleLike('${video.id}')"
+  >
+   <span>♥</span>
+   <small>${likeCount || 0}</small>
+  </button>
+
+  <button
+   class="video-action"
+   onclick="openComments('${video.id}')"
+  >
+   <span>●</span>
+   <small>${commentCount || 0}</small>
+  </button>
+
+  <button
+   class="video-action"
+   onclick="shareVideo('${video.id}','${video.video_url}')"
+  >
+   <span>↗</span>
+   <small>${shareCount || 0}</small>
+  </button>
+
+  ${
+   video.user_id!==user.id
+   ?
+   `
+   <button
+    class="video-action follow-btn"
+    onclick="toggleFollow('${video.user_id}',this)"
+   >
+    ${followRow?"Following":"Follow"}
+   </button>
+   `
+   :
+   ""
+  }
+
+ </div>
+
+ <div class="video-info">
+
+  <div class="creator">
+
+   <img
+    class="creator-avatar"
+    src="${
+     p?.avatar_url ||
+     'https://ui-avatars.com/api/?name=Rivo'
+    }"
+   >
+
+   <div class="creator-name">
+    @${escapeHTML(p?.username || "rivo_user")}
+    ${p?.is_verified?'<span class="verified">●</span>':""}
+   </div>
+
+  </div>
+
+  <div class="caption">
+   ${escapeHTML(video.caption)}
+  </div>
+
+  <div class="sound">
+   ♪ ${video.audio_url?"Original Sound":"RIVO Sound"}
+  </div>
+
+ </div>
+ `;
+
+ const vid=
+ card.querySelector("video");
+
+ vid.onclick=()=>{
+
+  if(vid.paused){
+
+   vid.play();
+
+  }else{
+
+   vid.pause();
+
+  }
+
+ };
+
+ document
+ .getElementById("feed")
+ .appendChild(card);
+
+}
+
+/* ======================================================
+   LIKE
+====================================================== */
+
+async function toggleLike(videoId){
+
+ const {data:existing}=
+ await db
+ .from("likes")
+ .select("id")
+ .eq("video_id",videoId)
+ .eq("user_id",user.id)
+ .maybeSingle();
+
+ if(existing){
+
+  await db
+  .from("likes")
+  .delete()
+  .eq("id",existing.id);
+
+ }else{
+
+  await db
+  .from("likes")
+  .insert({
+   video_id:videoId,
+   user_id:user.id
+  });
+
+ }
+
+ showFeed("forYou");
+
+}
+
+/* ======================================================
+   FOLLOW
+====================================================== */
+
+async function toggleFollow(targetId,button){
+
+ const {data:existing}=
+ await db
+ .from("follows")
+ .select("id")
+ .eq("follower_id",user.id)
+ .eq("following_id",targetId)
+ .maybeSingle();
+
+ if(existing){
+
+  await db
+  .from("follows")
+  .delete()
+  .eq("id",existing.id);
+
+  button.textContent="Follow";
+
+ }else{
+
+  await db
+  .from("follows")
+  .insert({
+   follower_id:user.id,
+   following_id:targetId
+  });
+
+  button.textContent="Following";
+
+ }
+
+}
+
+/* ======================================================
+   COMMENTS
+====================================================== */
+
+async function openComments(videoId){
+
+ currentVideo=videoId;
+
+ const comments=
+ await db
+ .from("comments")
+ .select("*")
+ .eq("video_id",videoId)
+ .order("created_at",{ascending:false});
+
+ const screen=
+ document.createElement("div");
+
+ screen.className="screen show";
+
+ screen.id="commentsTemp";
+
+ screen.innerHTML=`
+
+ <div class="screen-header">
+
+ <button
+  class="back-btn"
+  onclick="closeScreen('commentsTemp')"
+ >
+ ‹
+ </button>
+
+ <h2>Comments</h2>
+
+ <div></div>
+
+ </div>
+
+ <div id="commentList"
+ style="padding:10px 15px"
+ ></div>
+
+ <div
+ style="
+ position:fixed;
+ bottom:0;
+ left:0;
+ right:0;
+ padding:10px;
+ background:#111;
+ "
+ >
+
+ <input
+  id="commentInput"
+  class="input"
+  placeholder="Add comment..."
+ >
+
+ <button
+  class="primary"
+  onclick="sendComment()"
+ >
+ Comment
+ </button>
+
+ </div>
+ `;
+
+ document.body.appendChild(screen);
+
+ const list=
+ screen.querySelector("#commentList");
+
+ for(const c of comments.data || []){
+
+  const {data:p}=
+  await db
+  .from("profiles")
+  .select("username")
+  .eq("id",c.user_id)
+  .maybeSingle();
+
+  list.innerHTML+=`
+
+  <div
+   style="
+   padding:13px 0;
+   border-bottom:1px solid #222
+   "
+  >
+
+   <b>@${escapeHTML(p?.username||"user")}</b>
+
+   <div style="color:#ccc;margin-top:5px">
+    ${escapeHTML(c.body)}
+   </div>
+
+  </div>
+
+  `;
+
+ }
+
+}
+
+async function sendComment(){
+
+ const input=
+ document.getElementById("commentInput");
+
+ if(!input || !input.value.trim())return;
+
+ await db
+ .from("comments")
+ .insert({
+  video_id:currentVideo,
+  user_id:user.id,
+  body:input.value.trim()
+ });
+
+ closeScreen("commentsTemp");
+
+ toast("Comment added");
+
+}
+
+/* ======================================================
+   SHARE
+====================================================== */
+
+async function shareVideo(id,url){
+
+ await db
+ .from("shares")
+ .insert({
+  video_id:id,
+  user_id:user.id
+ });
+
  try{
-  liveStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
-  $("liveCamera").srcObject=liveStream;
- }catch(e){return notice("Camera ও microphone permission দিন")}
 
- const title=prompt("Live title","RIVO Live")||"RIVO Live";
- const {data,error}=await sb.from("live_streams").insert({
-  host_id:currentUser.id,title,status:"live"
- }).select().single();
+  if(navigator.share){
 
- if(error)return notice(error.message);
- liveId=data.id;
- $("liveTitleShow").textContent=title;
- $("liveScreen").classList.add("show");
- notice("RIVO Live started")
+   await navigator.share({
+    title:"RIVO Video",
+    url
+   });
+
+  }else{
+
+   await navigator.clipboard.writeText(url);
+
+   toast("Video link copied");
+
+  }
+
+ }catch(e){}
+
 }
 
-async function stopLive(){
- if(liveId)await sb.from("live_streams").update({
-  status:"ended",ended_at:new Date().toISOString()
- }).eq("id",liveId);
- if(liveStream)liveStream.getTracks().forEach(t=>t.stop());
- liveStream=null;liveId=null;$("liveCamera").srcObject=null;
- $("liveScreen").classList.remove("show")
+/* ======================================================
+   UPLOAD
+====================================================== */
+
+function openUpload(){
+
+ showScreen("uploadScreen");
+
 }
 
-/* SETTINGS */
-async function openSettings(){
- closeModal("profileModal");
- $("settingsModal").classList.add("show");
- await loadSettings()
+function previewVideo(){
+
+ const file=
+ document.getElementById(
+  "videoFile"
+ ).files[0];
+
+ if(!file)return;
+
+ document.getElementById(
+  "uploadPreview"
+ ).src=
+ URL.createObjectURL(file);
+
 }
+
+async function uploadVideo(){
+
+ const file=
+ document.getElementById(
+  "videoFile"
+ ).files[0];
+
+ if(!file){
+
+  return toast("Select a video");
+
+ }
+
+ toast("Uploading video...");
+
+ const safe=
+ file.name.replaceAll(" ","_");
+
+ const path=
+ `${user.id}/${Date.now()}_${safe}`;
+
+ const {error}=
+ await db.storage
+ .from("videos")
+ .upload(path,file);
+
+ if(error){
+
+  return toast(error.message);
+
+ }
+
+ const videoUrl=
+ db.storage
+ .from("videos")
+ .getPublicUrl(path)
+ .data.publicUrl;
+
+ let audioUrl="";
+
+ const audio=
+ document.getElementById(
+  "audioFile"
+ ).files[0];
+
+ if(audio){
+
+  const audioPath=
+  `${user.id}/${Date.now()}_${audio.name}`;
+
+  const result=
+  await db.storage
+  .from("audio")
+  .upload(audioPath,audio);
+
+  if(!result.error){
+
+   audioUrl=
+   db.storage
+   .from("audio")
+   .getPublicUrl(audioPath)
+   .data.publicUrl;
+
+  }
+
+ }
+
+ const {error:insertError}=
+ await db
+ .from("videos")
+ .insert({
+
+  user_id:user.id,
+
+  video_url:videoUrl,
+
+  audio_url:audioUrl,
+
+  thumbnail_url:"",
+
+  caption:
+   document.getElementById("caption").value,
+
+  hashtags:
+   document.getElementById("hashtagsInput").value,
+
+  visibility:
+   document.getElementById("visibility").value,
+
+  views:0,
+
+  status:"published"
+
+ });
+
+ if(insertError){
+
+  return toast(insertError.message);
+
+ }
+
+ closeScreen("uploadScreen");
+
+ toast("Video posted successfully");
+
+ showFeed("forYou");
+
+}
+
+/* ======================================================
+   DRAFT
+====================================================== */
+
+function saveDraft(){
+
+ toast("Draft system ready");
+
+}
+
+/* ======================================================
+   DISCOVER
+====================================================== */
+
+async function openDiscover(){
+
+ showScreen("discoverScreen");
+
+ await loadDiscover();
+
+}
+
+async function loadDiscover(){
+
+ const hashtags=[
+  ["RivoChallenge","12.5M"],
+  ["BanglaVibes","8.2M"],
+  ["RivoCreators","5.1M"],
+  ["NatureVibes","3.8M"]
+ ];
+
+ const box=
+ document.getElementById("hashtags");
+
+ box.innerHTML="";
+
+ for(const h of hashtags){
+
+  box.innerHTML+=`
+
+  <div class="hashtag">
+
+   <div class="hash">#</div>
+
+   <div style="flex:1">
+    <b>${h[0]}</b>
+   </div>
+
+   <small>${h[1]} views</small>
+
+  </div>
+
+  `;
+
+ }
+
+ const {data}=await db
+ .from("profiles")
+ .select("*")
+ .limit(6);
+
+ const creators=
+ document.getElementById(
+  "suggestedCreators"
+ );
+
+ creators.innerHTML="";
+
+ for(const p of data || []){
+
+  if(p.id===user.id)continue;
+
+  creators.innerHTML+=`
+
+  <div class="creator-row">
+
+   <img
+    src="${
+     p.avatar_url ||
+     'https://ui-avatars.com/api/?name=Rivo'
+    }"
+   >
+
+   <div class="creator-row-info">
+
+    <b>@${escapeHTML(p.username)}</b>
+
+    <small style="display:block;color:#777">
+     ${escapeHTML(p.full_name||"RIVO Creator")}
+    </small>
+
+   </div>
+
+   <button
+    onclick="toggleFollow('${p.id}',this)"
+   >
+    Follow
+   </button>
+
+  </div>
+
+  `;
+
+ }
+
+}
+
+async function searchAll(){
+
+ const q=
+ document.getElementById(
+  "searchInput"
+ ).value.trim();
+
+ if(!q){
+
+  return loadDiscover();
+
+ }
+
+ const {data}=await db
+ .from("profiles")
+ .select("*")
+ .ilike("username",`%${q}%`)
+ .limit(20);
+
+ const creators=
+ document.getElementById(
+  "suggestedCreators"
+ );
+
+ creators.innerHTML="";
+
+ for(const p of data || []){
+
+  creators.innerHTML+=`
+
+  <div class="creator-row">
+
+   <img
+    src="${
+     p.avatar_url ||
+     'https://ui-avatars.com/api/?name=Rivo'
+    }"
+   >
+
+   <div class="creator-row-info">
+    <b>@${escapeHTML(p.username)}</b>
+   </div>
+
+   <button
+    onclick="toggleFollow('${p.id}',this)"
+   >
+    Follow
+   </button>
+
+  </div>
+
+  `;
+
+ }
+
+}
+
+/* ======================================================
+   INBOX
+====================================================== */
+
+async function openInbox(){
+
+ showScreen("inboxScreen");
+
+ const {data}=await db
+ .from("notifications")
+ .select("*")
+ .eq("user_id",user.id)
+ .order("created_at",{ascending:false})
+ .limit(30);
+
+ const box=
+ document.getElementById("messages");
+
+ box.innerHTML="";
+
+ if(!data?.length){
+
+  box.innerHTML=
+  `<div style="padding:50px;text-align:center;color:#777">
+   No notifications yet
+  </div>`;
+
+  return;
+
+ }
+
+ for(const n of data){
+
+  box.innerHTML+=`
+
+  <div class="message">
+
+   <div class="message-info">
+
+    <strong>${escapeHTML(n.type)}</strong>
+
+    <small>
+     ${escapeHTML(n.message)}
+    </small>
+
+   </div>
+
+  </div>
+
+  `;
+
+ }
+
+}
+
+/* ======================================================
+   SETTINGS
+====================================================== */
 
 async function loadSettings(){
- let {data}=await sb.from("user_settings").select("*").eq("user_id",currentUser.id).maybeSingle();
- if(!data){
-  await sb.from("user_settings").insert({user_id:currentUser.id});
-  data={private_account:false,allow_comments:true,allow_gifts:true,notifications:true}
+
+ const {data}=await db
+ .from("user_settings")
+ .select("*")
+ .eq("user_id",user.id)
+ .maybeSingle();
+
+ if(data){
+
+  settings=data;
+
+ }else{
+
+  const {data:newSettings}=
+  await db
+  .from("user_settings")
+  .insert({
+   user_id:user.id
+  })
+  .select()
+  .single();
+
+  settings=newSettings;
+
  }
- setToggle("privateToggle",data.private_account);
- setToggle("commentToggle",data.allow_comments);
- setToggle("giftToggle",data.allow_gifts);
- setToggle("notificationToggle",data.notifications)
+
+ updateSettingUI();
+
 }
 
-function setToggle(id,on){$(id).classList.toggle("on",!!on)}
+function updateSettingUI(){
 
-async function toggleSetting(field){
- const {data}=await sb.from("user_settings").select(field).eq("user_id",currentUser.id).maybeSingle();
- const value=!data?.[field];
- await sb.from("user_settings").update({[field]:value,updated_at:new Date().toISOString()}).eq("user_id",currentUser.id);
- loadSettings()
+ if(!settings)return;
+
+ setSwitch(
+  "privateSwitch",
+  settings.private_account
+ );
+
+ setSwitch(
+  "commentsSettingSwitch",
+  settings.allow_comments
+ );
+
+ setSwitch(
+  "duetSettingSwitch",
+  settings.allow_duet
+ );
+
+ setSwitch(
+  "stitchSettingSwitch",
+  settings.allow_stitch
+ );
+
+ setSwitch(
+  "notificationSwitch",
+  settings.notifications
+ );
+
 }
+
+function setSwitch(id,value){
+
+ const el=
+ document.getElementById(id);
+
+ if(el){
+
+  el.classList.toggle(
+   "on",
+   Boolean(value)
+  );
+
+ }
+
+}
+
+function openSettings(){
+
+ showScreen("settingsScreen");
+
+ loadSettings();
+
+}
+
+async function toggleUserSetting(field){
+
+ if(!settings)return;
+
+ settings[field]=!settings[field];
+
+ await db
+ .from("user_settings")
+ .update({
+  [field]:settings[field],
+  updated_at:new Date().toISOString()
+ })
+ .eq("user_id",user.id);
+
+ updateSettingUI();
+
+}
+
+/* ======================================================
+   BLOCK
+====================================================== */
 
 async function openBlocked(){
- $("blockedModal").classList.add("show");
- const {data}=await sb.from("blocked_users").select("blocked_id").eq("blocker_id",currentUser.id);
- const box=$("blockedList");box.innerHTML="";
- if(!data?.length)return box.innerHTML='<div class="empty">No blocked users</div>';
- for(const x of data){
-  const {data:p}=await sb.from("profiles").select("username,avatar_url").eq("id",x.blocked_id).maybeSingle();
-  box.innerHTML+=`
-   <div class="settingItem">
-    <div class="settingLeft">
-     <img class="avatar" src="${p?.avatar_url||"https://ui-avatars.com/api/?name=User"}">
-     <div>@${p?.username||"user"}</div>
-    </div>
-    <button class="secondary" style="width:auto;margin:0" onclick="unblock('${x.blocked_id}')">Unblock</button>
-   </div>`
+
+ showScreen("blockedScreen");
+
+ const {data}=await db
+ .from("blocked_users")
+ .select("*")
+ .eq("blocker_id",user.id);
+
+ const list=
+ document.getElementById("blockedList");
+
+ list.innerHTML="";
+
+ if(!data?.length){
+
+  list.innerHTML=
+  `<div style="padding:70px;text-align:center;color:#777">
+   No blocked users
+  </div>`;
+
+  return;
+
  }
+
+ for(const row of data){
+
+  const {data:p}=
+  await db
+  .from("profiles")
+  .select("*")
+  .eq("id",row.blocked_id)
+  .maybeSingle();
+
+  list.innerHTML+=`
+
+  <div class="creator-row">
+
+   <img
+    src="${
+     p?.avatar_url ||
+     'https://ui-avatars.com/api/?name=Rivo'
+    }"
+   >
+
+   <div class="creator-row-info">
+    <b>@${escapeHTML(p?.username||"user")}</b>
+   </div>
+
+   <button
+    onclick="unblockUser('${row.blocked_id}')"
+   >
+    Unblock
+   </button>
+
+  </div>
+
+  `;
+
+ }
+
 }
 
-async function unblock(id){
- await sb.from("blocked_users").delete().eq("blocker_id",currentUser.id).eq("blocked_id",id);
- openBlocked()
+async function unblockUser(id){
+
+ await db
+ .from("blocked_users")
+ .delete()
+ .eq("blocker_id",user.id)
+ .eq("blocked_id",id);
+
+ openBlocked();
+
 }
 
-async function loadFollowing(){
- if(!currentUser)return;
- const {data:f}=await sb.from("follows").select("following_id").eq("follower_id",currentUser.id);
- const ids=(f||[]).map(x=>x.following_id);
- if(!ids.length)return $("feed").innerHTML='<div class="empty">আপনি এখনো কাউকে Follow করেননি.</div>';
- const {data:v}=await sb.from("videos").select("*").in("user_id",ids).eq("status","published").eq("visibility","Public").order("created_at",{ascending:false});
- $("feed").innerHTML="";
- for(const x of v||[])await renderVideo(x)
+/* ======================================================
+   CREATOR DASHBOARD
+====================================================== */
+
+async function openDashboard(){
+
+ showScreen("dashboardScreen");
+
+ const {data}=await db
+ .from("rivo_creator_stats")
+ .select("*")
+ .eq("user_id",user.id)
+ .maybeSingle();
+
+ document.getElementById(
+  "dashboardViews"
+ ).textContent=
+ data?.total_views || 0;
+
+ document.getElementById(
+  "dashboardFollowers"
+ ).textContent=
+ data?.followers || 0;
+
+ document.getElementById(
+  "dashboardLikes"
+ ).textContent=
+ data?.total_likes || 0;
+
+ document.getElementById(
+  "dashboardVideos"
+ ).textContent=
+ data?.total_videos || 0;
+
 }
 
-function discover(){
- $("feed").innerHTML='<div class="empty"><h2>🔎 Discover</h2><p>RIVO creators এবং videos এখানে আসবে.</p><button class="primary" onclick="loadFeed()">Back to Feed</button></div>'
+/* ======================================================
+   ADMIN
+====================================================== */
+
+async function checkAdmin(){
+
+ const {data,error}=
+ await db
+ .from("profiles")
+ .select("is_admin")
+ .eq("id",user.id)
+ .maybeSingle();
+
+ return !error && data?.is_admin===true;
+
 }
 
-init();
+async function openAdmin(){
+
+ const admin=
+ await checkAdmin();
+
+ if(!admin){
+
+  return toast(
+   "Admin access required"
+  );
+
+ }
+
+ showScreen("adminScreen");
+
+ await loadAdminDashboard();
+
+}
+
+async function loadAdminDashboard(){
+
+ const users=
+ await db
+ .from("profiles")
+ .select("*",{count:"exact",head:true});
+
+ const videos=
+ await db
+ .from("videos")
+ .select("*",{count:"exact",head:true});
+
+ const reports=
+ await db
+ .from("reports")
+ .select("*",{count:"exact",head:true});
+
+ const views=
+ await db
+ .from("videos")
+ .select("views");
+
+ let totalViews=0;
+
+ for(const v of views.data || []){
+
+  totalViews +=
+  Number(v.views || 0);
+
+ }
+
+ document.getElementById(
+  "adminUsersCount"
+ ).textContent=
+ users.count || 0;
+
+ document.getElementById(
+  "adminVideosCount"
+ ).textContent=
+ videos.count || 0;
+
+ document.getElementById(
+  "adminReportsCount"
+ ).textContent=
+ reports.count || 0;
+
+ document.getElementById(
+  "adminViewsCount"
+ ).textContent=
+ totalViews;
+
+ await adminReports();
+
+}
+
+async function adminReports(){
+
+ const admin=
+ await checkAdmin();
+
+ if(!admin)return;
+
+ const {data}=await db
+ .from("reports")
+ .select("*")
+ .order("created_at",{ascending:false})
+ .limit(50);
+
+ const box=
+ document.getElementById(
+  "adminReportsList"
+ );
+
+ box.innerHTML="";
+
+ if(!data?.length){
+
+  box.innerHTML=
+  `<div style="color:#777;padding:20px">
+   No reports
+  </div>`;
+
+  return;
+
+ }
+
+ for(const r of data){
+
+  box.innerHTML+=`
+
+  <div class="report">
+
+   <b>Report</b>
+
+   <p style="color:#aaa">
+    ${escapeHTML(r.reason)}
+   </p>
+
+   <small style="color:#666">
+    ${new Date(r.created_at).toLocaleString()}
+   </small>
+
+  </div>
+
+  `;
+
+ }
+
+}
+
+async function adminUsers(){
+
+ const admin=
+ await checkAdmin();
+
+ if(!admin)return;
+
+ const {data}=await db
+ .from("profiles")
+ .select("*")
+ .order("created_at",{ascending:false})
+ .limit(100);
+
+ const box=
+ document.getElementById(
+  "adminContent"
+ );
+
+ box.innerHTML=
+ `<h3>Users</h3>`;
+
+ for(const p of data || []){
+
+  box.innerHTML+=`
+
+  <div class="report">
+
+   <b>@${escapeHTML(p.username)}</b>
+
+   <p style="color:#777">
+    ${escapeHTML(p.full_name||"")}
+   </p>
+
+   ${
+    p.is_admin
+    ?
+    `<small style="color:#ff4b91">
+     ADMIN
+    </small>`
+    :
+    ""
+   }
+
+  </div>
+
+  `;
+
+ }
+
+}
+
+async function adminVideos(){
+
+ const admin=
+ await checkAdmin();
+
+ if(!admin)return;
+
+ const {data}=await db
+ .from("videos")
+ .select("*")
+ .order("created_at",{ascending:false})
+ .limit(100);
+
+ const box=
+ document.getElementById(
+  "adminContent"
+ );
+
+ box.innerHTML=
+ `<h3>Videos</h3>`;
+
+ for(const v of data || []){
+
+  box.innerHTML+=`
+
+  <div class="report">
+
+   <b>${escapeHTML(v.caption||"Video")}</b>
+
+   <p style="color:#777">
+    Views: ${v.views||0}
+   </p>
+
+   <button
+    onclick="removeVideo('${v.id}')"
+   >
+    Remove Video
+   </button>
+
+  </div>
+
+  `;
+
+ }
+
+}
+
+async function removeVideo(id){
+
+ const admin=
+ await checkAdmin();
+
+ if(!admin)return;
+
+ await db
+ .from("videos")
+ .update({
+  status:"removed"
+ })
+ .eq("id",id);
+
+ toast("Video removed");
+
+ adminVideos();
+
+}
+
+async function adminComments(){
+
+ const admin=
+ await checkAdmin();
+
+ if(!admin)return;
+
+ const {data}=await db
+ .from("comments")
+ .select("*")
+ .order("created_at",{ascending:false})
+ .limit(100);
+
+ const box=
+ document.getElementById(
+  "adminContent"
+ );
+
+ box.innerHTML=
+ `<h3>Comments</h3>`;
+
+ for(const c of data || []){
+
+  box.innerHTML+=`
+
+  <div class="report">
+
+   <b>Comment</b>
+
+   <p>${escapeHTML(c.body)}</p>
+
+  </div>
+
+  `;
+
+ }
+
+}
+
+/* ======================================================
+   START
+====================================================== */
+
+async function startApp(){
+
+ document
+ .getElementById("auth")
+ .classList.add("hidden");
+
+ document
+ .getElementById("app")
+ .classList.remove("hidden");
+
+ await showFeed("forYou");
+
+}
+
+/* ======================================================
+   SESSION
+====================================================== */
+
+(async function(){
+
+ const {data:{session}}=
+ await db.auth.getSession();
+
+ if(session){
+
+  user=session.user;
+
+  await loadProfile();
+
+  await loadSettings();
+
+  await startApp();
+
+ }
+
+})();
+
 </script>
+
 </body>
 </html>
