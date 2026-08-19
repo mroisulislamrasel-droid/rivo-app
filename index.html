@@ -4,378 +4,164 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>RIVO</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;background:#050505;color:#fff;font-family:Arial,sans-serif}
+html,body{margin:0;background:#050505;color:#fff;font-family:Arial,sans-serif}
 button,input,textarea,select{font:inherit}
 button{cursor:pointer}
-
-.app{
- max-width:520px;
- min-height:100vh;
- margin:auto;
- background:#080808;
- position:relative;
- overflow:hidden
-}
-
-.top{
- position:fixed;
- top:0;
- left:50%;
- transform:translateX(-50%);
- width:min(520px,100%);
- height:62px;
- z-index:20;
- display:flex;
- align-items:center;
- justify-content:space-between;
- padding:0 15px;
- background:rgba(5,5,5,.95)
-}
-
-.logo{
- font-size:28px;
- font-weight:900;
- letter-spacing:3px;
- background:linear-gradient(90deg,#ff176f,#7a52ff,#00d9ff);
- -webkit-background-clip:text;
- color:transparent
-}
-
-.tabs{display:flex;gap:20px}
-.tabs button{
- background:none;
- border:0;
- color:#777;
- font-weight:bold
-}
-.tabs .active{color:#fff}
-
-.feed{
- padding-top:62px;
- padding-bottom:78px;
- min-height:100vh
-}
-
-.card{
- position:relative;
- margin:7px;
- height:calc(100vh - 150px);
- min-height:520px;
- border-radius:18px;
- overflow:hidden;
- background:#111
-}
-
-.video{
- width:100%;
- height:100%;
- object-fit:cover;
- background:#111
-}
-
-.play{
- position:absolute;
- inset:0;
- display:flex;
- justify-content:center;
- align-items:center;
- pointer-events:none
-}
-
-.play span{
- width:68px;
- height:68px;
- border-radius:50%;
- display:flex;
- align-items:center;
- justify-content:center;
- background:rgba(0,0,0,.45);
- font-size:29px
-}
-
-.actions{
- position:absolute;
- right:10px;
- bottom:125px;
- display:flex;
- flex-direction:column;
- gap:11px;
- z-index:5
-}
-
-.action{
- width:54px;
- min-height:57px;
- border:0;
- border-radius:17px;
- background:rgba(0,0,0,.5);
- color:#fff;
- display:flex;
- flex-direction:column;
- justify-content:center;
- align-items:center;
- backdrop-filter:blur(8px)
-}
-
-.action b{font-size:23px}
-.action small{font-size:10px;margin-top:3px}
-.action.liked{color:#ff286f}
-
-.follow{
- background:linear-gradient(135deg,#ff176f,#734fff);
- font-size:11px;
- font-weight:bold
-}
-
-.info{
- position:absolute;
- left:14px;
- right:75px;
- bottom:17px;
- text-shadow:0 2px 6px #000
-}
-
-.user{
- display:flex;
- align-items:center;
- gap:9px
-}
-
-.avatar{
- width:42px;
- height:42px;
- border-radius:50%;
- object-fit:cover;
- border:2px solid #fff;
- background:#333
-}
-
-.caption{
- margin-top:7px;
- font-size:14px
-}
-
-.audio{
- margin-top:6px;
- color:#ddd;
- font-size:12px
-}
-
-.bottom{
- position:fixed;
- bottom:0;
- left:50%;
- transform:translateX(-50%);
- width:min(520px,100%);
- height:70px;
- z-index:30;
- display:flex;
- justify-content:space-around;
- align-items:center;
- background:rgba(7,7,7,.97);
- border-top:1px solid #222
-}
-
-.nav{
- border:0;
- background:none;
- color:#888;
- display:flex;
- flex-direction:column;
- align-items:center;
- gap:3px
-}
-
-.nav b{font-size:22px}
-.nav span{font-size:10px}
-.nav.active{color:#fff}
-
-.uploadBtn{
- width:55px;
- height:43px;
- border:0;
- border-radius:13px;
- background:linear-gradient(90deg,#ff176f,#7551ff);
- color:#fff;
- font-size:27px
-}
-
-.modal{
- position:fixed;
- inset:0;
- z-index:100;
- display:none;
- align-items:flex-end;
- background:rgba(0,0,0,.75)
-}
-
-.modal.show{display:flex}
-
-.sheet{
- width:min(520px,100%);
- max-height:92vh;
- overflow:auto;
- background:#111;
- border-radius:24px 24px 0 0;
- padding:20px
-}
-
-.close{
- float:right;
- width:38px;
- height:38px;
- border:0;
- border-radius:50%;
- background:#252525;
- color:#fff;
- font-size:20px
-}
-
-.field{
- width:100%;
- padding:13px;
- margin:8px 0;
- border:1px solid #333;
- border-radius:12px;
- background:#181818;
- color:#fff
-}
-
-.primary{
- width:100%;
- padding:14px;
- border:0;
- border-radius:13px;
- color:#fff;
- font-weight:bold;
- background:linear-gradient(90deg,#ff176f,#7551ff)
-}
-
-.secondary{
- width:100%;
- padding:13px;
- margin-top:8px;
- border:1px solid #333;
- border-radius:13px;
- color:#fff;
- background:#181818
-}
-
-.preview{
- width:100%;
- max-height:330px;
- border-radius:15px;
- background:#000;
- object-fit:contain
-}
-
-.row{display:flex;gap:9px}
-.row>*{flex:1}
-
-.profileHead{text-align:center;padding:15px 0}
-
-.bigAvatar{
- width:96px;
- height:96px;
- border-radius:50%;
- object-fit:cover;
- border:3px solid #fff
-}
-
-.coin{
- margin:12px 0;
- padding:15px;
- border-radius:15px;
- background:linear-gradient(135deg,#2c2000,#17120a);
- border:1px solid #624900
-}
-
-.coin strong{
- color:#ffd54a;
- font-size:25px
-}
-
-.gifts{
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:10px
-}
-
-.gift{
- padding:14px 5px;
- border-radius:15px;
- border:1px solid #333;
- background:#1a1a1a;
- color:#fff
-}
-
-.gift div{font-size:29px}
-
-.comment{
- padding:12px 0;
- border-bottom:1px solid #292929
-}
-
-.comment b{display:block;margin-bottom:4px}
-
-.liveBox{
- padding:15px;
- border-radius:18px;
- background:#171717
-}
-
-.live{
- color:#ff315f;
- font-weight:bold
-}
-
-.empty{
- text-align:center;
- color:#777;
- padding:80px 20px
-}
-
-.auth{
- min-height:100vh;
- display:flex;
- justify-content:center;
- align-items:center;
- padding:25px;
- background:
- radial-gradient(circle at 20% 20%,#32102b,transparent 35%),
- radial-gradient(circle at 80% 70%,#141c52,transparent 35%),
- #050505
-}
-
-.authBox{
- width:100%;
- max-width:400px;
- padding:28px;
- border-radius:25px;
- background:#121212;
- border:1px solid #292929
-}
-
+.app{max-width:520px;min-height:100vh;margin:auto;background:#080808;position:relative}
 .hidden{display:none!important}
 
-.notice{
- position:fixed;
- top:72px;
- left:50%;
- transform:translateX(-50%);
- z-index:200;
- padding:12px 18px;
- border-radius:12px;
- background:#242424;
- display:none
+.top{
+ position:fixed;top:0;left:50%;transform:translateX(-50%);
+ width:min(520px,100%);height:64px;z-index:20;
+ display:flex;align-items:center;justify-content:space-between;
+ padding:0 15px;background:rgba(5,5,5,.96)
 }
 
+/* NEW PREMIUM RIVO LOGO */
+.logo{
+ display:flex;align-items:center;gap:7px;
+ font-size:25px;font-weight:900;letter-spacing:2px
+}
+.logoMark{
+ width:32px;height:32px;border-radius:11px;
+ background:linear-gradient(135deg,#ff176f,#7a52ff,#00d9ff);
+ display:flex;align-items:center;justify-content:center;
+ transform:rotate(-8deg);
+ box-shadow:0 5px 18px rgba(255,23,111,.3)
+}
+.logoMark:after{
+ content:"R";font-size:21px;font-weight:900;color:#fff;
+ transform:rotate(8deg)
+}
+.logoText{
+ background:linear-gradient(90deg,#ff3d83,#8c62ff,#31ddff);
+ -webkit-background-clip:text;color:transparent
+}
+
+.tabs{display:flex;gap:18px}
+.tabs button{background:none;border:0;color:#777;font-weight:bold}
+.tabs .active{color:#fff}
+
+.feed{padding-top:65px;padding-bottom:78px;min-height:100vh}
+
+.card{
+ position:relative;margin:7px;height:calc(100vh - 150px);
+ min-height:520px;border-radius:18px;overflow:hidden;background:#111
+}
+.video{width:100%;height:100%;object-fit:cover;background:#111}
+.play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.play span{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);font-size:29px}
+
+.actions{
+ position:absolute;right:10px;bottom:125px;
+ display:flex;flex-direction:column;gap:10px;z-index:5
+}
+.action{
+ width:54px;min-height:57px;border:0;border-radius:17px;
+ background:rgba(0,0,0,.5);color:#fff;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
+ backdrop-filter:blur(8px)
+}
+.action b{font-size:22px}
+.action small{font-size:10px;margin-top:3px}
+.action.liked{color:#ff286f}
+.follow{background:linear-gradient(135deg,#ff176f,#734fff);font-size:11px;font-weight:bold}
+
+.info{position:absolute;left:14px;right:75px;bottom:17px;text-shadow:0 2px 6px #000}
+.user{display:flex;align-items:center;gap:9px}
+.avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid #fff;background:#333}
+.caption{margin-top:7px;font-size:14px}
+.audio{margin-top:6px;color:#ddd;font-size:12px}
+
+.bottom{
+ position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+ width:min(520px,100%);height:70px;z-index:30;
+ display:flex;justify-content:space-around;align-items:center;
+ background:rgba(7,7,7,.97);border-top:1px solid #222
+}
+.nav{border:0;background:none;color:#888;display:flex;flex-direction:column;align-items:center;gap:3px}
+.nav b{font-size:22px}.nav span{font-size:10px}.nav.active{color:#fff}
+.uploadBtn{width:55px;height:43px;border:0;border-radius:13px;background:linear-gradient(90deg,#ff176f,#7551ff);color:#fff;font-size:27px}
+
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:flex-end;background:rgba(0,0,0,.78)}
+.modal.show{display:flex}
+.sheet{width:min(520px,100%);max-height:94vh;overflow:auto;background:#111;border-radius:24px 24px 0 0;padding:20px}
+.close{float:right;width:38px;height:38px;border:0;border-radius:50%;background:#252525;color:#fff;font-size:20px}
+.field{width:100%;padding:13px;margin:8px 0;border:1px solid #333;border-radius:12px;background:#181818;color:#fff}
+.primary{width:100%;padding:14px;border:0;border-radius:13px;color:#fff;font-weight:bold;background:linear-gradient(90deg,#ff176f,#7551ff)}
+.secondary{width:100%;padding:13px;margin-top:8px;border:1px solid #333;border-radius:13px;color:#fff;background:#181818}
+.row{display:flex;gap:9px}.row>*{flex:1}
+
+.preview{width:100%;max-height:330px;border-radius:15px;background:#000;object-fit:contain}
+.comment{padding:12px 0;border-bottom:1px solid #292929}
+.comment b{display:block;margin-bottom:4px}
+
+.coin{margin:12px 0;padding:15px;border-radius:15px;background:#17130a;border:1px solid #624900}
+.coin strong{color:#ffd54a;font-size:25px}
+.gifts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.gift{padding:14px 5px;border-radius:15px;border:1px solid #333;background:#1a1a1a;color:#fff}
+.gift div{font-size:29px}
+
+.settingsTitle{
+ font-size:27px;font-weight:800;margin:8px 0 20px
+}
+.settingSection{
+ margin-top:20px;color:#888;font-size:12px;
+ text-transform:uppercase;font-weight:bold
+}
+.settingItem{
+ width:100%;padding:17px 3px;border:0;border-bottom:1px solid #292929;
+ background:none;color:#fff;display:flex;align-items:center;
+ justify-content:space-between;text-align:left
+}
+.settingLeft{display:flex;align-items:center;gap:13px}
+.settingIcon{
+ width:38px;height:38px;border-radius:11px;
+ background:#1d1d1d;display:flex;align-items:center;justify-content:center;font-size:20px
+}
+.arrow{color:#666;font-size:20px}
+
+.toggle{
+ width:48px;height:27px;border-radius:20px;background:#444;
+ padding:3px;border:0
+}
+.toggle i{
+ display:block;width:21px;height:21px;border-radius:50%;background:#fff;transition:.2s
+}
+.toggle.on{background:#ff176f}
+.toggle.on i{margin-left:21px}
+
+.liveScreen{
+ position:fixed;inset:0;background:#000;z-index:90;
+ display:none;flex-direction:column
+}
+.liveScreen.show{display:flex}
+.liveVideo{width:100%;height:100%;object-fit:cover}
+.liveTop{
+ position:absolute;top:0;left:0;right:0;
+ padding:18px;display:flex;justify-content:space-between;z-index:5
+}
+.liveBadge{background:#ff174f;padding:8px 12px;border-radius:12px;font-weight:bold}
+.liveClose{width:42px;height:42px;border:0;border-radius:50%;background:#0009;color:#fff;font-size:20px}
+.liveBottom{
+ position:absolute;bottom:20px;left:15px;right:15px;z-index:5
+}
+.liveTitle{font-size:18px;font-weight:bold;text-shadow:0 2px 5px #000}
+.liveActions{display:flex;gap:10px;margin-top:12px}
+.liveAction{
+ border:0;border-radius:14px;padding:12px 17px;
+ background:#0009;color:#fff
+}
+
+.auth{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:25px;background:radial-gradient(circle at 20% 20%,#32102b,transparent 35%),radial-gradient(circle at 80% 70%,#141c52,transparent 35%),#050505}
+.authBox{width:100%;max-width:400px;padding:28px;border-radius:25px;background:#121212;border:1px solid #292929}
+.notice{position:fixed;top:72px;left:50%;transform:translateX(-50%);z-index:200;padding:12px 18px;border-radius:12px;background:#242424;display:none}
 .notice.show{display:block}
+.empty{text-align:center;color:#777;padding:80px 20px}
 </style>
 </head>
 
@@ -383,117 +169,76 @@ button{cursor:pointer}
 
 <div id="notice" class="notice"></div>
 
-<!-- LOGIN -->
 <div id="auth" class="auth">
 <div class="authBox">
-
-<div class="logo" style="text-align:center;font-size:43px">
-RIVO
+<div class="logo" style="justify-content:center;font-size:38px">
+<div class="logoMark"></div><div class="logoText">RIVO</div>
 </div>
-
-<p style="text-align:center;color:#aaa">
-Create. Watch. Connect.
-</p>
-
+<p style="text-align:center;color:#aaa">Create. Watch. Connect.</p>
 <input id="email" class="field" type="email" placeholder="Email">
-
 <input id="password" class="field" type="password" placeholder="Password">
-
 <button class="primary" onclick="login()">Login</button>
-
 <button class="secondary" onclick="signup()">Create Account</button>
-
 </div>
 </div>
 
-<!-- APP -->
 <div id="app" class="app hidden">
 
 <header class="top">
-
-<div class="logo">RIVO</div>
-
+<div class="logo"><div class="logoMark"></div><div class="logoText">RIVO</div></div>
 <div class="tabs">
 <button class="active" onclick="loadFeed()">For You</button>
 <button onclick="loadFollowing()">Friends</button>
 </div>
-
-<button onclick="openCoins()" style="
-width:42px;height:42px;border:0;border-radius:50%;
-background:#171717;color:#fff">🪙</button>
-
+<button onclick="openCoins()" style="width:42px;height:42px;border:0;border-radius:50%;background:#171717;color:#fff">🪙</button>
 </header>
 
 <main id="feed" class="feed"></main>
 
 <nav class="bottom">
-
-<button class="nav active" onclick="loadFeed()">
-<b>⌂</b>
-<span>Home</span>
-</button>
-
-<button class="nav" onclick="discover()">
-<b>⌕</b>
-<span>Discover</span>
-</button>
-
+<button class="nav active" onclick="loadFeed()"><b>⌂</b><span>Home</span></button>
+<button class="nav" onclick="discover()"><b>⌕</b><span>Discover</span></button>
 <button class="uploadBtn" onclick="openUpload()">＋</button>
-
-<button class="nav" onclick="openLive()">
-<b>🔴</b>
-<span>Live</span>
-</button>
-
-<button class="nav" onclick="openProfile()">
-<b>♙</b>
-<span>Profile</span>
-</button>
-
+<button class="nav" onclick="openLive()"><b>🔴</b><span>Live</span></button>
+<button class="nav" onclick="openProfile()"><b>♙</b><span>Profile</span></button>
 </nav>
+</div>
+
+<!-- LIVE FULL SCREEN -->
+<div id="liveScreen" class="liveScreen">
+<video id="liveCamera" class="liveVideo" autoplay muted playsinline></video>
+
+<div class="liveTop">
+<div class="liveBadge">● LIVE</div>
+<button class="liveClose" onclick="stopLive()">×</button>
+</div>
+
+<div class="liveBottom">
+<div id="liveTitleShow" class="liveTitle">RIVO Live</div>
+<div class="liveActions">
+<button class="liveAction" onclick="openGifts()">🎁 Gift</button>
+<button class="liveAction" onclick="openCoins()">🪙 Coins</button>
+<button class="liveAction" onclick="openSettings()">⚙️</button>
+</div>
+</div>
 </div>
 
 <!-- UPLOAD -->
 <div id="uploadModal" class="modal">
 <div class="sheet">
-
 <button class="close" onclick="closeModal('uploadModal')">×</button>
-
 <h2>🎬 Create Video</h2>
-
-<input id="videoFile"
- class="field"
- type="file"
- accept="video/*"
- capture="environment"
- onchange="previewVideo()">
-
-<video id="videoPreview"
- class="preview"
- controls
- playsinline></video>
-
-<input id="caption"
- class="field"
- placeholder="Write caption...">
-
-<input id="hashtags"
- class="field"
- placeholder="#hashtags">
-
+<input id="videoFile" class="field" type="file" accept="video/*" capture="environment" onchange="previewVideo()">
+<video id="videoPreview" class="preview" controls playsinline></video>
+<input id="caption" class="field" placeholder="Write caption...">
+<input id="hashtags" class="field" placeholder="#hashtags">
 <select id="visibility" class="field">
 <option value="Public">🌎 Public</option>
 <option value="Followers">👥 Followers</option>
 <option value="Private">🔒 Only Me</option>
 </select>
-
 <label style="color:#aaa">🎵 Select Audio</label>
-
-<input id="audioFile"
- class="field"
- type="file"
- accept="audio/*">
-
+<input id="audioFile" class="field" type="file" accept="audio/*">
 <select id="filter" class="field" onchange="applyFilter()">
 <option value="">Normal</option>
 <option value="contrast">Contrast</option>
@@ -501,1149 +246,474 @@ background:#171717;color:#fff">🪙</button>
 <option value="gray">Black & White</option>
 <option value="warm">Warm</option>
 </select>
-
-<button class="primary" onclick="uploadVideo()">
-Upload Video
-</button>
-
+<button class="primary" onclick="uploadVideo()">Upload Video</button>
 </div>
 </div>
 
 <!-- COMMENTS -->
 <div id="commentModal" class="modal">
 <div class="sheet">
-
 <button class="close" onclick="closeModal('commentModal')">×</button>
-
 <h2>💬 Comments</h2>
-
 <div id="comments"></div>
-
 <div class="row">
-<input id="commentText"
- class="field"
- placeholder="Write comment...">
-
-<button class="primary"
- style="max-width:100px"
- onclick="sendComment()">Send</button>
+<input id="commentText" class="field" placeholder="Write comment...">
+<button class="primary" style="max-width:100px" onclick="sendComment()">Send</button>
 </div>
-
 </div>
 </div>
 
 <!-- PROFILE -->
 <div id="profileModal" class="modal">
 <div class="sheet">
-
 <button class="close" onclick="closeModal('profileModal')">×</button>
-
-<div class="profileHead">
-
-<img id="profileAvatar" class="bigAvatar">
-
+<div style="text-align:center;padding:15px">
+<img id="profileAvatar" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid #fff">
 <h2 id="profileName"></h2>
-
 <p id="profileBio" style="color:#aaa"></p>
-
-<input id="avatarFile"
- class="field"
- type="file"
- accept="image/*">
-
-<input id="fullName"
- class="field"
- placeholder="Full name">
-
-<input id="bio"
- class="field"
- placeholder="Bio">
-
-<button class="primary" onclick="saveProfile()">
-Save Profile
-</button>
-
+<input id="avatarFile" class="field" type="file" accept="image/*">
+<input id="fullName" class="field" placeholder="Full name">
+<input id="bio" class="field" placeholder="Bio">
+<button class="primary" onclick="saveProfile()">Save Profile</button>
+<div class="coin">🪙 RIVO Coins<br><strong id="coinBalance">0</strong></div>
+<button class="secondary" onclick="openCoins()">Buy Coins</button>
+<button class="secondary" onclick="openSettings()">⚙️ Settings</button>
 </div>
-
-<div class="coin">
-🪙 RIVO Coins<br>
-<strong id="coinBalance">0</strong>
-</div>
-
-<button class="secondary" onclick="openCoins()">
-Buy Coins
-</button>
-
 </div>
 </div>
 
 <!-- COINS -->
 <div id="coinModal" class="modal">
 <div class="sheet">
-
 <button class="close" onclick="closeModal('coinModal')">×</button>
-
 <h2>🪙 RIVO Coins</h2>
-
-<div class="coin">
-Balance:
-<strong id="coinBalance2">0</strong>
-</div>
-
+<div class="coin">Balance: <strong id="coinBalance2">0</strong></div>
 <button class="secondary" onclick="buyCoins(100)">100 Coins</button>
 <button class="secondary" onclick="buyCoins(500)">500 Coins</button>
 <button class="secondary" onclick="buyCoins(1000)">1,000 Coins</button>
 <button class="secondary" onclick="buyCoins(5000)">5,000 Coins</button>
 <button class="secondary" onclick="buyCoins(10000)">10,000 Coins</button>
-
 </div>
 </div>
 
 <!-- GIFTS -->
 <div id="giftModal" class="modal">
 <div class="sheet">
-
 <button class="close" onclick="closeModal('giftModal')">×</button>
-
 <h2>🎁 Gifts</h2>
-
 <div id="giftList" class="gifts"></div>
-
 </div>
 </div>
 
-<!-- LIVE -->
-<div id="liveModal" class="modal">
+<!-- SETTINGS -->
+<div id="settingsModal" class="modal">
 <div class="sheet">
 
-<button class="close" onclick="closeModal('liveModal')">×</button>
+<button class="close" onclick="closeModal('settingsModal')">×</button>
 
-<h2>🔴 RIVO Live</h2>
+<div class="settingsTitle">⚙️ Settings</div>
 
-<div class="liveBox">
-<video id="livePreview"
- class="preview"
- autoplay
- muted
- playsinline></video>
+<div class="settingSection">Account</div>
+
+<button class="settingItem" onclick="openProfile()">
+<div class="settingLeft"><div class="settingIcon">👤</div><div>Profile</div></div>
+<div class="arrow">›</div>
+</button>
+
+<button class="settingItem" onclick="notice('Account settings coming soon')">
+<div class="settingLeft"><div class="settingIcon">🔐</div><div>Account & Security</div></div>
+<div class="arrow">›</div>
+</button>
+
+<div class="settingSection">Privacy</div>
+
+<button class="settingItem" onclick="toggleSetting('private_account')">
+<div class="settingLeft"><div class="settingIcon">🔒</div><div>Private Account</div></div>
+<button id="privateToggle" class="toggle"><i></i></button>
+</button>
+
+<button class="settingItem" onclick="openBlocked()">
+<div class="settingLeft"><div class="settingIcon">🚫</div><div>Blocked Users</div></div>
+<div class="arrow">›</div>
+</button>
+
+<div class="settingSection">Content</div>
+
+<button class="settingItem" onclick="notice('Video settings active')">
+<div class="settingLeft"><div class="settingIcon">🎥</div><div>Video Settings</div></div>
+<div class="arrow">›</div>
+</button>
+
+<button class="settingItem" onclick="toggleSetting('allow_comments')">
+<div class="settingLeft"><div class="settingIcon">💬</div><div>Allow Comments</div></div>
+<button id="commentToggle" class="toggle on"><i></i></button>
+</button>
+
+<button class="settingItem" onclick="toggleSetting('allow_gifts')">
+<div class="settingLeft"><div class="settingIcon">🎁</div><div>Allow Gifts</div></div>
+<button id="giftToggle" class="toggle on"><i></i></button>
+</button>
+
+<div class="settingSection">Notifications</div>
+
+<button class="settingItem" onclick="toggleSetting('notifications')">
+<div class="settingLeft"><div class="settingIcon">🔔</div><div>Notifications</div></div>
+<button id="notificationToggle" class="toggle on"><i></i></button>
+</button>
+
+<div class="settingSection">Other</div>
+
+<button class="settingItem" onclick="notice('Language: English')">
+<div class="settingLeft"><div class="settingIcon">🌐</div><div>Language</div></div>
+<div class="arrow">›</div>
+</button>
+
+<button class="settingItem" onclick="notice('RIVO Help Center')">
+<div class="settingLeft"><div class="settingIcon">❓</div><div>Help & Support</div></div>
+<div class="arrow">›</div>
+</button>
+
+<button class="settingItem" onclick="logout()">
+<div class="settingLeft"><div class="settingIcon">🚪</div><div style="color:#ff456d">Log Out</div></div>
+<div class="arrow">›</div>
+</button>
+
+</div>
 </div>
 
-<input id="liveTitle"
- class="field"
- placeholder="Live title">
-
-<button id="startLiveBtn"
- class="primary"
- onclick="startLive()">
-Start Live
-</button>
-
-<button id="stopLiveBtn"
- class="secondary hidden"
- onclick="stopLive()">
-End Live
-</button>
-
-<div id="liveInfo" style="margin-top:15px"></div>
-
+<!-- BLOCKED -->
+<div id="blockedModal" class="modal">
+<div class="sheet">
+<button class="close" onclick="closeModal('blockedModal')">×</button>
+<h2>🚫 Blocked Users</h2>
+<div id="blockedList"></div>
 </div>
 </div>
 
 <script>
 const SUPABASE_URL="https://ayoactrisfcdhmhsnrwz.supabase.co";
+const SUPABASE_KEY="sb_publishable_pvPMH5zhPX3_vjarFMrYtw_9uZkagYX";
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const SUPABASE_KEY=
-"sb_publishable_pvPMH5zhPX3_vjarFMrYtw_9uZkagYX";
-
-const sb=supabase.createClient(
- SUPABASE_URL,
- SUPABASE_KEY
-);
-
-let currentUser=null;
-let currentProfile=null;
-let currentVideo=null;
-let liveStream=null;
-let liveId=null;
+let currentUser=null,currentProfile=null,currentVideo=null;
+let liveStream=null,liveId=null;
 
 const $=id=>document.getElementById(id);
 
-function notice(text){
- const n=$("notice");
- n.textContent=text;
- n.classList.add("show");
- setTimeout(()=>n.classList.remove("show"),2500);
+function notice(t){
+ const n=$("notice");n.textContent=t;n.classList.add("show");
+ setTimeout(()=>n.classList.remove("show"),2500)
 }
-
-function closeModal(id){
- $(id).classList.remove("show");
-}
+function closeModal(id){$(id).classList.remove("show")}
 
 async function init(){
-
- const {data:{session}}=
- await sb.auth.getSession();
-
- if(session){
-
-   currentUser=session.user;
-
-   await loadProfile();
-
-   showApp();
-
- }else{
-
-   $("auth").classList.remove("hidden");
- }
+ const {data:{session}}=await sb.auth.getSession();
+ if(session){currentUser=session.user;await loadProfile();showApp()}
+ else $("auth").classList.remove("hidden")
 }
 
-function showApp(){
-
- $("auth").classList.add("hidden");
-
- $("app").classList.remove("hidden");
-
- loadFeed();
-}
+function showApp(){$("auth").classList.add("hidden");$("app").classList.remove("hidden");loadFeed()}
 
 async function signup(){
-
- const email=$("email").value.trim();
- const password=$("password").value;
-
- if(!email||!password){
-
-   notice("Email এবং password দিন");
-
-   return;
- }
-
- const {error}=await sb.auth.signUp({
-   email,
-   password
- });
-
- if(error){
-
-   notice(error.message);
-
- }else{
-
-   notice("Account তৈরি হয়েছে");
- }
+ const email=$("email").value.trim(),password=$("password").value;
+ if(!email||!password)return notice("Email এবং password দিন");
+ const {error}=await sb.auth.signUp({email,password});
+ notice(error?error.message:"Account তৈরি হয়েছে")
 }
 
 async function login(){
-
- const email=$("email").value.trim();
- const password=$("password").value;
-
- const {data,error}=
- await sb.auth.signInWithPassword({
-   email,
-   password
+ const {data,error}=await sb.auth.signInWithPassword({
+  email:$("email").value.trim(),password:$("password").value
  });
+ if(error)return notice(error.message);
+ currentUser=data.user;await loadProfile();showApp()
+}
 
- if(error){
-
-   notice(error.message);
-
-   return;
- }
-
- currentUser=data.user;
-
- await loadProfile();
-
- showApp();
+async function logout(){
+ await stopLive();
+ await sb.auth.signOut();
+ location.reload()
 }
 
 async function loadProfile(){
-
- if(!currentUser)return;
-
- let {data}=await sb
- .from("profiles")
- .select("id,username,full_name,avatar_url,bio")
- .eq("id",currentUser.id)
- .maybeSingle();
-
+ let {data}=await sb.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
  if(!data){
-
-   const username=
-   "rivo_"+currentUser.id
-   .replaceAll("-","")
-   .slice(0,10);
-
-   const result=
-   await sb.from("profiles")
-   .insert({
-     id:currentUser.id,
-     username,
-     full_name:"",
-     avatar_url:"",
-     bio:""
-   })
-   .select()
-   .single();
-
-   data=result.data;
+  const username="rivo_"+currentUser.id.replaceAll("-","").slice(0,10);
+  const r=await sb.from("profiles").insert({
+   id:currentUser.id,username,full_name:"",avatar_url:"",bio:""
+  }).select().single();
+  data=r.data
  }
+ currentProfile=data
+}
 
- currentProfile=data;
+function escapeHtml(t){
+ return String(t||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;")
 }
 
 async function loadFeed(){
-
  const feed=$("feed");
+ feed.innerHTML='<div class="empty">Loading RIVO...</div>';
 
- feed.innerHTML=
- '<div class="empty">Loading RIVO...</div>';
-
- const {data:videos,error}=
- await sb
- .from("videos")
- .select("*")
- .eq("status","published")
+ const {data,error}=await sb.from("videos")
+ .select("*").eq("status","published")
  .eq("visibility","Public")
  .order("created_at",{ascending:false});
 
- if(error){
-
-   console.error(error);
-
-   feed.innerHTML=
-   '<div class="empty">ভিডিও লোড হয়নি</div>';
-
-   return;
- }
-
- if(!videos?.length){
-
-   feed.innerHTML=
-   '<div class="empty"><h2>Welcome to RIVO</h2><p>＋ চাপ দিয়ে প্রথম ভিডিও Upload করুন.</p></div>';
-
-   return;
- }
-
+ if(error)return feed.innerHTML='<div class="empty">ভিডিও লোড হয়নি</div>';
  feed.innerHTML="";
-
- for(const video of videos){
-
-   await renderVideo(video);
- }
+ if(!data?.length)return feed.innerHTML='<div class="empty"><h2>Welcome to RIVO</h2><p>＋ চাপ দিয়ে প্রথম ভিডিও Upload করুন.</p></div>';
+ for(const v of data)await renderVideo(v)
 }
 
 async function renderVideo(video){
-
  const feed=$("feed");
+ const {data:p}=await sb.from("profiles").select("*").eq("id",video.user_id).maybeSingle();
+ const {count:likes}=await sb.from("likes").select("*",{count:"exact",head:true}).eq("video_id",video.id);
+ const {count:comments}=await sb.from("comments").select("*",{count:"exact",head:true}).eq("video_id",video.id);
+ const {count:shares}=await sb.from("shares").select("*",{count:"exact",head:true}).eq("video_id",video.id);
 
- const {data:profile}=await sb
- .from("profiles")
- .select("id,username,avatar_url")
- .eq("id",video.user_id)
- .maybeSingle();
-
- const {count:likes}=await sb
- .from("likes")
- .select("*",{count:"exact",head:true})
- .eq("video_id",video.id);
-
- const {count:comments}=await sb
- .from("comments")
- .select("*",{count:"exact",head:true})
- .eq("video_id",video.id);
-
- const {count:shares}=await sb
- .from("shares")
- .select("*",{count:"exact",head:true})
- .eq("video_id",video.id);
-
- let liked=false;
- let following=false;
-
+ let liked=false,following=false;
  if(currentUser){
-
-   const {data:l}=await sb
-   .from("likes")
-   .select("video_id")
-   .eq("video_id",video.id)
-   .eq("user_id",currentUser.id)
-   .maybeSingle();
-
-   liked=!!l;
-
-   if(video.user_id!==currentUser.id){
-
-     const {data:f}=await sb
-     .from("follows")
-     .select("following_id")
-     .eq("follower_id",currentUser.id)
-     .eq("following_id",video.user_id)
-     .maybeSingle();
-
-     following=!!f;
-   }
+  const {data:l}=await sb.from("likes").select("*").eq("user_id",currentUser.id).eq("video_id",video.id).maybeSingle();
+  liked=!!l;
+  if(video.user_id!==currentUser.id){
+   const {data:f}=await sb.from("follows").select("*").eq("follower_id",currentUser.id).eq("following_id",video.user_id).maybeSingle();
+   following=!!f
+  }
  }
 
  const card=document.createElement("article");
-
  card.className="card";
-
  card.innerHTML=`
-
- <video
-   class="video"
-   src="${video.video_url}"
-   playsinline
-   loop
-   preload="metadata">
- </video>
-
- <div class="play">
-   <span>▶</span>
- </div>
-
+ <video class="video" src="${video.video_url}" playsinline loop preload="metadata"></video>
+ <div class="play"><span>▶</span></div>
  <div class="actions">
-
- <button class="action ${liked?"liked":""}"
- onclick="toggleLike('${video.id}',this)">
- <b>♥</b>
- <small>${likes||0}</small>
- </button>
-
- <button class="action"
- onclick="openComments('${video.id}')">
- <b>💬</b>
- <small>${comments||0}</small>
- </button>
-
- <button class="action"
- onclick="shareVideo('${video.id}','${video.video_url}')">
- <b>↗</b>
- <small>${shares||0}</small>
- </button>
-
- ${
- video.user_id!==currentUser?.id
- ?
- `<button class="action follow"
- onclick="toggleFollow('${video.user_id}',this)">
- ${following?"Following":"Follow"}
- </button>`
- :""
- }
-
- <button class="action"
- onclick="openGifts()">
- <b>🎁</b>
- <small>Gift</small>
- </button>
-
+ <button class="action ${liked?"liked":""}" onclick="toggleLike('${video.id}')"><b>♥</b><small>${likes||0}</small></button>
+ <button class="action" onclick="openComments('${video.id}')"><b>💬</b><small>${comments||0}</small></button>
+ <button class="action" onclick="shareVideo('${video.id}','${video.video_url}')"><b>↗</b><small>${shares||0}</small></button>
+ ${video.user_id!==currentUser?.id?`<button class="action follow" onclick="toggleFollow('${video.user_id}',this)">${following?"Following":"Follow"}</button>`:""}
+ <button class="action" onclick="openGifts()"><b>🎁</b><small>Gift</small></button>
  </div>
-
  <div class="info">
-
- <div class="user">
-
- <img class="avatar"
- src="${
- profile?.avatar_url ||
- 'https://ui-avatars.com/api/?name=RIVO'
- }">
-
- <b>
- @${profile?.username||"rivo_user"}
- </b>
-
- </div>
-
- <div class="caption">
- ${escapeHtml(video.caption||"")}
- </div>
-
- <div class="audio">
- 🎵 ${video.audio_url?"Custom Audio":"RIVO Audio"}
- </div>
-
- </div>
- `;
+ <div class="user"><img class="avatar" src="${p?.avatar_url||"https://ui-avatars.com/api/?name=RIVO"}"><b>@${p?.username||"rivo_user"}</b></div>
+ <div class="caption">${escapeHtml(video.caption)}</div>
+ <div class="audio">🎵 ${video.audio_url?"Custom Audio":"RIVO Audio"}</div>
+ </div>`;
 
  const vid=card.querySelector(".video");
-
- vid.addEventListener("click",()=>{
-
-   if(vid.paused){
-
-     vid.play();
-
-   }else{
-
-     vid.pause();
-   }
- });
-
- feed.appendChild(card);
+ vid.onclick=()=>vid.paused?vid.play():vid.pause();
+ feed.appendChild(card)
 }
 
-function escapeHtml(text){
-
- return String(text)
- .replaceAll("&","&amp;")
- .replaceAll("<","&lt;")
- .replaceAll(">","&gt;")
- .replaceAll('"',"&quot;");
+async function toggleLike(id){
+ const {data:x}=await sb.from("likes").select("*").eq("user_id",currentUser.id).eq("video_id",id).maybeSingle();
+ if(x)await sb.from("likes").delete().eq("user_id",currentUser.id).eq("video_id",id);
+ else await sb.from("likes").insert({user_id:currentUser.id,video_id:id});
+ loadFeed()
 }
 
-async function toggleLike(videoId,button){
-
- if(!currentUser){
-
-   notice("Login করুন");
-
-   return;
- }
-
- const {data:existing}=
- await sb
- .from("likes")
- .select("*")
- .eq("user_id",currentUser.id)
- .eq("video_id",videoId)
- .maybeSingle();
-
- if(existing){
-
-   await sb.from("likes")
-   .delete()
-   .eq("user_id",currentUser.id)
-   .eq("video_id",videoId);
-
- }else{
-
-   await sb.from("likes")
-   .insert({
-     user_id:currentUser.id,
-     video_id:videoId
-   });
- }
-
- loadFeed();
+async function toggleFollow(id,b){
+ const {data:x}=await sb.from("follows").select("*").eq("follower_id",currentUser.id).eq("following_id",id).maybeSingle();
+ if(x){await sb.from("follows").delete().eq("follower_id",currentUser.id).eq("following_id",id);b.textContent="Follow"}
+ else{await sb.from("follows").insert({follower_id:currentUser.id,following_id:id});b.textContent="Following"}
 }
 
-async function toggleFollow(userId,button){
-
- if(!currentUser)return;
-
- const {data:existing}=
- await sb
- .from("follows")
- .select("*")
- .eq("follower_id",currentUser.id)
- .eq("following_id",userId)
- .maybeSingle();
-
- if(existing){
-
-   await sb.from("follows")
-   .delete()
-   .eq("follower_id",currentUser.id)
-   .eq("following_id",userId);
-
-   button.textContent="Follow";
-
- }else{
-
-   await sb.from("follows")
-   .insert({
-     follower_id:currentUser.id,
-     following_id:userId
-   });
-
-   button.textContent="Following";
- }
-}
-
-async function openComments(videoId){
-
- currentVideo=videoId;
-
- $("commentModal").classList.add("show");
-
- const {data}=await sb
- .from("comments")
- .select("id,user_id,body,created_at")
- .eq("video_id",videoId)
- .order("created_at",{ascending:false});
-
- const box=$("comments");
-
- box.innerHTML="";
-
+async function openComments(id){
+ currentVideo=id;$("commentModal").classList.add("show");
+ const {data}=await sb.from("comments").select("*").eq("video_id",id).order("created_at",{ascending:false});
+ const box=$("comments");box.innerHTML="";
  for(const c of data||[]){
-
-   const {data:p}=await sb
-   .from("profiles")
-   .select("username")
-   .eq("id",c.user_id)
-   .maybeSingle();
-
-   const div=document.createElement("div");
-
-   div.className="comment";
-
-   div.innerHTML=`
-   <b>@${p?.username||"user"}</b>
-   ${escapeHtml(c.body)}
-   `;
-
-   box.appendChild(div);
+  const {data:p}=await sb.from("profiles").select("username").eq("id",c.user_id).maybeSingle();
+  box.innerHTML+=`<div class="comment"><b>@${p?.username||"user"}</b>${escapeHtml(c.body)}</div>`
  }
 }
 
 async function sendComment(){
-
- if(!currentUser||!currentVideo)return;
-
  const text=$("commentText").value.trim();
-
  if(!text)return;
-
- const {error}=await sb
- .from("comments")
- .insert({
-   video_id:currentVideo,
-   user_id:currentUser.id,
-   body:text
- });
-
- if(error){
-
-   notice(error.message);
-
-   return;
- }
-
- $("commentText").value="";
-
- openComments(currentVideo);
+ await sb.from("comments").insert({video_id:currentVideo,user_id:currentUser.id,body:text});
+ $("commentText").value="";openComments(currentVideo)
 }
 
-async function shareVideo(videoId,url){
-
- if(currentUser){
-
-   await sb.from("shares").insert({
-     video_id:videoId,
-     user_id:currentUser.id
-   });
- }
-
+async function shareVideo(id,url){
+ await sb.from("shares").insert({video_id:id,user_id:currentUser.id});
  try{
-
-   if(navigator.share){
-
-     await navigator.share({
-       title:"RIVO Video",
-       url
-     });
-
-   }else{
-
-     await navigator.clipboard.writeText(url);
-
-     notice("Video link copied");
-   }
-
+  if(navigator.share)await navigator.share({title:"RIVO Video",url});
+  else{await navigator.clipboard.writeText(url);notice("Video link copied")}
  }catch(e){}
-
- loadFeed();
 }
 
-function openUpload(){
-
- $("uploadModal").classList.add("show");
-}
-
-function previewVideo(){
-
- const file=$("videoFile").files[0];
-
- if(file){
-
-   $("videoPreview").src=
-   URL.createObjectURL(file);
- }
-}
-
+function openUpload(){$("uploadModal").classList.add("show")}
+function previewVideo(){const f=$("videoFile").files[0];if(f)$("videoPreview").src=URL.createObjectURL(f)}
 function applyFilter(){
-
- const v=$("videoPreview");
-
- const f=$("filter").value;
-
- if(f==="contrast")
- v.style.filter="contrast(1.35)";
-
- else if(f==="bright")
- v.style.filter="brightness(1.3)";
-
- else if(f==="gray")
- v.style.filter="grayscale(1)";
-
- else if(f==="warm")
- v.style.filter="sepia(.35) saturate(1.3)";
-
- else
- v.style.filter="";
+ const v=$("videoPreview"),f=$("filter").value;
+ v.style.filter=f==="contrast"?"contrast(1.35)":f==="bright"?"brightness(1.3)":f==="gray"?"grayscale(1)":f==="warm"?"sepia(.35) saturate(1.3)":""
 }
 
 async function uploadVideo(){
-
- if(!currentUser){
-
-   notice("Login করুন");
-
-   return;
- }
-
  const file=$("videoFile").files[0];
-
- if(!file){
-
-   notice("ভিডিও নির্বাচন করুন");
-
-   return;
- }
-
- notice("Uploading video...");
-
- const safeName=
- file.name.replaceAll(" ","_");
-
- const path=
- `${currentUser.id}/${Date.now()}_${safeName}`;
-
- const {error:uploadError}=
- await sb.storage
- .from("videos")
- .upload(path,file);
-
- if(uploadError){
-
-   notice(uploadError.message);
-
-   return;
- }
-
- const publicUrl=
- sb.storage
- .from("videos")
- .getPublicUrl(path)
- .data.publicUrl;
-
- let audioUrl="";
-
- const audio=$("audioFile").files[0];
-
- if(audio){
-
-   const audioPath=
-   `${currentUser.id}/${Date.now()}_${audio.name.replaceAll(" ","_")}`;
-
-   const {error}=await sb.storage
-   .from("audio")
-   .upload(audioPath,audio);
-
-   if(!error){
-
-     audioUrl=
-     sb.storage
-     .from("audio")
-     .getPublicUrl(audioPath)
-     .data.publicUrl;
-   }
- }
-
- const {error}=await sb
- .from("videos")
- .insert({
-   user_id:currentUser.id,
-   video_url:publicUrl,
-   thumbnail_url:"",
-   caption:$("caption").value,
-   hashtags:$("hashtags").value,
-   views:0,
-   status:"published",
-   visibility:$("visibility").value,
-   audio_url:audioUrl
+ if(!file)return notice("ভিডিও নির্বাচন করুন");
+ notice("Uploading...");
+ const path=`${currentUser.id}/${Date.now()}_${file.name.replaceAll(" ","_")}`;
+ const {error}=await sb.storage.from("videos").upload(path,file);
+ if(error)return notice(error.message);
+ const url=sb.storage.from("videos").getPublicUrl(path).data.publicUrl;
+ await sb.from("videos").insert({
+  user_id:currentUser.id,video_url:url,thumbnail_url:"",
+  caption:$("caption").value,hashtags:$("hashtags").value,
+  views:0,status:"published",visibility:$("visibility").value,audio_url:""
  });
-
- if(error){
-
-   notice(error.message);
-
-   return;
- }
-
- closeModal("uploadModal");
-
- $("videoFile").value="";
- $("audioFile").value="";
- $("caption").value="";
- $("hashtags").value="";
-
- notice("Video uploaded successfully");
-
- loadFeed();
+ closeModal("uploadModal");notice("Video uploaded");loadFeed()
 }
 
 async function openProfile(){
-
  await loadProfile();
-
- $("profileAvatar").src=
- currentProfile?.avatar_url||
- "https://ui-avatars.com/api/?name=RIVO";
-
- $("profileName").textContent=
- "@"+(currentProfile?.username||"rivo_user");
-
- $("profileBio").textContent=
- currentProfile?.bio||"";
-
- $("fullName").value=
- currentProfile?.full_name||"";
-
- $("bio").value=
- currentProfile?.bio||"";
-
+ $("profileAvatar").src=currentProfile?.avatar_url||"https://ui-avatars.com/api/?name=RIVO";
+ $("profileName").textContent="@"+currentProfile.username;
+ $("profileBio").textContent=currentProfile.bio||"";
+ $("fullName").value=currentProfile.full_name||"";
+ $("bio").value=currentProfile.bio||"";
  await updateCoins();
-
- $("profileModal").classList.add("show");
+ $("profileModal").classList.add("show")
 }
 
 async function saveProfile(){
-
- if(!currentUser)return;
-
- let avatarUrl=
- currentProfile?.avatar_url||"";
-
- const file=$("avatarFile").files[0];
-
- if(file){
-
-   const ext=
-   file.name.split(".").pop();
-
-   const path=
-   `${currentUser.id}/avatar_${Date.now()}.${ext}`;
-
-   const {error}=await sb.storage
-   .from("avatars")
-   .upload(path,file,{upsert:true});
-
-   if(error){
-
-     notice(error.message);
-
-     return;
-   }
-
-   avatarUrl=
-   sb.storage
-   .from("avatars")
-   .getPublicUrl(path)
-   .data.publicUrl;
+ let avatar=currentProfile.avatar_url||"";
+ const f=$("avatarFile").files[0];
+ if(f){
+  const path=`${currentUser.id}/avatar_${Date.now()}.${f.name.split(".").pop()}`;
+  const {error}=await sb.storage.from("avatars").upload(path,f,{upsert:true});
+  if(error)return notice(error.message);
+  avatar=sb.storage.from("avatars").getPublicUrl(path).data.publicUrl
  }
-
- const {error}=await sb
- .from("profiles")
- .update({
-   full_name:$("fullName").value,
-   bio:$("bio").value,
-   avatar_url:avatarUrl
- })
- .eq("id",currentUser.id);
-
- if(error){
-
-   notice(error.message);
-
-   return;
- }
-
- await loadProfile();
-
- closeModal("profileModal");
-
- notice("Profile updated");
-
- loadFeed();
+ await sb.from("profiles").update({
+  full_name:$("fullName").value,bio:$("bio").value,avatar_url:avatar
+ }).eq("id",currentUser.id);
+ await loadProfile();closeModal("profileModal");notice("Profile updated");loadFeed()
 }
 
 async function updateCoins(){
-
- if(!currentUser)return;
-
- const {data}=await sb
- .from("wallets")
- .select("coins")
- .eq("user_id",currentUser.id)
- .maybeSingle();
-
- const coins=data?.coins||0;
-
- $("coinBalance").textContent=coins;
- $("coinBalance2").textContent=coins;
+ const {data}=await sb.from("wallets").select("coins").eq("user_id",currentUser.id).maybeSingle();
+ $("coinBalance").textContent=data?.coins||0;
+ $("coinBalance2").textContent=data?.coins||0
 }
 
-function openCoins(){
+function openCoins(){closeModal("profileModal");$("coinModal").classList.add("show");updateCoins()}
 
- closeModal("profileModal");
-
- $("coinModal").classList.add("show");
-
- updateCoins();
-}
-
-async function buyCoins(amount){
-
- const {data,error}=
- await sb.rpc(
-   "add_demo_coins",
-   {p_amount:amount}
- );
-
- if(error){
-
-   notice(error.message);
-
-   return;
- }
-
- notice(`+${amount} coins added`);
-
- updateCoins();
+async function buyCoins(n){
+ const {error}=await sb.rpc("add_demo_coins",{p_amount:n});
+ if(error)return notice(error.message);
+ notice("+"+n+" coins added");updateCoins()
 }
 
 async function openGifts(){
-
  $("giftModal").classList.add("show");
-
- const {data,error}=
- await sb
- .from("gifts")
- .select("*")
- .order("points");
-
- if(error){
-
-   notice(error.message);
-
-   return;
- }
-
- const box=$("giftList");
-
- box.innerHTML="";
-
+ const {data}=await sb.from("gifts").select("*").order("points");
+ const box=$("giftList");box.innerHTML="";
  for(const g of data||[]){
-
-   const btn=document.createElement("button");
-
-   btn.className="gift";
-
-   btn.innerHTML=`
-   <div>${g.emoji}</div>
-   <b>${g.name}</b>
-   <br>
-   <small>${g.points} coins</small>
-   `;
-
-   btn.onclick=()=>{
-
-     notice("Gift Live-এর ভিতর থেকে পাঠানো যাবে");
-   };
-
-   box.appendChild(btn);
+  const b=document.createElement("button");b.className="gift";
+  b.innerHTML=`<div>${g.emoji}</div><b>${g.name}</b><br><small>${g.points} coins</small>`;
+  b.onclick=()=>notice("Live-এর সময় Gift পাঠানো যাবে");
+  box.appendChild(b)
  }
 }
 
-function openLive(){
-
- $("liveModal").classList.add("show");
-}
-
-async function startLive(){
-
- if(!currentUser){
-
-   notice("Login করুন");
-
-   return;
- }
-
+/* NEW FULL LIVE SCREEN */
+async function openLive(){
+ if(!currentUser)return notice("Login করুন");
  try{
+  liveStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+  $("liveCamera").srcObject=liveStream;
+ }catch(e){return notice("Camera ও microphone permission দিন")}
 
-   liveStream=
-   await navigator.mediaDevices.getUserMedia({
-     video:true,
-     audio:true
-   });
+ const title=prompt("Live title","RIVO Live")||"RIVO Live";
+ const {data,error}=await sb.from("live_streams").insert({
+  host_id:currentUser.id,title,status:"live"
+ }).select().single();
 
-   $("livePreview").srcObject=
-   liveStream;
-
- }catch(e){
-
-   notice("Camera ও microphone permission দিন");
-
-   return;
- }
-
- const title=
- $("liveTitle").value.trim()||
- "RIVO Live";
-
- const {data,error}=
- await sb
- .from("live_streams")
- .insert({
-   host_id:currentUser.id,
-   title,
-   status:"live"
- })
- .select()
- .single();
-
- if(error){
-
-   notice(error.message);
-
-   return;
- }
-
+ if(error)return notice(error.message);
  liveId=data.id;
-
- $("startLiveBtn")
- .classList.add("hidden");
-
- $("stopLiveBtn")
- .classList.remove("hidden");
-
- $("liveInfo").innerHTML=
- `<span class="live">● LIVE</span><br>${escapeHtml(title)}`;
-
- notice("RIVO Live started");
+ $("liveTitleShow").textContent=title;
+ $("liveScreen").classList.add("show");
+ notice("RIVO Live started")
 }
 
 async function stopLive(){
+ if(liveId)await sb.from("live_streams").update({
+  status:"ended",ended_at:new Date().toISOString()
+ }).eq("id",liveId);
+ if(liveStream)liveStream.getTracks().forEach(t=>t.stop());
+ liveStream=null;liveId=null;$("liveCamera").srcObject=null;
+ $("liveScreen").classList.remove("show")
+}
 
- if(liveId){
+/* SETTINGS */
+async function openSettings(){
+ closeModal("profileModal");
+ $("settingsModal").classList.add("show");
+ await loadSettings()
+}
 
-   await sb
-   .from("live_streams")
-   .update({
-     status:"ended",
-     ended_at:new Date().toISOString()
-   })
-   .eq("id",liveId);
+async function loadSettings(){
+ let {data}=await sb.from("user_settings").select("*").eq("user_id",currentUser.id).maybeSingle();
+ if(!data){
+  await sb.from("user_settings").insert({user_id:currentUser.id});
+  data={private_account:false,allow_comments:true,allow_gifts:true,notifications:true}
  }
+ setToggle("privateToggle",data.private_account);
+ setToggle("commentToggle",data.allow_comments);
+ setToggle("giftToggle",data.allow_gifts);
+ setToggle("notificationToggle",data.notifications)
+}
 
- if(liveStream){
+function setToggle(id,on){$(id).classList.toggle("on",!!on)}
 
-   liveStream
-   .getTracks()
-   .forEach(t=>t.stop());
+async function toggleSetting(field){
+ const {data}=await sb.from("user_settings").select(field).eq("user_id",currentUser.id).maybeSingle();
+ const value=!data?.[field];
+ await sb.from("user_settings").update({[field]:value,updated_at:new Date().toISOString()}).eq("user_id",currentUser.id);
+ loadSettings()
+}
 
-   liveStream=null;
+async function openBlocked(){
+ $("blockedModal").classList.add("show");
+ const {data}=await sb.from("blocked_users").select("blocked_id").eq("blocker_id",currentUser.id);
+ const box=$("blockedList");box.innerHTML="";
+ if(!data?.length)return box.innerHTML='<div class="empty">No blocked users</div>';
+ for(const x of data){
+  const {data:p}=await sb.from("profiles").select("username,avatar_url").eq("id",x.blocked_id).maybeSingle();
+  box.innerHTML+=`
+   <div class="settingItem">
+    <div class="settingLeft">
+     <img class="avatar" src="${p?.avatar_url||"https://ui-avatars.com/api/?name=User"}">
+     <div>@${p?.username||"user"}</div>
+    </div>
+    <button class="secondary" style="width:auto;margin:0" onclick="unblock('${x.blocked_id}')">Unblock</button>
+   </div>`
  }
+}
 
- $("livePreview").srcObject=null;
-
- liveId=null;
-
- $("startLiveBtn")
- .classList.remove("hidden");
-
- $("stopLiveBtn")
- .classList.add("hidden");
-
- $("liveInfo").textContent="";
-
- notice("Live ended");
+async function unblock(id){
+ await sb.from("blocked_users").delete().eq("blocker_id",currentUser.id).eq("blocked_id",id);
+ openBlocked()
 }
 
 async function loadFollowing(){
-
- if(!currentUser){
-
-   notice("Login করুন");
-
-   return;
- }
-
- const {data:follows}=
- await sb
- .from("follows")
- .select("following_id")
- .eq("follower_id",currentUser.id);
-
- const ids=
- (follows||[])
- .map(x=>x.following_id);
-
- if(!ids.length){
-
-   $("feed").innerHTML=
-   '<div class="empty">আপনি এখনো কাউকে Follow করেননি.</div>';
-
-   return;
- }
-
- const {data:videos}=
- await sb
- .from("videos")
- .select("*")
- .in("user_id",ids)
- .eq("status","published")
- .eq("visibility","Public")
- .order("created_at",{ascending:false});
-
+ if(!currentUser)return;
+ const {data:f}=await sb.from("follows").select("following_id").eq("follower_id",currentUser.id);
+ const ids=(f||[]).map(x=>x.following_id);
+ if(!ids.length)return $("feed").innerHTML='<div class="empty">আপনি এখনো কাউকে Follow করেননি.</div>';
+ const {data:v}=await sb.from("videos").select("*").in("user_id",ids).eq("status","published").eq("visibility","Public").order("created_at",{ascending:false});
  $("feed").innerHTML="";
-
- if(!videos?.length){
-
-   $("feed").innerHTML=
-   '<div class="empty">Following creators-এর নতুন video নেই.</div>';
-
-   return;
- }
-
- for(const video of videos){
-
-   await renderVideo(video);
- }
+ for(const x of v||[])await renderVideo(x)
 }
 
 function discover(){
-
- $("feed").innerHTML=`
- <div class="empty">
- <h2>🔎 Discover</h2>
- <p>RIVO creators এবং videos এখানে আসবে.</p>
- <button class="primary" onclick="loadFeed()">
- Back to Feed
- </button>
- </div>
- `;
+ $("feed").innerHTML='<div class="empty"><h2>🔎 Discover</h2><p>RIVO creators এবং videos এখানে আসবে.</p><button class="primary" onclick="loadFeed()">Back to Feed</button></div>'
 }
 
 init();
 </script>
-
 </body>
 </html>
