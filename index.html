@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000">
+<title>Rivo</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#000;color:#fff;font-family:Arial,sans-serif}
+button,input,textarea,select{font:inherit}.app{max-width:520px;margin:auto;min-height:100vh;background:#000}
+.top{position:fixed;top:0;left:50%;transform:translateX(-50%);width:min(520px,100%);z-index:20;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:linear-gradient(#000c,transparent);pointer-events:none}.top>*{pointer-events:auto}.brand{font-size:24px;font-weight:900}.status{font-size:11px;color:#bbb}
+.feed{height:100vh;overflow-y:auto;scroll-snap-type:y mandatory}.item{height:100vh;scroll-snap-align:start;position:relative;background:#111}.item video{width:100%;height:100%;object-fit:cover}.gradient{position:absolute;inset:0;background:linear-gradient(transparent 45%,#000c);pointer-events:none}
+.meta{position:absolute;left:14px;right:80px;bottom:72px}.meta b{font-size:16px}.meta p{margin:8px 0;line-height:1.35}.follow{border:1px solid #fff;border-radius:6px;background:#fff;color:#000;padding:5px 10px;font-weight:700;margin-left:8px}
+.actions{position:absolute;right:10px;bottom:70px;display:flex;flex-direction:column;align-items:center;gap:8px}.act{background:none;border:0;color:#fff;font-size:29px}.count{font-size:12px;margin-bottom:4px}.avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #fff}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);height:58px;background:#090909ee;border-top:1px solid #222;display:flex;z-index:30}.nav button{flex:1;background:none;border:0;color:#aaa}.nav button.active{color:#fff}
+.sheet{position:fixed;inset:0;background:#111;z-index:40;display:none;overflow:auto}.sheet.open{display:block}.sheet header{height:54px;display:flex;align-items:center;gap:12px;padding:0 14px;border-bottom:1px solid #292929;position:sticky;top:0;background:#111;z-index:2}.close{background:none;border:0;color:#fff;font-size:24px}.box,.profile,.search{padding:18px 14px 80px}.preview{width:100%;max-height:55vh;background:#000;border-radius:12px;margin:10px 0}.row{display:flex;gap:8px}.row>*{flex:1}.field{margin:10px 0}label{display:block;font-size:13px;color:#bbb;margin-bottom:6px}input,textarea,select{width:100%;background:#1b1b1b;color:#fff;border:1px solid #3a3a3a;border-radius:10px;padding:12px}textarea{min-height:90px}.primary{width:100%;padding:13px;border:0;border-radius:10px;background:#fff;color:#000;font-weight:800}.secondary{padding:11px;border:1px solid #444;border-radius:10px;background:#1a1a1a;color:#fff}.muted{color:#aaa;font-size:13px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:20px}.grid video{width:100%;aspect-ratio:3/4;object-fit:cover;background:#111}.modal{position:fixed;inset:0;background:#000a;z-index:50;display:none;align-items:flex-end}.modal.open{display:flex}.modalCard{background:#171717;width:100%;max-width:520px;margin:auto;border-radius:18px 18px 0 0;padding:18px}.comments{max-height:55vh;overflow:auto}.comment{padding:10px 0;border-bottom:1px solid #292929}.result{padding:12px 0;border-bottom:1px solid #222}.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#fff;color:#000;padding:10px 14px;border-radius:10px;z-index:100;display:none}.toast.show{display:block}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top"><div class="brand">Rivo</div><div id="conn" class="status">Connecting…</div></div>
+<main id="feed" class="feed"></main>
+<section id="searchPage" class="search" style="display:none"><h2>Search</h2><input id="searchInput" placeholder="Username খুঁজুন"><div id="searchResults"></div></section>
+<section id="profilePage" class="profile" style="display:none"><div style="display:flex;gap:14px;align-items:center"><img id="pavatar" style="width:74px;height:74px;border-radius:50%;object-fit:cover;background:#333"><div><h2 id="pname" style="margin:0">@Guest</h2><div id="pstats" class="muted"></div></div></div><p id="pbio" class="muted"></p><div id="myGrid" class="grid"></div></section>
+<nav class="nav"><button data-page="home" class="active">⌂<br><small>Home</small></button><button data-page="search">⌕<br><small>Search</small></button><button id="openUpload">＋<br><small>Create</small></button><button data-page="profile">◎<br><small>Profile</small></button></nav>
+</div>
+
+<div id="uploadSheet" class="sheet"><header><button class="close" id="closeUpload">×</button><b>Create video</b></header><div class="box">
+<input id="videoFile" type="file" accept="video/*"><video id="preview" class="preview" controls playsinline style="display:none"></video>
+<div id="editTools" style="display:none"><div class="row field"><div><label>Start</label><input id="start" type="number" min="0" step=".1" value="0"></div><div><label>End</label><input id="end" type="number" min="0" step=".1"></div></div><div class="row field"><div><label>Speed</label><select id="speed"><option>1</option><option>.75</option><option>1.25</option><option>1.5</option><option>2</option></select></div><div><label>Volume</label><select id="volume"><option value="1">Sound</option><option value="0">Mute</option></select></div></div></div>
+<textarea id="caption" placeholder="ক্যাপশন লিখুন #rivo"></textarea><button class="primary" id="publish">Publish video</button><p id="uploadMsg" class="muted"></p></div></div>
+
+<div id="loginSheet" class="sheet"><header><button class="close" id="closeLogin">×</button><b>Rivo Account</b></header><div class="box"><input id="email" type="email" placeholder="Email"><input id="password" type="password" placeholder="Password" style="margin-top:8px"><button class="primary" id="authBtn" style="margin-top:10px">Login / Sign up</button><p id="authMsg" class="muted"></p></div></div>
+
+<div id="commentModal" class="modal"><div class="modalCard"><div style="display:flex;justify-content:space-between"><b>Comments</b><button class="close" id="closeComments">×</button></div><div id="comments" class="comments"></div><div class="row" style="margin-top:10px"><input id="commentInput" placeholder="মন্তব্য লিখুন"><button class="secondary" id="sendComment">Send</button></div></div></div>
+<div id="toast" class="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://ayoactrisfcdhmhsnrwz.supabase.co";
+const SUPABASE_KEY="sb_publishable_pvPMH5zhPX3_vjarFMrYtw_9uZkagYX";
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let user=null,currentVideo=null;
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+function toast(t){$("toast").textContent=t;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),2200)}
+function sheet(id,on=true){$(id).classList.toggle("open",on)}
+
+async function init(){
+ const s=await db.auth.getSession();user=s.data.session?.user||null;
+ $("conn").textContent=user?"Online":"Guest";loadFeed();loadProfile();
+ db.auth.onAuthStateChange((e,s)=>{user=s?.user||null;$("conn").textContent=user?"Online":"Guest";loadProfile()});
+}
+
+async function loadFeed(){
+ const r=await db.from("videos").select("id,video_url,caption,views,user_id,profiles(username,avatar_url)").eq("status","published").order("created_at",{ascending:false});
+ if(r.error){$("feed").innerHTML="<div style='padding:80px 20px'>"+esc(r.error.message)+"</div>";return}
+ $("feed").innerHTML="";
+ (r.data||[]).forEach(v=>{
+  const a=document.createElement("article");a.className="item";
+  a.innerHTML='<video src="'+esc(v.video_url)+'" playsinline loop preload="metadata"></video><div class="gradient"></div><div class="meta"><b>@'+esc(v.profiles?.username||"user")+'</b><button class="follow" data-follow="'+v.user_id+'">Follow</button><p>'+esc(v.caption||"")+'</p></div><div class="actions"><img class="avatar" src="'+esc(v.profiles?.avatar_url||"")+'" onerror="this.style.visibility=\'hidden\'"><button class="act" data-like="'+v.id+'">♡</button><span class="count" id="l-'+v.id+'">0</span><button class="act" data-comment="'+v.id+'">💬</button><span class="count" id="c-'+v.id+'">0</span><button class="act" data-share="'+v.id+'">↗</button><span class="count">Share</span><span class="count">👁 '+(v.views||0)+'</span></div>';
+  $("feed").appendChild(a);a.querySelector("video").onclick=e=>e.currentTarget.paused?e.currentTarget.play():e.currentTarget.pause();counts(v.id);
+ });
+ document.querySelectorAll("[data-like]").forEach(b=>b.onclick=()=>like(b.dataset.like,b));
+ document.querySelectorAll("[data-comment]").forEach(b=>b.onclick=()=>comments(b.dataset.comment));
+ document.querySelectorAll("[data-share]").forEach(b=>b.onclick=()=>share(b.dataset.share));
+ document.querySelectorAll("[data-follow]").forEach(b=>b.onclick=()=>follow(b.dataset.follow,b));
+ setupObserver();
+}
+async function counts(id){const l=await db.from("likes").select("*",{count:"exact",head:true}).eq("video_id",id);const c=await db.from("comments").select("*",{count:"exact",head:true}).eq("video_id",id);$("l-"+id).textContent=l.count||0;$("c-"+id).textContent=c.count||0}
+async function like(id,b){if(!user)return sheet("loginSheet");const q=await db.from("likes").select("*").eq("video_id",id).eq("user_id",user.id).maybeSingle();if(q.data){await db.from("likes").delete().eq("video_id",id).eq("user_id",user.id);b.textContent="♡"}else{await db.from("likes").insert({video_id:id,user_id:user.id});b.textContent="♥"}counts(id)}
+async function follow(id,b){if(!user)return sheet("loginSheet");if(id===user.id)return toast("নিজেকে follow করা যাবে না");const q=await db.from("follows").select("*").eq("follower_id",user.id).eq("following_id",id).maybeSingle();if(q.data){await db.from("follows").delete().eq("follower_id",user.id).eq("following_id",id);b.textContent="Follow"}else{await db.from("follows").insert({follower_id:user.id,following_id:id});b.textContent="Following"}}
+async function share(id){if(user)await db.from("shares").insert({video_id:id,user_id:user.id});const url=location.href+"#video-"+id;if(navigator.share){try{await navigator.share({title:"Rivo video",url})}catch(e){}}else{await navigator.clipboard?.writeText(url);toast("লিংক কপি হয়েছে")}}
+async function comments(id){currentVideo=id;sheet("commentModal");$("comments").textContent="Loading…";const r=await db.from("comments").select("body,profiles(username)").eq("video_id",id).order("created_at",{ascending:false});$("comments").innerHTML=(r.data||[]).map(c=>'<div class="comment"><b>@'+esc(c.profiles?.username||"user")+'</b><br>'+esc(c.body)+'</div>').join("")||"<p class='muted'>কোনো মন্তব্য নেই।</p>"}
+$("sendComment").onclick=async()=>{if(!user)return sheet("loginSheet");const body=$("commentInput").value.trim();if(!body||!currentVideo)return;const r=await db.from("comments").insert({video_id:currentVideo,user_id:user.id,body});if(r.error)return toast(r.error.message);$("commentInput").value="";comments(currentVideo);counts(currentVideo)}
+
+$("videoFile").onchange=()=>{const f=$("videoFile").files[0];if(!f)return;$("preview").src=URL.createObjectURL(f);$("preview").style.display="block";$("editTools").style.display="block";$("preview").onloadedmetadata=()=>{$("end").value=$("preview").duration.toFixed(1)}};
+$("speed").onchange=()=>{$("preview").playbackRate=Number($("speed").value)};$("volume").onchange=()=>{$("preview").muted=$("volume").value==="0"};
+
+$("publish").onclick=async()=>{
+ if(!user)return sheet("loginSheet");
+ const f=$("videoFile").files[0];if(!f)return toast("ভিডিও নির্বাচন করুন");if(f.size>100*1024*1024)return toast("ভিডিও 100MB-এর মধ্যে রাখুন");
+ $("publish").disabled=true;$("uploadMsg").textContent="Uploading…";
+ const path=user.id+"/"+crypto.randomUUID()+"-"+f.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+ const up=await db.storage.from("videos").upload(path,f,{contentType:f.type,upsert:false});
+ if(up.error){$("uploadMsg").textContent=up.error.message;$("publish").disabled=false;return}
+ const url=db.storage.from("videos").getPublicUrl(path).data.publicUrl;
+ const r=await db.from("videos").insert({user_id:user.id,video_url:url,caption:$("caption").value.trim(),status:"published"});
+ if(r.error){$("uploadMsg").textContent=r.error.message;$("publish").disabled=false;return}
+ toast("ভিডিও প্রকাশ হয়েছে");$("publish").disabled=false;sheet("uploadSheet",false);loadFeed();
+};
+
+$("authBtn").onclick=async()=>{const email=$("email").value.trim(),pass=$("password").value;if(!email||!pass)return $("authMsg").textContent="Email ও password দিন";let r=await db.auth.signInWithPassword({email,password:pass});if(r.error)r=await db.auth.signUp({email,password:pass});$("authMsg").textContent=r.error?r.error.message:"সফল হয়েছে ✓";if(!r.error){sheet("loginSheet",false);init()}};
+
+async function loadProfile(){
+ if(!user){$("pname").textContent="@Guest";$("pstats").textContent="Login করুন";return}
+ const p=await db.from("profiles").select("*").eq("id",user.id).maybeSingle();$("pname").textContent="@"+(p.data?.username||"user");$("pbio").textContent=p.data?.bio||"";$("pavatar").src=p.data?.avatar_url||"";
+ const v=await db.from("videos").select("video_url").eq("user_id",user.id).order("created_at",{ascending:false});
+ $("pstats").textContent=(v.data?.length||0)+" videos";$("myGrid").innerHTML=(v.data||[]).map(x=>'<video src="'+esc(x.video_url)+'" controls playsinline></video>').join("")
+}
+
+function setupObserver(){const ob=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector("video");if(e.isIntersecting)v.play().catch(()=>{});else v.pause()}),{threshold:.7});document.querySelectorAll(".item").forEach(x=>ob.observe(x))}
+$("openUpload").onclick=()=>user?sheet("uploadSheet"):sheet("loginSheet");
+$("closeUpload").onclick=()=>sheet("uploadSheet",false);$("closeLogin").onclick=()=>sheet("loginSheet",false);$("closeComments").onclick=()=>sheet("commentModal",false);
+
+document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>{document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$("feed").style.display=b.dataset.page==="home"?"block":"none";$("searchPage").style.display=b.dataset.page==="search"?"block":"none";$("profilePage").style.display=b.dataset.page==="profile"?"block":"none";if(b.dataset.page==="profile")loadProfile()});
+$("searchInput").oninput=async e=>{const q=e.target.value.trim();if(!q)return $("searchResults").innerHTML="";const r=await db.from("profiles").select("username,full_name").ilike("username","%"+q+"%").limit(20);$("searchResults").innerHTML=(r.data||[]).map(x=>'<div class="result"><b>@'+esc(x.username)+'</b><br><span class="muted">'+esc(x.full_name||"")+'</span></div>').join("")};
+init();
+</script>
+</body>
+</html>
