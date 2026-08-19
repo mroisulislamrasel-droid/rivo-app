@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RIVO — Short Video</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#050609;--card:#0d0f14;--card2:#13151b;--line:#242731;--muted:#969aa8;--white:#fff;--pink:#ff1f69;--pink2:#ff3d83;--purple:#8b5cf6;--blue:#45b8ff}
+*{box-sizing:border-box}html,body{margin:0;background:#000;color:#fff;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}body{min-height:100vh}
+button,input,textarea,select{font:inherit}button{cursor:pointer}.app{width:min(520px,100%);min-height:100vh;margin:auto;background:var(--bg);position:relative;overflow:hidden}
+.topbar{position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:50;width:min(520px,100%);height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:linear-gradient(#050609f2,#050609b8,transparent);pointer-events:none}.topbar>*{pointer-events:auto}
+.brand{font-size:26px;font-weight:1000;letter-spacing:-1.8px;background:linear-gradient(90deg,#ff206c,#a855f7,#42b9ff);-webkit-background-clip:text;color:transparent}.topcenter{display:flex;gap:18px;font-size:14px;font-weight:800}.topcenter button{background:none;color:#888b97;border:0}.topcenter button.on{color:#fff}.round{width:38px;height:38px;border-radius:50%;border:1px solid #ffffff16;background:#11131a;color:#fff;display:grid;place-items:center;font-size:19px}
+main{padding-bottom:76px}.screen{display:none;min-height:100vh}.screen.on{display:block}
+.feed{height:100vh;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none}.feed::-webkit-scrollbar{display:none}.video-card{height:100vh;position:relative;scroll-snap-align:start;background:#111;overflow:hidden}.video-card video,.video-placeholder{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.video-placeholder{background:radial-gradient(circle at 70% 20%,#7c3aed 0,#25153c 25%,#090a0f 70%);display:flex;align-items:center;justify-content:center}.vignette{position:absolute;inset:0;background:linear-gradient(180deg,#0007 0,transparent 32%,transparent 55%,#000e 100%)}.video-copy{position:absolute;left:16px;right:78px;bottom:22px;z-index:2}.user-row{display:flex;align-items:center;gap:10px}.avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;background:linear-gradient(135deg,#ff206c,#8b5cf6);border:2px solid #fff}.username{font-weight:900}.verified{color:#42b9ff}.follow-btn{margin-left:3px;background:var(--pink);border:0;border-radius:9px;padding:7px 12px;color:#fff;font-weight:900;font-size:12px}.caption{font-size:14px;line-height:1.4;margin-top:10px}.hashtags{font-size:13px;margin-top:5px;color:#ddd}.sound{font-size:12px;margin-top:8px;color:#ddd}.feed-top-actions{position:absolute;z-index:4;left:12px;right:12px;top:66px;display:flex;align-items:center;justify-content:flex-end;gap:7px;pointer-events:none}.feed-top-actions>*{pointer-events:auto}.feed-action{height:38px;border:1px solid #ffffff20;border-radius:20px;background:#11131acc;color:#fff;padding:0 12px;font-weight:900;font-size:12px;backdrop-filter:blur(10px)}.feed-action.active{color:#ff3d83;border-color:#ff3d8355}.feed-views{height:38px;display:flex;align-items:center;gap:5px;border:1px solid #ffffff20;border-radius:20px;background:#11131acc;color:#fff;padding:0 11px;font-size:12px;font-weight:900;backdrop-filter:blur(10px)}.side-actions{position:absolute;z-index:3;right:10px;bottom:18px;display:flex;flex-direction:column;align-items:center;gap:5px}.side-btn{width:48px;height:48px;border:0;border-radius:50%;background:#11131acc;color:#fff;display:grid;place-items:center;font-size:22px;backdrop-filter:blur(8px)}.side-btn.active{color:#ff3d83}.side-label{font-size:10px;color:#fff;margin-bottom:7px}.sound-disc{width:42px;height:42px;border-radius:50%;border:4px solid #111;background:linear-gradient(135deg,#222,#777);display:grid;place-items:center}
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:60;width:min(520px,100%);height:76px;padding-bottom:env(safe-area-inset-bottom);display:flex;align-items:center;justify-content:space-around;background:#08090df5;border-top:1px solid #20222b;backdrop-filter:blur(18px)}.nav{border:0;background:none;color:#8f929e;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:4px}.nav b{font-size:22px;line-height:1}.nav.on{color:#fff}.upload-pill{width:49px;height:40px;border-radius:12px;background:linear-gradient(135deg,#ff1f69,#9c4dff);color:#fff!important;font-size:26px!important;box-shadow:0 7px 22px #ff1f6945}
+.page{padding:78px 14px 94px;min-height:100vh}.page-title{font-size:26px;font-weight:950;margin:4px 0 16px}.searchbox{height:48px;width:100%;border-radius:14px;border:1px solid #272a35;background:#14161d;color:#fff;padding:0 14px;outline:none}.searchbox:focus{border-color:#ff2d75}.section{margin-top:22px}.section-head{display:flex;justify-content:space-between;align-items:center;font-weight:900;margin-bottom:10px}.muted{color:var(--muted);font-size:13px}.trend{display:flex;gap:9px;overflow:auto}.trend span{white-space:nowrap;padding:9px 13px;border-radius:20px;background:#15171e;border:1px solid #252832;font-size:12px}.user-list{display:flex;flex-direction:column;gap:9px}.user-item{display:flex;align-items:center;gap:11px;padding:10px;border-radius:14px;background:#101219}.user-item .grow{flex:1}.user-item .small-follow{background:#ff1f69;border:0;color:#fff;padding:8px 13px;border-radius:9px;font-weight:900;font-size:12px}.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}.mini{aspect-ratio:3/4;background:#161820;border-radius:3px;overflow:hidden;position:relative}.mini video,.mini div{width:100%;height:100%;object-fit:cover}.mini .count{position:absolute;left:6px;bottom:5px;text-shadow:0 1px 5px #000;font-size:11px}
+.profile{padding:78px 14px 94px}.profile-top{text-align:center}.big-avatar{width:94px;height:94px;border-radius:50%;object-fit:cover;border:3px solid #ff2d75;background:linear-gradient(135deg,#ff1f69,#8b5cf6)}.profile-name{font-size:22px;font-weight:950;margin-top:10px}.bio{color:#c6c8d0;font-size:13px;margin:7px auto;max-width:350px}.stats{display:flex;justify-content:center;gap:35px;margin:18px 0}.stat{text-align:center}.stat b{display:block;font-size:18px}.stat span{color:#8e919d;font-size:11px}.profile-actions{display:flex;gap:8px;justify-content:center}.outline{border:1px solid #343741;background:#181a21;color:#fff;border-radius:10px;padding:10px 18px;font-weight:900}.profile-tabs{display:flex;border-bottom:1px solid #272932;margin-top:24px}.profile-tabs button{flex:1;background:none;border:0;color:#888;padding:12px;border-bottom:2px solid transparent}.profile-tabs button.active{color:#fff;border-bottom-color:#ff2d75}
+.settings{padding:78px 14px 94px}.settings-group{border:1px solid #242731;border-radius:16px;overflow:hidden;margin-bottom:14px}.setting{width:100%;display:flex;align-items:center;gap:12px;background:#11131a;border:0;border-bottom:1px solid #242731;color:#fff;text-align:left;padding:16px}.setting:last-child{border-bottom:0}.setting .grow{flex:1}.setting .arrow{color:#777}.danger{color:#ff4c82!important}
+.inbox{padding:78px 14px 94px}.stories{display:flex;gap:13px;overflow:auto;margin:12px -2px 22px}.story{min-width:58px;text-align:center;font-size:10px;color:#ddd}.story-img{width:58px;height:58px;border-radius:50%;padding:2px;background:linear-gradient(135deg,#ff1f69,#8b5cf6,#45b8ff)}.story-img img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid #090a0e}.message{display:flex;gap:11px;padding:13px 4px;border-bottom:1px solid #20222b}.message .grow{flex:1}.badge{background:#ff1f69;border-radius:20px;padding:3px 7px;font-size:10px;font-weight:900}
+.modal{position:fixed;inset:0;z-index:100;background:#000b;display:none;align-items:flex-end}.modal.open{display:flex}.sheet{width:min(520px,100%);max-height:92vh;overflow:auto;background:#101218;border-radius:24px 24px 0 0;padding:17px;border-top:1px solid #292b34}.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.close{width:38px;height:38px;border-radius:50%;border:0;background:#23252d;color:#fff;font-size:21px}.field{width:100%;background:#171920;border:1px solid #292c37;color:#fff;border-radius:13px;padding:13px;margin:6px 0;outline:none}.field:focus{border-color:#ff2d75}.primary{width:100%;padding:14px;border:0;border-radius:13px;background:linear-gradient(90deg,#ff1f69,#9a4cff);color:#fff;font-weight:950;margin-top:8px}.secondary{width:100%;padding:13px;border:1px solid #30323d;border-radius:13px;background:#191b22;color:#fff;font-weight:900;margin-top:8px}.preview{width:100%;aspect-ratio:9/14;background:#050507;border-radius:16px;overflow:hidden;margin:7px 0}.preview video{width:100%;height:100%;object-fit:cover}.row{display:flex;gap:8px}.row>*{flex:1}.comment{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid #242630}.comment .grow{flex:1}.login-brand{text-align:center;font-size:44px;font-weight:1000;margin:7px 0 12px;background:linear-gradient(90deg,#ff1f69,#a855f7,#45b8ff);-webkit-background-clip:text;color:transparent}.toggle{display:flex;background:#181a21;border-radius:11px;padding:3px;margin-bottom:9px}.toggle button{flex:1;border:0;background:none;color:#888;padding:10px;border-radius:9px}.toggle button.on{background:#272a34;color:#fff}.toast{position:fixed;z-index:150;bottom:92px;left:50%;transform:translateX(-50%) translateY(12px);background:#f5f5f5;color:#111;border-radius:12px;padding:10px 14px;font-size:12px;font-weight:900;opacity:0;transition:.25s;pointer-events:none}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(min-width:700px){body{background:#020204}.app{box-shadow:0 0 80px #000}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="brand">RIVO</div>
+  <div class="topcenter"><button id="fy" class="on">For You</button><button id="followingTop">Following</button></div>
+  <button class="round" id="topSearch">⌕</button>
+</header>
+
+<main>
+<section id="home" class="screen on"><div class="feed" id="feed"></div></section>
+
+<section id="discover" class="screen"><div class="page">
+  <div class="page-title">Discover</div>
+  <input id="searchInput" class="searchbox" placeholder="Search users, videos, hashtags">
+  <div class="section"><div class="section-head"><span>Trending</span><span class="muted">See all</span></div><div class="trend"><span>#rivoforyou</span><span>#bangladesh</span><span>#sunsetlover</span><span>#naturevibes</span></div></div>
+  <div class="section"><div class="section-head"><span>Creators & Users</span><span class="muted">See all</span></div><div id="userResults" class="user-list"></div></div>
+  <div class="section"><div class="section-head"><span>Popular Videos</span></div><div id="discoverGrid" class="mini-grid"></div></div>
+</div></section>
+
+<section id="inbox" class="screen"><div class="inbox">
+  <div class="page-title">Inbox</div>
+  <div class="stories" id="stories"></div>
+  <div id="messages"></div>
+</div></section>
+
+<section id="profile" class="screen"><div id="profileView"></div></section>
+
+<section id="settings" class="screen"><div class="settings">
+  <div class="page-title">Settings</div>
+  <div class="settings-group">
+    <button class="setting" onclick="openProfileEdit()"><span>👤</span><span class="grow">Account</span><span class="arrow">›</span></button>
+    <button class="setting" onclick="toast('Privacy settings ready')"><span>🔒</span><span class="grow">Privacy</span><span class="arrow">›</span></button>
+    <button class="setting" onclick="toast('Notification settings ready')"><span>🔔</span><span class="grow">Notifications</span><span class="arrow">›</span></button>
+    <button class="setting" onclick="toast('Dark mode is active')"><span>🌙</span><span class="grow">Dark Mode</span><span class="arrow">On</span></button>
+    <button class="setting" onclick="toast('Language: English')"><span>文</span><span class="grow">Language</span><span class="arrow">English ›</span></button>
+    <button class="setting" onclick="toast('RIVO Help & Support')"><span>❓</span><span class="grow">Help & Support</span><span class="arrow">›</span></button>
+    <button class="setting" onclick="toast('RIVO v1.0')"><span>ⓘ</span><span class="grow">About RIVO</span><span class="arrow">›</span></button>
+  </div>
+  <button id="settingsAuth" class="setting" style="border-radius:14px;width:100%"><span>↪</span><span class="grow">Login</span><span class="arrow">›</span></button>
+</div></section>
+</main>
+
+<nav class="bottom">
+<button class="nav on" data-go="home">⌂<span>Home</span></button>
+<button class="nav" data-go="discover">⌕<span>Discover</span></button>
+<button class="nav" id="uploadNav"><b class="upload-pill">+</b><span>Upload</span></button>
+<button class="nav" data-go="inbox">▢<span>Inbox</span></button>
+<button class="nav" data-go="profile">♙<span>Profile</span></button>
+</nav>
+</div>
+
+<div class="modal" id="authModal"><div class="sheet">
+<div class="sheet-head"><b id="authHeading">Welcome to RIVO</b><button class="close" data-close="authModal">×</button></div>
+<div class="login-brand">RIVO</div><div class="muted" style="text-align:center;margin-bottom:14px">Share Moments, Connect World ❤️</div>
+<div class="toggle"><button id="loginTab" class="on">Login</button><button id="signupTab">Sign Up</button></div>
+<input id="authName" class="field" placeholder="Full name" style="display:none"><input id="authUsername" class="field" placeholder="Username" style="display:none"><input id="authEmail" class="field" placeholder="Username or Email"><input id="authPass" class="field" type="password" placeholder="Password">
+<button class="primary" id="authAction">Login</button><div class="muted" style="text-align:center;margin:12px">or continue with</div><div class="row"><button class="secondary" onclick="toast('Google login can be enabled in Supabase Auth')">G Google</button><button class="secondary" onclick="toast('Social login can be enabled in Supabase Auth')">f Facebook</button><button class="secondary" onclick="toast('Apple login can be enabled in Supabase Auth')"> Apple</button></div>
+<div id="authSwitch" style="text-align:center;margin-top:14px;font-size:13px;color:#969aa8">Don't have an account? <b style="color:#ff3d83">Sign Up</b></div>
+</div></div>
+
+<div class="modal" id="uploadModal"><div class="sheet">
+<div class="sheet-head"><b>Upload</b><button class="close" data-close="uploadModal">×</button></div>
+<input id="videoFile" class="field" type="file" accept="video/*"><div class="preview"><video id="editVideo" controls playsinline></video></div>
+<div class="row"><label class="muted">Speed<input id="speed" type="range" min=".5" max="2" step=".1" value="1" style="width:100%"></label><label class="muted">Volume<input id="volume" type="range" min="0" max="1" step=".05" value="1" style="width:100%"></label></div>
+<input id="caption" class="field" placeholder="Caption"><input id="hashtags" class="field" placeholder="#Rivo #BanglaVibes"><select id="privacy" class="field"><option>Public</option><option>Followers</option><option>Private</option></select>
+<button class="primary" id="publish">Post Video</button><button class="secondary" onclick="closeModal('uploadModal')">Cancel</button>
+</div></div>
+
+<div class="modal" id="commentsModal"><div class="sheet">
+<div class="sheet-head"><b id="commentsTitle">Comments</b><button class="close" data-close="commentsModal">×</button></div><div id="commentList"></div><div class="row"><input id="commentInput" class="field" placeholder="Add a comment…"><button class="primary" style="width:110px" id="commentSend">Post</button></div>
+</div></div>
+
+<div class="modal" id="profileEditModal"><div class="sheet">
+<div class="sheet-head"><b>Edit Profile</b><button class="close" data-close="profileEditModal">×</button></div>
+<div style="text-align:center"><div id="editAvatarCircle" class="big-avatar" style="display:inline-grid;place-items:center">R</div><div class="muted" style="margin:7px">Change Photo</div></div>
+<input id="pName" class="field" placeholder="Name"><input id="pUsername" class="field" placeholder="Username"><input id="pBio" class="field" placeholder="Bio"><input id="pAvatar" class="field" placeholder="Profile photo URL">
+<button class="primary" id="saveProfile">Save</button>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const URL_="https://ayoactrisfcdhmhsnrwz.supabase.co";
+const KEY="sb_publishable_pvPMH5zhPX3_vjarFMrYtw_9uZkagYX";
+const db=window.supabase?.createClient(URL_,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+let me=null,profile=null,currentVideo=null,signup=false;
+const $=id=>document.getElementById(id), esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+function toast(t){$("toast").textContent=t;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),2300)}
+function closeModal(id){$(id).classList.remove("open")}
+function openModal(id){$(id).classList.add("open")}
+function go(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));$(id).classList.add("on");document.querySelectorAll(".nav[data-go]").forEach(n=>n.classList.toggle("on",n.dataset.go===id));if(id==="profile")renderProfile();if(id==="discover")renderDiscover();if(id==="inbox")renderInbox()}
+function fmt(n){return Intl.NumberFormat("en",{notation:"compact",maximumFractionDigits:1}).format(n||0)}
+function demoVideo(){return `<article class="video-card"><div class="video-placeholder"><div style="text-align:center;padding:25px"><div style="font-size:70px;font-weight:1000;letter-spacing:-5px;background:linear-gradient(90deg,#ff1f69,#a855f7,#45b8ff);-webkit-background-clip:text;color:transparent">RIVO</div><div style="color:#ddd">Short videos. Made for everyone.</div></div></div><div class="vignette"></div><div class="video-copy"><div class="user-row"><div class="avatar" style="display:grid;place-items:center;font-weight:1000">R</div><div class="username">@rivo_official <span class="verified">●</span></div><button class="follow-btn" onclick="go('discover')">Explore</button></div><div class="caption">Welcome to RIVO — upload your first video and build your community.</div><div class="hashtags">#rivo #foryou #bangladesh</div><div class="sound">♫ Original Sound — RIVO</div></div><div class="feed-top-actions"><button class="feed-action" onclick="go('discover')">Follow</button><button class="feed-action" onclick="toast('Login to like')">♡ Like</button><button class="feed-action" onclick="openComments(null)">💬 Comment</button><button class="feed-action" onclick="share(null)">↗ Share</button><span class="feed-views">▶ 12.4K</span></div><div class="side-actions"><div class="sound-disc">♫</div></div></article>`}
+async function loadFeed(){
+ const feed=$("feed");
+ if(!db){feed.innerHTML=demoVideo();return}
+ try{
+  const r=await db.from("videos").select("id,user_id,video_url,thumbnail_url,caption,hashtags,views,created_at").eq("status","published").order("created_at",{ascending:false}).limit(30);
+  if(r.error||!r.data?.length){feed.innerHTML=demoVideo();return}
+  const ids=[...new Set(r.data.map(v=>v.user_id))];let ps=[];
+  if(ids.length){const p=await db.from("profiles").select("id,username,full_name,avatar_url").in("id",ids);ps=p.data||[]}
+  const pm=new Map(ps.map(x=>[x.id,x]));let liked=new Set();
+  if(me){const l=await db.from("likes").select("video_id").eq("user_id",me.id).in("video_id",r.data.map(v=>v.id));liked=new Set((l.data||[]).map(x=>x.video_id))}
+  feed.innerHTML=r.data.map(v=>{const p=pm.get(v.user_id)||{};return `<article class="video-card"><video src="${esc(v.video_url)}" ${v.thumbnail_url?`poster="${esc(v.thumbnail_url)}"`:""} playsinline loop preload="metadata"></video><div class="vignette"></div><div class="video-copy"><div class="user-row"><img class="avatar" src="${esc(p.avatar_url||"")}"><div class="username">@${esc(p.username||"user")} <span class="verified">●</span></div><button class="follow-btn" data-follow="${v.user_id}">Follow</button></div><div class="caption">${esc(v.caption||"")}</div><div class="hashtags">${esc(v.hashtags||"")}</div><div class="sound">♫ Original Sound — RIVO</div></div><div class="feed-top-actions"><button class="feed-action" data-follow="${v.user_id}">Follow</button><button class="feed-action ${liked.has(v.id)?"active":""}" data-like="${v.id}">${liked.has(v.id)?"♥":"♡"} Like</button><button class="feed-action" data-comment="${v.id}">💬 Comment</button><button class="feed-action" data-share="${v.id}">↗ Share</button><span class="feed-views">▶ <span data-views="${v.id}">${fmt(v.views)}</span></span></div><div class="side-actions"><div class="sound-disc">♫</div></div></article>`}).join("");
+  document.querySelectorAll("[data-like]").forEach(b=>b.onclick=()=>like(b.dataset.like,b));document.querySelectorAll("[data-comment]").forEach(b=>b.onclick=()=>openComments(b.dataset.comment));document.querySelectorAll("[data-share]").forEach(b=>b.onclick=()=>share(b.dataset.share));document.querySelectorAll("[data-follow]").forEach(b=>b.onclick=()=>follow(b.dataset.follow,b));
+  const viewed=new Set();const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector("video");if(e.isIntersecting){v?.play().catch(()=>{});const id=e.target.querySelector("[data-views]")?.getAttribute("data-views");if(id&&!viewed.has(id)){viewed.add(id);addView(id,e.target)}}else v?.pause()}),{threshold:.7});document.querySelectorAll(".video-card").forEach(x=>io.observe(x));
+ }catch(e){feed.innerHTML=demoVideo()}
+}
+async function addView(id,el){
+  if(!db||!id)return;
+  try{
+    const r=await db.from("videos").select("views").eq("id",id).maybeSingle();
+    const next=(r.data?.views||0)+1;
+    await db.from("videos").update({views:next}).eq("id",id);
+    if(el){const n=el.querySelector("[data-views]");if(n)n.textContent=fmt(next)}
+  }catch{}
+}
+
+async function like(id,b){if(!me){openModal("authModal");return}const q=await db.from("likes").select("video_id").eq("user_id",me.id).eq("video_id",id).maybeSingle();if(q.data){await db.from("likes").delete().eq("user_id",me.id).eq("video_id",id);b.textContent="♡";b.classList.remove("active")}else{await db.from("likes").insert({user_id:me.id,video_id:id});b.textContent="♥";b.classList.add("active")}}
+async function follow(id,b){if(!me){openModal("authModal");return}if(id===me.id)return;const q=await db.from("follows").select("following_id").eq("follower_id",me.id).eq("following_id",id).maybeSingle();if(q.data){await db.from("follows").delete().eq("follower_id",me.id).eq("following_id",id);b.textContent="Follow"}else{await db.from("follows").insert({follower_id:me.id,following_id:id});b.textContent="Following"}}
+async function share(id){if(navigator.share){try{await navigator.share({title:"RIVO",url:location.href+(id?"#video="+id:"")})}catch{}}else{await navigator.clipboard?.writeText(location.href+(id?"#video="+id:""));toast("Link copied")}if(me&&id)db.from("shares").insert({video_id:id,user_id:me.id})}
+async function openComments(id){currentVideo=id;openModal("commentsModal");$("commentsTitle").textContent=id?"Comments":"Comments";if(!id){$("commentList").innerHTML='<div class="muted" style="padding:25px;text-align:center">Login and post a video to start the conversation.</div>';return}if(!db){$("commentList").innerHTML="";return}const r=await db.from("comments").select("id,body,user_id,created_at").eq("video_id",id).order("created_at",{ascending:false});const ids=[...new Set((r.data||[]).map(x=>x.user_id))];let ps=[];if(ids.length){const p=await db.from("profiles").select("id,username,avatar_url").in("id",ids);ps=p.data||[]}const pm=new Map(ps.map(x=>[x.id,x]));$("commentList").innerHTML=(r.data||[]).map(c=>`<div class="comment"><img class="avatar" src="${esc(pm.get(c.user_id)?.avatar_url||"")}"><div class="grow"><b>@${esc(pm.get(c.user_id)?.username||"user")}</b><div class="muted">${esc(c.body)}</div></div><span>♡</span></div>`).join("")||'<div class="muted" style="padding:20px">No comments yet.</div>'}
+$("commentSend").onclick=async()=>{const body=$("commentInput").value.trim();if(!body||!currentVideo)return;if(!me){openModal("authModal");return}const r=await db.from("comments").insert({video_id:currentVideo,user_id:me.id,body});if(r.error)toast(r.error.message);else{$("commentInput").value="";openComments(currentVideo)}}
+function renderDiscover(){if(!db){$("userResults").innerHTML='<div class="user-item"><div class="avatar" style="display:grid;place-items:center">R</div><div class="grow"><b>@rivo_official</b><div class="muted">RIVO Official</div></div><button class="small-follow">Follow</button></div>';return}searchUsers("")}
+async function searchUsers(q){if(!db)return;let r=db.from("profiles").select("id,username,full_name,avatar_url").order("created_at",{ascending:false}).limit(20);if(q)r=r.ilike("username","%"+q+"%");const x=await r;const arr=x.data||[];$("userResults").innerHTML=arr.map(p=>`<div class="user-item"><img class="avatar" src="${esc(p.avatar_url||"")}"><div class="grow"><b>@${esc(p.username)}</b><div class="muted">${esc(p.full_name||"Creator")}</div></div><button class="small-follow" data-follow="${p.id}">Follow</button></div>`).join("")||'<div class="muted">No users found.</div>';document.querySelectorAll("#userResults [data-follow]").forEach(b=>b.onclick=()=>follow(b.dataset.follow,b))}
+async function renderInbox(){const names=[["Your Story",""],["Siam Ahmed","Liked your video"],["Mim","Commented: Nice ❤️"],["Rashed","Started following you"],["Nusrat Jahan","Hey! 😊"],["Ariyan","Shared your video"]];$("stories").innerHTML=names.slice(0,5).map(x=>`<div class="story"><div class="story-img"><img src="" alt=""></div><div>${esc(x[0])}</div></div>`).join("");$("messages").innerHTML=names.slice(1).map((x,i)=>`<div class="message"><div class="avatar" style="display:grid;place-items:center">${x[0][0]}</div><div class="grow"><b>${esc(x[0])}</b><div class="muted">${esc(x[1])} · ${i+2}m</div></div><span class="badge">${i+1}</span></div>`).join("")}
+async function renderProfile(){
+ const el=$("profileView");
+ if(!me){el.innerHTML=`<div class="profile"><div class="profile-top"><div class="big-avatar" style="display:inline-grid;place-items:center;font-size:34px;font-weight:1000">R</div><div class="profile-name">Your RIVO Profile</div><div class="bio">Login to upload videos, follow creators and build your community.</div><div class="profile-actions"><button class="outline" onclick="openModal('authModal')">Login / Sign Up</button><button class="outline" onclick="go('settings')">⚙</button></div></div></div>`;return}
+ if(!profile)await getProfile();let followers=0,following=0,vids=[];
+ try{const a=await Promise.all([db.from("follows").select("*",{count:"exact",head:true}).eq("following_id",me.id),db.from("follows").select("*",{count:"exact",head:true}).eq("follower_id",me.id),db.from("videos").select("id,video_url,thumbnail_url,views").eq("user_id",me.id).order("created_at",{ascending:false})]);followers=a[0].count||0;following=a[1].count||0;vids=a[2].data||[]}catch{}
+ el.innerHTML=`<div class="profile"><div class="profile-top"><img class="big-avatar" src="${esc(profile.avatar_url||"")}"><div class="profile-name">@${esc(profile.username||"user")}</div><div class="muted">${esc(profile.full_name||"Content Creator")}</div><div class="bio">${esc(profile.bio||"Dreamer | Content Creator ✨")}</div><div class="stats"><div class="stat"><b>${fmt(following)}</b><span>Following</span></div><div class="stat"><b>${fmt(followers)}</b><span>Followers</span></div><div class="stat"><b>${fmt(vids.length)}</b><span>Likes/Videos</span></div></div><div class="profile-actions"><button class="outline" onclick="openProfileEdit()">Edit Profile</button><button class="outline" onclick="go('settings')">⚙ Settings</button></div></div><div class="profile-tabs"><button class="active">▦</button><button>♡</button><button>▤</button></div><div class="mini-grid" style="margin-top:3px">${vids.map(v=>`<div class="mini"><video src="${esc(v.video_url)}" muted preload="metadata"></video><span class="count">▶ ${fmt(v.views)}</span></div>`).join("")||'<div class="muted" style="grid-column:1/-1;text-align:center;padding:50px">No videos yet. Tap + to upload.</div>'}</div></div>`}
+async function getProfile(){if(!db||!me)return;let r=await db.from("profiles").select("id,username,full_name,avatar_url,bio").eq("id",me.id).maybeSingle();profile=r.data;if(!profile){const username=(me.email||"user").split("@")[0].replace(/[^a-zA-Z0-9_]/g,"").slice(0,18)||"user";const c=await db.from("profiles").insert({id:me.id,username,full_name:"",avatar_url:"",bio:""}).select().single();profile=c.data}}
+function openProfileEdit(){if(!me){openModal("authModal");return}$("pName").value=profile?.full_name||"";$("pUsername").value=profile?.username||"";$("pBio").value=profile?.bio||"";$("pAvatar").value=profile?.avatar_url||"";openModal("profileEditModal")}
+$("saveProfile").onclick=async()=>{if(!me)return;const r=await db.from("profiles").update({full_name:$("pName").value.trim(),username:$("pUsername").value.trim(),bio:$("pBio").value.trim(),avatar_url:$("pAvatar").value.trim()}).eq("id",me.id);if(r.error)toast(r.error.message);else{await getProfile();closeModal("profileEditModal");renderProfile();toast("Profile saved")}}
+$("videoFile").onchange=e=>{const f=e.target.files[0];if(f){$("editVideo").src=URL.createObjectURL(f);$("editVideo").load()}}
+$("speed").oninput=e=>$("editVideo").playbackRate=+e.target.value;$("volume").oninput=e=>$("editVideo").volume=+e.target.value;
+$("publish").onclick=async()=>{if(!me){closeModal("uploadModal");openModal("authModal");return}const f=$("videoFile").files[0];if(!f){toast("Select a video first");return}if(f.size>150*1024*1024){toast("Video must be under 150MB");return}$("publish").textContent="Uploading…";$("publish").disabled=true;try{const path=`${me.id}/${Date.now()}-${f.name.replace(/[^a-zA-Z0-9._-]/g,"_")}`;const up=await db.storage.from("videos").upload(path,f,{contentType:f.type||"video/mp4"});if(up.error)throw up.error;const pub=db.storage.from("videos").getPublicUrl(path).data.publicUrl;const r=await db.from("videos").insert({user_id:me.id,video_url:pub,caption:$("caption").value.trim(),hashtags:$("hashtags").value.trim(),status:"published"});if(r.error)throw r.error;closeModal("uploadModal");$("videoFile").value="";$("caption").value="";$("hashtags").value="";go("home");loadFeed();toast("Video posted 🎉")}catch(e){toast(e.message||"Upload failed")}finally{$("publish").disabled=false;$("publish").textContent="Post Video"}}
+function setAuthMode(s){signup=s;$("loginTab").classList.toggle("on",!s);$("signupTab").classList.toggle("on",s);$("authAction").textContent=s?"Sign Up":"Login";$("authName").style.display=s?"block":"none";$("authUsername").style.display=s?"block":"none";$("authEmail").placeholder=s?"Email":"Username or Email";$("authHeading").textContent=s?"Create your RIVO account":"Welcome to RIVO"}
+$("loginTab").onclick=()=>setAuthMode(false);$("signupTab").onclick=()=>setAuthMode(true);$("authSwitch").onclick=()=>setAuthMode(!signup);
+$("authAction").onclick=async()=>{if(!db){toast("Supabase connection unavailable");return}const email=$("authEmail").value.trim(),pass=$("authPass").value;if(!email||!pass){toast("Email and password required");return}let r;if(signup){r=await db.auth.signUp({email,password:pass});if(!r.error&&r.data.user){me=r.data.user;await getProfile();if($("authUsername").value.trim())await db.from("profiles").update({username:$("authUsername").value.trim(),full_name:$("authName").value.trim()}).eq("id",me.id)}}else{r=await db.auth.signInWithPassword({email,password:pass});if(!r.error){me=r.data.user;await getProfile()}}if(r.error)toast(r.error.message);else{closeModal("authModal");go("home");loadFeed();renderProfile();toast(signup?"Account created":"Welcome back")}}
+document.querySelectorAll("[data-go]").forEach(n=>n.onclick=()=>go(n.dataset.go));$("uploadNav").onclick=()=>me?openModal("uploadModal"):openModal("authModal");$("topSearch").onclick=()=>go("discover");$("fy").onclick=()=>go("home");$("followingTop").onclick=()=>{go("home");toast("Following feed")};$("searchInput").oninput=e=>searchUsers(e.target.value.trim());
+$("settingsAuth").onclick=async()=>{if(me){await db.auth.signOut();location.reload()}else openModal("authModal")};
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>closeModal(b.dataset.close));
+if(db){db.auth.getSession().then(async({data})=>{me=data.session?.user||null;if(me)await getProfile();await loadFeed();renderProfile();renderDiscover();renderInbox();$("settingsAuth").querySelector(".grow").textContent=me?"Log Out":"Login"});db.auth.onAuthStateChange((_e,s)=>{me=s?.user||null})}else{loadFeed();renderProfile();renderDiscover();renderInbox()}
+</script>
+</body>
+</html>
