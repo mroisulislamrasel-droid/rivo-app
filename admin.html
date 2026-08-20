@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rivo Admin Panel</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{margin:0;background:#08090e;color:#fff;font-family:system-ui,Arial}.wrap{max-width:1000px;margin:auto;padding:18px}.card{background:#12141b;border:1px solid #2b2e39;border-radius:16px;padding:15px;margin:10px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.btn{background:#ff2f86;color:#fff;border:0;border-radius:10px;padding:10px 13px;font-weight:800;cursor:pointer}.green{background:#20c878}.red{background:#df4d5b}.input{width:100%;box-sizing:border-box;background:#1b1d25;color:#fff;border:1px solid #343844;border-radius:10px;padding:10px;margin:5px 0}.muted{color:#9da0ac;font-size:13px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.grow{flex:1}video,img{max-width:100%;max-height:280px;border-radius:12px}.hide{display:none}.tabs button{margin-right:6px}.item{border-top:1px solid #292c37;padding:13px 0}.pill{display:inline-block;padding:4px 8px;border-radius:8px;background:#292d38;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Rivo Admin Panel</h1>
+<div id="login" class="card"><p>শুধু অনুমোদিত Admin account ব্যবহার করতে পারবেন।</p><input id="email" class="input" placeholder="Admin email"><input id="pass" class="input" type="password" placeholder="Password"><button class="btn" onclick="adminLogin()">Admin Login</button><p id="msg" class="muted"></p></div>
+<div id="panel" class="hide">
+<div class="card row"><b class="grow" id="adminUser"></b><button class="btn" onclick="refreshAll()">Refresh</button><button class="btn red" onclick="logout()">Logout</button></div>
+<div class="grid">
+<div class="card"><b>Users</b><h2 id="usersCount">0</h2></div><div class="card"><b>Videos</b><h2 id="videosCount">0</h2></div><div class="card"><b>Withdrawals</b><h2 id="withdrawCount">0</h2></div><div class="card"><b>Ads</b><h2 id="adsCount">0</h2></div>
+</div>
+<div class="card tabs"><button class="btn" onclick="show('videos')">Videos</button><button class="btn" onclick="show('users')">Users</button><button class="btn" onclick="show('withdrawals')">Payments</button><button class="btn" onclick="show('ads')">Ads</button><button class="btn" onclick="show('notices')">Notices</button><button class="btn" onclick="show('settings')">Settings</button></div>
+<div id="content"></div>
+</div>
+</div>
+<script>
+const sb=supabase.createClient('https://ayoactrisfcdhmhsnrwz.supabase.co','sb_publishable_pvPMH5zhPX3_vjarFMrYtw_9uZkagYX');
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));
+async function adminLogin(){const r=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('pass').value});if(r.error)return $('msg').textContent=r.error.message;const a=await sb.rpc('rivo_is_admin');if(a.error||!a.data){await sb.auth.signOut();return $('msg').textContent='এই account Admin নয়।'}$('login').classList.add('hide');$('panel').classList.remove('hide');$('adminUser').textContent=r.data.user.email;refreshAll()}
+async function logout(){await sb.auth.signOut();location.reload()}
+async function refreshAll(){await Promise.all([count('profiles','usersCount'),count('videos','videosCount'),count('payout_requests','withdrawCount'),count('sponsored_ads','adsCount')]);show('videos')}
+async function count(table,id){const r=await sb.from(table).select('*',{count:'exact',head:true});$(id).textContent=r.count||0}
+function show(type){if(type==='videos')loadVideos();if(type==='users')loadUsers();if(type==='withdrawals')loadWithdrawals();if(type==='ads')loadAds();if(type==='notices')loadNotices();if(type==='settings')loadSettings()}
+async function loadVideos(){const r=await sb.from('videos').select('id,user_id,media_url,caption,status,moderation_status,views_count,created_at,profiles(username)').order('created_at',{ascending:false}).limit(100);$('content').innerHTML='<h2>Videos</h2>'+(r.data||[]).map(v=>`<div class="card item"><div class="row"><b class="grow">@${esc(v.profiles?.username||'user')}</b><span class="pill">${esc(v.status)}</span><span class="pill">${Number(v.views_count||0)} views</span></div><p>${esc(v.caption||'')}</p><video src="${esc(v.media_url)}" controls muted></video><p class="muted">Content: ${esc(v.moderation_status||'pending')}</p><button class="btn green" onclick="moderate('${v.id}','approved')">Keep / Approve</button> <button class="btn red" onclick="moderate('${v.id}','blocked')">Block</button></div>`).join('')}
+async function moderate(id,status){const r=await sb.from('videos').update({status,moderation_status:status}).eq('id',id);if(r.error)alert(r.error.message);else loadVideos()}
+async function loadUsers(){const r=await sb.from('profiles').select('id,username,full_name,created_at').order('created_at',{ascending:false}).limit(200);$('content').innerHTML='<h2>Users</h2>'+(r.data||[]).map(u=>`<div class="card item"><b>@${esc(u.username||'user')}</b><p class="muted">${esc(u.full_name||'')}<br>${esc(u.id)}</p></div>`).join('')}
+async function loadWithdrawals(){const r=await sb.from('payout_requests').select('*').order('created_at',{ascending:false}).limit(200);$('content').innerHTML='<h2>Payments</h2>'+(r.data||[]).map(w=>`<div class="card item"><b>${esc(w.payment_method)} — ${esc(w.payment_account)}</b><p>৳${Number(w.amount||0).toFixed(2)} · ${esc(w.status)}</p><button class="btn green" onclick="pay('${w.id}')">Mark Paid</button><button class="btn red" onclick="rejectPay('${w.id}')">Reject</button></div>`).join('')}
+async function pay(id){await sb.from('payout_requests').update({status:'paid',paid_at:new Date().toISOString()}).eq('id',id);loadWithdrawals()}async function rejectPay(id){await sb.from('payout_requests').update({status:'rejected'}).eq('id',id);loadWithdrawals()}
+async function loadAds(){const r=await sb.from('sponsored_ads').select('*').order('created_at',{ascending:false}).limit(100);$('content').innerHTML='<h2>Sponsored Ads</h2>'+(r.data||[]).map(a=>`<div class="card item"><b>${esc(a.title)}</b><p>${esc(a.advertiser_name)} · ${esc(a.duration_days)} দিন · ${esc(a.status)} · ${esc(a.payment_status)}</p><button class="btn" onclick="viewAd('${a.id}','${esc(a.storage_path)}','${esc(a.media_type)}')">View</button><button class="btn green" onclick="approveAd('${a.id}')">Approve</button><button class="btn red" onclick="rejectAd('${a.id}')">Reject</button></div>`).join('')}
+async function viewAd(id,path,type){const r=await sb.storage.from('rivo-ad-pending').createSignedUrl(path,1800);if(r.error)return alert(r.error.message);const w=window.open();w.document.write(type==='image'?`<img src="${r.data.signedUrl}">`:`<video src="${r.data.signedUrl}" controls autoplay style="max-width:100%">`)}
+async function approveAd(id){const r=await sb.from('sponsored_ads').select('*').eq('id',id).single();if(r.error)return alert(r.error.message);const a=r.data;const cp=await sb.storage.from('rivo-ad-pending').copy(a.storage_path,a.storage_path,{destinationBucket:'rivo-ads-public'});if(cp.error)return alert('Publish copy failed: '+cp.error.message);const u=await sb.from('sponsored_ads').update({status:'approved'}).eq('id',id);if(u.error)return alert(u.error.message);loadAds()}
+async function rejectAd(id){await sb.from('sponsored_ads').update({status:'rejected'}).eq('id',id);loadAds()}
+async function loadNotices(){$('content').innerHTML='<h2>Notice Board</h2><input id="nt" class="input" placeholder="Notice title"><textarea id="nm" class="input" placeholder="Message"></textarea><button class="btn" onclick="addNotice()">Add Notice</button><div id="noticeItems"></div>';const r=await sb.from('notices').select('*').order('created_at',{ascending:false});$('noticeItems').innerHTML=(r.data||[]).map(n=>`<div class="card item"><b>${esc(n.title)}</b><p>${esc(n.message)}</p><button class="btn red" onclick="delNotice('${n.id}')">Delete</button></div>`).join('')}
+async function addNotice(){const r=await sb.from('notices').insert({title:$('nt').value,message:$('nm').value,is_active:true});if(r.error)alert(r.error.message);else loadNotices()}async function delNotice(id){await sb.from('notices').delete().eq('id',id);loadNotices()}
+async function loadSettings(){const r=await sb.from('app_settings').select('*').order('key');$('content').innerHTML='<h2>App Settings</h2>'+(r.data||[]).map(s=>`<div class="card item"><b>${esc(s.key)}</b><input id="s_${esc(s.key)}" class="input" value="${esc(s.value)}"><button class="btn" onclick="saveSetting('${esc(s.key)}')">Save</button></div>`).join('')}
+async function saveSetting(key){const value=$('s_'+key).value;const r=await sb.from('app_settings').upsert({key,value});if(r.error)alert(r.error.message);else alert('Saved')}
+</script>
+</body></html>
