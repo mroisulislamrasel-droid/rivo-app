@@ -1,4 +1,4 @@
-const CACHE_NAME = "rivo-ui-v3";
+const CACHE_NAME = const CACHE_NAME = "rivo-ui-v4";
 
 const APP_FILES = [
   "./",
