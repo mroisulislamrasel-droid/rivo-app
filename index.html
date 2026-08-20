@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08090d">
+<title>Rivo</title>
+<style>
+:root{--bg:#07080c;--ink:#fff;--muted:#9b9eaa;--line:#272933;--pink:#ff2f86;--purple:#8d3dff;--white:#fff}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer;border:0;color:inherit}.app{max-width:500px;margin:auto;min-height:100vh;background:var(--bg);padding-bottom:78px}
+.top{height:68px;display:flex;align-items:center;padding:0 18px;border-bottom:1px solid #171922;background:#07080c;position:sticky;top:0;z-index:50}
+.brand{font-size:28px;font-weight:900;margin-right:24px}.topTabs{display:flex;gap:22px;align-items:stretch;height:100%;flex:1}.topTab{position:relative;background:none;color:#707480;font-weight:600}.topTab.active{color:#fff}.topTab.active:after{content:"";position:absolute;height:3px;left:0;right:0;bottom:0;background:var(--pink)}
+.searchIcon{font-size:27px;background:none}
+.page{display:none;padding:0}.page.active{display:block}
+.feed{padding:14px 12px 8px}.post{height:calc(100vh - 165px);min-height:600px;max-height:850px;border-radius:20px;overflow:hidden;position:relative;background:#111;margin-bottom:10px}
+.postMedia{position:absolute;inset:0;background:#171717}.postMedia video,.postMedia img{width:100%;height:100%;object-fit:cover;display:block}
+.postShade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08) 20%,transparent 48%,rgba(0,0,0,.82) 100%);pointer-events:none}
+.postTop{position:absolute;top:16px;left:15px;right:15px;z-index:5;display:flex;justify-content:space-between;align-items:center}.community{font-size:13px;background:rgba(0,0,0,.35);padding:7px 11px;border-radius:20px}.fullBtn{background:rgba(0,0,0,.38);padding:7px 10px;border-radius:18px;font-size:12px}
+.postRight{position:absolute;right:10px;bottom:150px;z-index:7;display:flex;flex-direction:column;gap:9px;align-items:center}.circleBtn{width:54px;min-height:54px;border-radius:17px;background:rgba(8,8,10,.82);display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:23px}.circleBtn small{font-size:10px;margin-top:2px}.follow{background:linear-gradient(135deg,var(--pink),var(--purple));font-weight:900;font-size:14px;padding:0 8px}
+.postInfo{position:absolute;left:17px;right:78px;bottom:20px;z-index:7}.userLine{display:flex;align-items:center;gap:7px;font-weight:900;font-size:17px}.verified{color:#54a9ff}.followMini{background:#fff;color:#111;border-radius:20px;padding:5px 12px;font-weight:800}.caption{margin-top:8px;font-size:13px;line-height:1.4}.sound{margin-top:8px;font-size:12px;color:#ddd}
+.progress{position:absolute;left:17px;right:17px;bottom:8px;height:3px;background:#777;border-radius:5px;z-index:8}.progress i{display:block;width:32%;height:100%;background:#fff;border-radius:5px}
+.play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;background:rgba(0,0,0,.55);font-size:30px;z-index:6}.playing .play{display:none}
+.bottom{position:fixed;left:0;right:0;bottom:0;height:78px;background:#090a0f;border-top:1px solid #22242c;z-index:60}.bottomInner{max-width:500px;margin:auto;height:100%;display:grid;grid-template-columns:1fr 1fr 1.25fr 1fr 1fr}.nav{background:none;color:#737783;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;gap:2px}.nav b{font-size:23px;font-weight:500}.nav.active{color:#fff}.plus{width:62px;height:52px;border-radius:17px;margin:auto;background:linear-gradient(100deg,#fff,#ffb5d6);color:#0b0b0e;font-size:32px;font-weight:900}
+.pageInner{padding:18px}.title{font-size:25px;font-weight:900;margin-bottom:15px}.search{width:100%;background:#191b22;color:#fff;border:1px solid #2a2c35;border-radius:14px;padding:12px 14px;outline:0}.card{background:#11131a;border:1px solid #282a33;border-radius:18px;padding:16px;margin-top:12px}
+.chip{display:inline-block;border:1px solid #343640;border-radius:20px;padding:8px 12px;margin:4px;color:#ddd}.creator,.inboxRow{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #292b33}.avatar{width:44px;height:44px;border-radius:50%;background:#30333d;object-fit:cover}.grow{flex:1}.muted{color:var(--muted)}.pinkBtn{background:linear-gradient(100deg,var(--pink),#ff58a1);padding:11px 15px;border-radius:13px;font-weight:900}.outline{background:none;border:1px solid var(--pink);color:#ff5da6;border-radius:16px;padding:7px 12px}
+.profile{padding:18px}.profileHead{text-align:center}.profileAvatar{width:98px;height:98px;border-radius:50%;object-fit:cover;background:#2b2e37;border:2px solid #333}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}.stat{background:#11131a;border-radius:14px;padding:12px;text-align:center}.stat b{display:block;font-size:18px}.stat small{color:var(--muted)}.profileGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}.thumb{aspect-ratio:1;background:#1b1d25;overflow:hidden}.thumb img,.thumb video{width:100%;height:100%;object-fit:cover}
+.settingsBtn{position:absolute;right:18px;top:18px;background:none;font-size:25px}.earnCard{background:linear-gradient(135deg,#171329,#171022);border:1px solid #382554;border-radius:18px;padding:17px;margin-top:15px}.earnGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.metric{background:#11131a;border-radius:14px;padding:13px}.metric b{font-size:20px;display:block}.chart{height:130px;display:flex;align-items:end;gap:7px;margin-top:15px}.chart i{flex:1;background:linear-gradient(#ff2f86,#8e3fff);border-radius:5px 5px 0 0}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:100;display:none;align-items:flex-end}.modal.show{display:flex}.sheet{width:100%;max-width:500px;margin:auto;background:#101219;border-radius:25px 25px 0 0;padding:18px;max-height:92vh;overflow:auto}.sheetTop{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.close{background:#23252e;width:36px;height:36px;border-radius:50%;font-size:23px}
+.uploadHeader{height:56px;display:flex;align-items:center;justify-content:space-between}.addSound{background:#272933;border-radius:18px;padding:8px 13px}.toolCol{position:absolute;right:12px;top:70px;display:flex;flex-direction:column;gap:13px}.tool{background:none;font-size:23px}.modeRow{display:flex;justify-content:center;gap:17px;margin:10px 0}.mode{background:none;color:#8f929e;font-size:12px}.mode.active{color:#fff;font-weight:900}.mode.active:after{content:"";display:block;height:2px;background:#fff;margin-top:5px}
+.editorPreview{height:46vh;min-height:320px;border-radius:16px;background:#050505;overflow:hidden;display:flex;align-items:center;justify-content:center}.editorPreview video,.editorPreview img{width:100%;height:100%;object-fit:contain}.durationRow{display:flex;justify-content:center;gap:16px;margin:10px}.duration{background:none;color:#777b88}.duration.active{color:#fff;font-weight:900}.filters{display:flex;gap:8px;overflow:auto;padding:8px 0}.filter{min-width:62px;background:#22252f;border-radius:11px;padding:8px;text-align:center;font-size:11px}.filter.active{outline:2px solid var(--pink)}.captionInput{width:100%;background:#181a22;border:1px solid #2c2f39;color:#fff;border-radius:13px;padding:12px;outline:0;resize:none}
+.settingsList .row{display:flex;align-items:center;justify-content:space-between;padding:15px 0;border-bottom:1px solid #292b33}.toggle{width:48px;height:27px;border-radius:20px;background:#484b55;position:relative}.toggle:after{content:"";position:absolute;width:21px;height:21px;left:3px;top:3px;background:#fff;border-radius:50%}.toggle.on{background:#20d47b}.toggle.on:after{left:24px}
+.toast{position:fixed;z-index:200;left:50%;bottom:94px;transform:translateX(-50%);background:#fff;color:#111;padding:10px 14px;border-radius:12px;font-weight:800;display:none}.toast.show{display:block}
+@media(max-width:380px){.brand{font-size:26px;margin-right:14px}.topTabs{gap:15px}.post{min-height:560px}.postRight{right:7px}.circleBtn{width:51px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="brand">Rivo</div>
+  <div class="topTabs"><button class="topTab" data-feed="community">Community</button><button class="topTab" data-feed="following">Following</button><button class="topTab active" data-feed="foryou">For You</button></div>
+  <button class="searchIcon" onclick="openModal('searchModal')">⌕</button>
+</header>
+
+<section id="home" class="page active"><div class="feed" id="feed"></div></section>
+
+<section id="discover" class="page"><div class="pageInner">
+  <div class="title">Discover</div><input class="search" placeholder="Search users, videos, hashtags">
+  <div class="card"><b>#RivoChallenge</b><p class="muted">Join the challenge and show your creativity.</p><button class="pinkBtn">Join Now</button></div>
+  <div class="card"><b>Trending Hashtags</b><div><span class="chip">#RivoChallenge · 12.5M</span><span class="chip">#BanglaVibes · 8.2M</span><span class="chip">#RivoCreators · 5.1M</span></div></div>
+  <div class="card"><b>Suggested Creators</b><div id="creators"></div></div>
+</div></section>
+
+<section id="inbox" class="page"><div class="pageInner"><div class="title">Inbox</div>
+  <div class="card"><div class="inboxRow"><div class="avatar">👥</div><div class="grow"><b>New followers</b><div class="muted">People started following you</div></div><span>›</span></div>
+  <div class="inboxRow"><div class="avatar">♥</div><div class="grow"><b>Activity</b><div class="muted">Someone liked your video</div></div><span>›</span></div>
+  <div class="inboxRow"><div class="avatar">🔒</div><div class="grow"><b>System notifications</b><div class="muted">Important Rivo notices</div></div><span>›</span></div>
+  <div class="inboxRow"><div class="avatar">💬</div><div class="grow"><b>Comments</b><div class="muted">New comments on your posts</div></div><span>›</span></div></div>
+</div></section>
+
+<section id="profile" class="page"><div class="profile" style="position:relative">
+  <button class="settingsBtn" onclick="openModal('settingsModal')">⚙</button>
+  <div class="profileHead"><img id="profileAvatar" class="profileAvatar"><h2 id="profileName">@rasel_khan</h2><div class="muted">Content Creator | Video Lover</div><button class="outline" onclick="openModal('profileModal')">Edit Profile</button></div>
+  <div class="stats"><div class="stat"><b>865</b><small>Following</small></div><div class="stat"><b>1,710</b><small>Followers</small></div><div class="stat"><b>19.2K</b><small>Likes</small></div></div>
+  <div class="earnCard" onclick="showPage('earnings')"><b>Creator Dashboard</b><p class="muted">Views, earning rate and estimated income</p><div class="earnGrid"><div class="metric"><small>Total Views</small><b id="pViews">0</b></div><div class="metric"><small>Earnings</small><b id="pEarn">৳0</b></div></div></div>
+  <h3>Posts</h3><div id="profileGrid" class="profileGrid"></div>
+</div></section>
+
+<section id="earnings" class="page"><div class="pageInner"><div class="title">Creator Dashboard</div>
+  <div class="earnCard"><div class="earnGrid"><div class="metric"><small>Total Views</small><b id="eViews">0</b></div><div class="metric"><small>Estimated Earnings</small><b id="eEarn">৳0</b></div><div class="metric"><small>Followers</small><b>1,710</b></div><div class="metric"><small>Likes</small><b>19.2K</b></div></div>
+  <h3>Views Growth</h3><div class="chart"><i style="height:28%"></i><i style="height:43%"></i><i style="height:36%"></i><i style="height:61%"></i><i style="height:55%"></i><i style="height:78%"></i><i style="height:100%"></i></div></div>
+  <div class="card"><b>Payment rule</b><p class="muted">Admin Panel থেকে প্রতি ভিউয়ের টাকা নির্ধারণ করা যাবে।</p><a href="./admin.html" class="pinkBtn" style="display:inline-block;text-decoration:none">Open Admin Panel</a></div>
+</div></section>
+
+<nav class="bottom"><div class="bottomInner">
+  <button class="nav active" data-page="home"><b>⌂</b>Home</button>
+  <button class="nav" data-page="discover"><b>⌕</b>Discover</button>
+  <button class="plus" onclick="openModal('uploadModal')">+</button>
+  <button class="nav" data-page="inbox"><b>▣</b>Inbox</button>
+  <button class="nav" data-page="profile"><b>♙</b>Profile</button>
+</div></nav>
+</div>
+
+<div id="uploadModal" class="modal"><div class="sheet">
+  <div class="uploadHeader"><button onclick="closeModal('uploadModal')">×</button><button class="addSound">♫ Add sound</button><button onclick="toast('More tools')">⋮</button></div>
+  <div class="modeRow"><button class="mode active">10m</button><button class="mode">60s</button><button class="mode">15s</button><button class="mode">PHOTO</button><button class="mode">TEXT</button></div>
+  <div class="editorPreview" id="editorPreview"><div class="muted">Camera / Gallery থেকে ছবি বা ভিডিও নির্বাচন করুন</div></div>
+  <div class="durationRow"><button class="duration active">15s</button><button class="duration">60s</button><button class="duration">10m</button></div>
+  <div class="filters" id="filters"></div>
+  <textarea id="caption" class="captionInput" rows="2" placeholder="Write a caption..."></textarea>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px">
+    <label class="card" style="margin:0;text-align:center">📷 Camera<input id="camera" type="file" accept="image/*,video/*" capture="environment" hidden></label>
+    <label class="card" style="margin:0;text-align:center">🖼 Gallery<input id="gallery" type="file" accept="image/*,video/*" multiple hidden></label>
+  </div>
+  <button class="pinkBtn" style="width:100%;margin-top:12px" onclick="publish()">POST</button>
+</div></div>
+
+<div id="profileModal" class="modal"><div class="sheet"><div class="sheetTop"><b>Edit Profile</b><button class="close" onclick="closeModal('profileModal')">×</button></div><input id="newName" class="search" placeholder="@username"><label class="card" style="display:block;text-align:center">Change profile photo<input id="avatarInput" type="file" accept="image/*" hidden></label><button class="pinkBtn" style="width:100%;margin-top:10px" onclick="saveProfile()">Save</button></div></div>
+
+<div id="settingsModal" class="modal"><div class="sheet"><div class="sheetTop"><b>Settings</b><button class="close" onclick="closeModal('settingsModal')">×</button></div><div class="settingsList">
+<div class="row"><div><b>Account</b><div class="muted">Profile and account controls</div></div><span>›</span></div>
+<div class="row"><div><b>Privacy</b><div class="muted">Public / Followers / Private</div></div><span>›</span></div>
+<div class="row"><div><b>Notifications</b><div class="muted">Likes, comments, follows</div></div><button class="toggle on"></button></div>
+<div class="row"><div><b>Allow comments</b><div class="muted">Comments on your posts</div></div><button class="toggle on"></button></div>
+<div class="row"><div><b>Blocked users</b><div class="muted">Manage blocked accounts</div></div><span>›</span></div>
+<div class="row"><div><b>Creator Dashboard</b><div class="muted">Views and earnings</div></div><button class="outline" onclick="closeModal('settingsModal');showPage('earnings')">Open</button></div>
+<div class="row"><div><b>Admin Panel</b><div class="muted">Separate administrator controls</div></div><a class="outline" href="./admin.html">Open</a></div>
+</div></div></div>
+
+<div id="searchModal" class="modal"><div class="sheet"><div class="sheetTop"><b>Search</b><button class="close" onclick="closeModal('searchModal')">×</button></div><input class="search" placeholder="Search users, hashtags, videos" autofocus></div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+const DEMO_VIDEO='https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4';
+const DEMO_IMG='https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=900&q=85';
+let state={profile:{name:'@rasel_khan',avatar:''},posts:[]};
+try{state={...state,...JSON.parse(localStorage.getItem('rivoVideoV4')||'{}')}}catch(e){}
+function save(){localStorage.setItem('rivoVideoV4',JSON.stringify(state))}
+function fmt(n){n=Number(n||0);return n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':String(n)}
+function toast(t){let x=document.getElementById('toast');x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),1700)}
+function openModal(id){document.getElementById(id).classList.add('show')}function closeModal(id){document.getElementById(id).classList.remove('show')}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('active',n.dataset.page===id));if(id==='home')renderFeed();if(id==='profile')renderProfile();if(id==='earnings')renderEarnings();window.scrollTo(0,0)}
+document.querySelectorAll('.nav').forEach(n=>n.onclick=()=>showPage(n.dataset.page));
+function allPosts(){return [...state.posts,{id:'d1',type:'video',src:DEMO_VIDEO,user:'@priya_official',caption:'Beautiful nature vibes 🌿 #Rivo',likes:12300,comments:256,shares:432,views:12300},{id:'d2',type:'image',src:DEMO_IMG,user:'@rasel_khan',caption:'Rivo moments ✨ #Rivo',likes:8600,comments:112,shares:210,views:8600}]}
+function renderFeed(){const feed=document.getElementById('feed');feed.innerHTML=allPosts().map(p=>`<article class="post"><div class="postMedia">${p.type==='video'?`<video src="${p.src}" playsinline muted loop preload="metadata"></video>`:`<img src="${p.src}">`}</div><div class="postShade"></div><div class="postTop"><span class="community">Community</span><button class="fullBtn" onclick="toast('Full screen')">⛶ Full screen</button></div>${p.type==='video'?'<button class="play">▶</button>':''}<div class="postRight"><button class="circleBtn follow">Follow</button><button class="circleBtn">♥<small>${fmt(p.likes)}</small></button><button class="circleBtn">●<small>${fmt(p.comments)}</small></button><button class="circleBtn">↗<small>${fmt(p.shares)}</small></button><button class="circleBtn">▣<small>More</small></button></div><div class="postInfo"><div class="userLine">${p.user}<span class="verified">●</span><button class="followMini">Follow</button></div><div class="caption">${p.caption||''}</div><div class="sound">♫ Original Sound</div></div><div class="progress"><i></i></div></article>`).join('');
+feed.querySelectorAll('video').forEach(v=>{const post=v.closest('.post'),play=post.querySelector('.play');const toggle=()=>{if(v.paused){v.play().catch(()=>{});post.classList.add('playing')}else{v.pause();post.classList.remove('playing')}};play.onclick=toggle;v.onclick=toggle;v.addEventListener('timeupdate',()=>{const bar=post.querySelector('.progress i');if(v.duration)bar.style.width=(v.currentTime/v.duration*100)+'%'});v.addEventListener('loadeddata',()=>v.play().then(()=>post.classList.add('playing')).catch(()=>{}))})}
+function renderProfile(){document.getElementById('profileName').textContent=state.profile.name;document.getElementById('profileAvatar').src=state.profile.avatar||DEMO_IMG;document.getElementById('profileGrid').innerHTML=state.posts.length?state.posts.map(p=>`<div class="thumb">${p.type==='video'?`<video src="${p.src}" muted></video>`:`<img src="${p.src}">`}</div>`).join(''):'<div class="muted" style="grid-column:1/-1;text-align:center;padding:30px">No posts yet</div>';const v=state.posts.reduce((a,p)=>a+(p.views||0),0);document.getElementById('pViews').textContent=fmt(v);document.getElementById('pEarn').textContent='৳'+(v*Number(localStorage.getItem('rivoRate')||.02)).toFixed(2)}
+function renderEarnings(){const v=state.posts.reduce((a,p)=>a+(p.views||0),0),r=Number(localStorage.getItem('rivoRate')||.02);document.getElementById('eViews').textContent=fmt(v);document.getElementById('eEarn').textContent='৳'+(v*r).toFixed(2)}
+document.getElementById('creators').innerHTML=['@nusrat_jahan','@arif_ahmed','@tanjila_riya'].map(x=>`<div class="creator"><div class="avatar"></div><div class="grow"><b>${x}</b><div class="muted">Creator</div></div><button class="outline">Follow</button></div>`).join('');
+const filterData=[['Normal','none'],['Bright','brightness(1.2)'],['Warm','sepia(.28) saturate(1.25)'],['Cool','hue-rotate(18deg) saturate(.9)'],['B&W','grayscale(1)'],['Contrast','contrast(1.35)']];document.getElementById('filters').innerHTML=filterData.map((x,i)=>`<button class="filter ${i?'':'active'}" data-filter="${x[1]}">${x[0]}</button>`).join('');document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');const e=document.querySelector('#editorPreview video,#editorPreview img');if(e)e.style.filter=b.dataset.filter});
+function previewFile(file){if(!file)return;const url=URL.createObjectURL(file),type=file.type.startsWith('video')?'video':'image';document.getElementById('editorPreview').innerHTML=type==='video'?`<video src="${url}" controls playsinline></video>`:`<img src="${url}">`;document.getElementById('editorPreview').dataset.src=url;document.getElementById('editorPreview').dataset.type=type}
+document.getElementById('camera').onchange=e=>previewFile(e.target.files[0]);document.getElementById('gallery').onchange=e=>previewFile(e.target.files[0]);
+document.getElementById('avatarInput').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{state.profile.avatar=r.result;save();renderProfile()};r.readAsDataURL(f)};
+function saveProfile(){let n=document.getElementById('newName').value.trim();if(n)state.profile.name=n.startsWith('@')?n:'@'+n;save();closeModal('profileModal');renderProfile();toast('Profile updated')}
+function publish(){const p=document.getElementById('editorPreview');if(!p.dataset.src){toast('Camera বা Gallery থেকে media নির্বাচন করুন');return}state.posts.unshift({id:Date.now(),type:p.dataset.type,src:p.dataset.src,user:state.profile.name,caption:document.getElementById('caption').value||'My Rivo post ✨',likes:0,comments:0,shares:0,views:0});save();closeModal('uploadModal');document.getElementById('caption').value='';p.innerHTML='<div class="muted">Camera / Gallery থেকে ছবি বা ভিডিও নির্বাচন করুন</div>';p.dataset.src='';showPage('home');toast('Post published')}
+renderFeed();renderProfile();renderEarnings();
+</script>
+</body>
+</html>
