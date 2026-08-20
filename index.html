@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07080d">
+<title>Rivo — Short Video Platform</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#07080d;--panel:#10121a;--panel2:#151821;--line:#252936;--muted:#858894;--pink:#ff2f82;--purple:#874bff;--green:#31df79}
+*{box-sizing:border-box}html,body{margin:0;background:#000;color:#fff;font-family:Arial,Helvetica,sans-serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer}
+#app{max-width:520px;min-height:100vh;margin:auto;background:var(--bg);position:relative;overflow-x:hidden}
+header{height:64px;position:fixed;top:0;left:50%;transform:translateX(-50%);width:min(520px,100%);z-index:50;background:#08090df5;border-bottom:1px solid #20232d;display:flex;align-items:center}
+.brand{font-size:26px;font-weight:900;letter-spacing:-1px;margin-left:14px;background:linear-gradient(90deg,#ff67b0,#fff,#9b78ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tabs{position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:10px}
+.tabs button{background:none;border:0;color:#777;padding:20px 10px 17px;font-size:15px}.tabs button.active{color:#fff;border-bottom:3px solid var(--pink)}
+.search{position:absolute;right:14px;border:0;background:none;color:#fff;font-size:24px}
+.feed{padding:72px 8px 84px}
+.card{height:calc(100vh - 156px);min-height:560px;max-height:820px;margin:0 0 10px;border-radius:18px;overflow:hidden;position:relative;background:#17191f}
+.card media,.card img,.card video{width:100%;height:100%;object-fit:cover;display:block}
+.card video{background:#111}
+.card .shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.02) 38%,rgba(0,0,0,.76) 100%)}
+.actions{position:absolute;right:8px;bottom:115px;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:5}
+.act{width:56px;min-height:52px;border:0;border-radius:16px;background:#000b;color:#fff;backdrop-filter:blur(9px);box-shadow:0 4px 16px #0006}
+.act b{display:block;font-size:21px;line-height:20px}.act small{display:block;font-size:9px;margin-top:5px}.act.liked{color:#ff3f86}.follow{min-height:48px;padding:0 9px;background:linear-gradient(135deg,#ff247b,#824bff);font-size:12px;font-weight:800}
+.info{position:absolute;left:14px;right:78px;bottom:15px;z-index:5}.userline{display:flex;align-items:center;gap:8px}.avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;background:#30333d;border:2px solid #fff}.handle{font-weight:800}.verified{font-size:11px;color:#59a7ff}.caption{font-size:13px;line-height:1.35;margin-top:7px}.sound{font-size:11px;color:#ddd;margin-top:6px}
+.bottom{height:74px;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);z-index:80;background:#08090df5;border-top:1px solid #20232d;display:flex;align-items:center;justify-content:space-around}
+.nav{border:0;background:none;color:#777;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:55px}.nav b{font-size:23px}.nav span{font-size:9px}.nav.active{color:#fff}.add{width:62px;height:46px;border:0;border-radius:15px;background:linear-gradient(90deg,#fff,#ff3f8e);color:#111;font-size:30px;font-weight:900}
+.screen{position:fixed;inset:0;background:var(--bg);z-index:100;display:none;overflow:auto}.screen.show{display:block}.top{height:64px;position:sticky;top:0;z-index:5;background:#090a10;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 14px}.top b{font-size:16px}.back{background:none;border:0;color:#fff;font-size:28px}.content{padding:14px 14px 95px}.box{background:var(--panel2);border:1px solid #292d38;border-radius:15px;padding:14px;margin-bottom:11px}.row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #20232d}.row:last-child{border-bottom:0}.grow{flex:1}.muted{color:var(--muted);font-size:11px}
+.primary{width:100%;border:0;border-radius:12px;padding:13px;background:linear-gradient(135deg,#ff2678,#7447ff);color:#fff;font-weight:800}.outline{border:1px solid var(--pink);background:none;color:#ff5797;border-radius:10px;padding:8px 12px}
+input,textarea,select{width:100%;background:#151821;border:1px solid #2b2f3b;color:#fff;border-radius:11px;padding:11px;margin:6px 0 10px;outline:0}textarea{min-height:90px;resize:vertical}.file{display:block;text-align:center;border:1px dashed #555b6b;border-radius:13px;padding:15px;margin:8px 0;color:#ddd}.file input{display:none}
+.preview{width:100%;aspect-ratio:9/14;object-fit:cover;border-radius:16px;background:#101219}.filters{display:flex;gap:7px;overflow:auto;padding-bottom:7px}.filter{white-space:nowrap;background:#161922;border:1px solid #363a48;color:#ddd;border-radius:20px;padding:8px 12px;font-size:11px}.filter.on{border-color:var(--pink);color:#fff}
+.profile{text-align:center;padding:20px 0}.photo{width:98px;height:98px;border-radius:50%;object-fit:cover;background:#252936;border:3px solid #fff}.stats{display:flex;justify-content:center;gap:35px;margin:18px 0}.stats strong{display:block}.stats small{color:#777}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}.tile{aspect-ratio:3/4;background:#161922;overflow:hidden}.tile img,.tile video{width:100%;height:100%;object-fit:cover}
+.metricgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.metric{background:#151821;border-radius:13px;padding:14px}.metric strong{font-size:20px;display:block}.metric small{color:#777}
+.searchbox{display:flex;gap:8px}.searchbox input{margin:0}.listimg{width:44px;height:44px;border-radius:50%;object-fit:cover;background:#30333d}.pill{border:1px solid #333846;background:#151821;color:#fff;border-radius:18px;padding:6px 10px;font-size:10px}
+.adminnav{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.adminnav button{background:#151821;border:1px solid #2b2f3b;color:#ddd;border-radius:10px;padding:10px;font-size:11px}.adminnav button.on{border-color:var(--pink);color:#fff}
+table{width:100%;border-collapse:collapse;font-size:10px}th,td{padding:8px 5px;border-bottom:1px solid #272b35;text-align:left;vertical-align:top}.status{padding:4px 7px;border-radius:12px;background:#222735;font-size:9px}.green{color:var(--green)}.danger{color:#ff6474}.gold{color:#ffd35a}
+.empty{text-align:center;padding:70px 20px;color:#888}.logoMark{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#ff355f,#ff7c20,#804cff);display:grid;place-items:center;color:#111;font-weight:900;font-size:27px;margin:auto}
+.modal{position:fixed;inset:0;background:#000b;z-index:500;display:none;align-items:flex-end}.modal.show{display:flex}.sheet{width:min(520px,100%);max-height:88vh;overflow:auto;background:#11131a;border-radius:22px 22px 0 0;padding:18px}.closex{float:right;background:none;border:0;color:#aaa;font-size:22px}
+.toast{position:fixed;z-index:999;left:50%;bottom:90px;transform:translate(-50%,20px);opacity:0;background:#191c25;border:1px solid #343845;padding:10px 14px;border-radius:10px;font-size:12px;transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}
+.hidden{display:none!important}
+@media(max-width:390px){.tabs{gap:0}.tabs button{padding-left:7px;padding-right:7px}.brand{font-size:23px}.act{width:52px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header><div class="brand">Rivo</div><div class="tabs"><button id="tabFollowing" onclick="setFeed('following')">Following</button><button id="tabForYou" class="active" onclick="setFeed('foryou')">For You</button></div><button class="search" onclick="openScreen('discover')">⌕</button></header>
+<main id="feed" class="feed"></main>
+<nav class="bottom">
+<button class="nav active" id="navHome" onclick="goHome()"><b>⌂</b><span>Home</span></button>
+<button class="nav" id="navDiscover" onclick="openScreen('discover')"><b>⌕</b><span>Discover</span></button>
+<button class="add" onclick="openScreen('upload')">+</button>
+<button class="nav" id="navInbox" onclick="openScreen('inbox')"><b>▣</b><span>Inbox</span></button>
+<button class="nav" id="navProfile" onclick="openScreen('profile')"><b>♙</b><span>Profile</span></button>
+</nav>
+
+<section id="auth" class="modal"><div class="sheet">
+<button class="closex" onclick="closeModal('auth')">×</button><div class="logoMark">▶</div><h2 id="authTitle" style="text-align:center">Rivo Login</h2>
+<input id="authEmail" type="email" placeholder="Email"><input id="authPassword" type="password" placeholder="Password">
+<input id="authName" class="hidden" placeholder="Full name"><button class="primary" id="authBtn" onclick="submitAuth()">Login</button>
+<p style="text-align:center"><button class="outline" id="authSwitch" onclick="toggleAuthMode()">Create account</button></p>
+<p class="muted">Rivo multi-user app. Your content is stored in Supabase.</p></div></section>
+
+<section id="upload" class="screen"><div class="top"><button class="back" onclick="closeScreen('upload')">‹</button><b>Upload Video</b><span></span></div><div class="content">
+<div class="box"><b>Choose media</b>
+<label class="file">📷 Camera — Photo/Video<input id="cameraFile" type="file" accept="image/*,video/*" capture="environment"></label>
+<label class="file">🖼️ Gallery — Photo/Video<input id="galleryFile" type="file" accept="image/*,video/*"></label>
+<div id="mediaName" class="muted"></div><img id="imgPreview" class="preview hidden"><video id="vidPreview" class="preview hidden" controls playsinline></video></div>
+<div class="box"><b>Editing</b><div class="filters"><button class="filter on" onclick="applyFilter(this,'none')">Original</button><button class="filter" onclick="applyFilter(this,'warm')">Warm</button><button class="filter" onclick="applyFilter(this,'cool')">Cool</button><button class="filter" onclick="applyFilter(this,'mono')">Mono</button><button class="filter" onclick="applyFilter(this,'vivid')">Vivid</button><button class="filter" onclick="applyFilter(this,'cinema')">Cinema</button></div>
+<label class="file">🎵 Select audio/song<input id="audioFile" type="file" accept="audio/*"></label><audio id="audioPreview" controls class="hidden" style="width:100%"></audio></div>
+<div class="box"><b>Post details</b><textarea id="caption" placeholder="Write a caption..."></textarea><input id="hashtags" placeholder="#hashtags @friends"><select id="visibility"><option value="Public">Public</option><option value="Followers">Followers</option><option value="Private">Only Me</option></select><label style="display:flex;gap:8px;align-items:center;font-size:12px"><input id="allowComments" type="checkbox" checked style="width:auto"> Allow comments</label><button class="primary" onclick="publishPost()">Post Video</button></div>
+</div></section>
+
+<section id="discover" class="screen"><div class="top"><button class="back" onclick="closeScreen('discover')">‹</button><b>Discover</b><span>⌕</span></div><div class="content">
+<div class="box"><div class="searchbox"><input id="discoverSearch" placeholder="Search users, videos, hashtags"><button class="outline" onclick="runSearch()">Search</button></div></div>
+<div class="box"><b>#RivoChallenge</b><div class="row"><span class="grow">Trending creators</span><span class="gold">See all</span></div><div id="creatorList"></div></div>
+</div></section>
+
+<section id="inbox" class="screen"><div class="top"><button class="back" onclick="closeScreen('inbox')">‹</button><b>Inbox</b><span>♧</span></div><div class="content">
+<div class="metricgrid"><div class="metric"><strong>♡</strong><small>Likes</small></div><div class="metric"><strong>●</strong><small>Comments</small></div><div class="metric"><strong>♙</strong><small>Follows</small></div><div class="metric"><strong>@</strong><small>Mentions</small></div></div>
+<div class="box"><b>Notifications</b><div id="notificationList"></div></div></div></section>
+
+<section id="profile" class="screen"><div class="top"><button class="back" onclick="closeScreen('profile')">‹</button><b>Profile</b><button class="back" onclick="openScreen('settings')">⚙</button></div><div class="content" id="profileBody"></div></section>
+
+<section id="settings" class="screen"><div class="top"><button class="back" onclick="closeScreen('settings')">‹</button><b>Settings</b><span></span></div><div class="content">
+<div class="box"><button class="row" style="width:100%;background:none;color:#fff;border:0;text-align:left" onclick="openScreen('edit')">✎ <span>Edit Profile</span></button><button class="row" style="width:100%;background:none;color:#fff;border:0;text-align:left" onclick="chooseAvatar()">🖼 <span>Change Profile Photo</span></button><button class="row" style="width:100%;background:none;color:#fff;border:0;text-align:left" onclick="signOut()">↪ <span>Log out</span></button></div>
+<div class="box"><div class="row">🔒 <span class="grow">Privacy</span><span class="muted">Manage</span></div><div class="row">🚫 <span class="grow">Blocked accounts</span><span class="muted">Manage</span></div><div class="row">🔔 <span class="grow">Notifications</span><span class="muted">Manage</span></div><div class="row">🛡 <span class="grow">Security</span><span class="muted">Manage</span></div></div>
+<div id="adminEntry" class="box hidden"><b>Admin</b><p class="muted">Separate admin controls for users, videos and payments.</p><button class="primary" onclick="openScreen('admin')">Open Admin Panel</button></div>
+</div></section>
+
+<section id="edit" class="screen"><div class="top"><button class="back" onclick="closeScreen('edit')">‹</button><b>Edit Profile</b><button class="outline" onclick="saveProfile()">Save</button></div><div class="content">
+<div style="text-align:center"><img id="editPhoto" class="photo"><br><button class="outline" onclick="chooseAvatar()">Change photo</button></div>
+<label>Full name<input id="profileName"></label><label>Username<input id="profileUsername"></label><label>Bio<textarea id="profileBio"></textarea></label></div></section>
+
+<section id="earn" class="screen"><div class="top"><button class="back" onclick="closeScreen('earn')">‹</button><b>Creator Dashboard</b><span></span></div><div class="content">
+<div class="box"><div class="muted">Available earnings</div><div style="font-size:32px;font-weight:900">৳ <span id="earnBalance">0.00</span></div><button class="primary" onclick="requestPayout()">Request Payment</button></div>
+<div class="metricgrid"><div class="metric"><small>Total Views</small><strong id="earnViews">0</strong></div><div class="metric"><small>Total Earned</small><strong>৳ <span id="earnTotal">0.00</span></strong></div><div class="metric"><small>Followers</small><strong id="earnFollowers">0</strong></div><div class="metric"><small>Videos</small><strong id="earnVideosCount">0</strong></div></div>
+<div class="box"><b>My videos</b><div id="earningVideos"></div></div></div></section>
+
+<section id="admin" class="screen"><div class="top"><button class="back" onclick="closeScreen('admin')">‹</button><b>Rivo Admin Panel</b><span></span></div><div class="content">
+<div class="metricgrid" id="adminMetrics"></div>
+<div class="box"><div class="adminnav"><button class="on" onclick="adminTab('users',this)">Users</button><button onclick="adminTab('videos',this)">Videos</button><button onclick="adminTab('payments',this)">Payments</button></div><div id="adminBody" style="margin-top:12px"></div></div>
+</div></section>
+
+<input id="avatarInput" type="file" accept="image/*" hidden>
+<div id="toast" class="toast"></div>
+</div>
+
+<script>
+const SUPABASE_URL="https://ayoactrisfcdhmhsnrwz.supabase.co";
+const SUPABASE_KEY="sb_publishable_pvPMH5zhPX3_vjarFMrYtw_9uZkagYX";
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+let session=null, me=null, feedMode="foryou", selectedFile=null, selectedAudio=null, filterName="none", authSignup=false;
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>\"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+function toast(t){const x=$("toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),1800)}
+function openScreen(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("show"));$(id).classList.add("show");if(id==="profile")renderProfile();if(id==="earn")renderEarnings();if(id==="discover")loadCreators();if(id==="inbox")loadInbox();if(id==="admin")loadAdmin("users")}
+function closeScreen(id){$(id).classList.remove("show")}
+function closeModal(id){$(id).classList.remove("show")}
+function goHome(){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("show"));setNav("navHome");loadFeed()}
+function setNav(id){document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));$(id)?.classList.add("active")}
+function setFeed(mode){feedMode=mode;$("tabFollowing").classList.toggle("active",mode==="following");$("tabForYou").classList.toggle("active",mode==="foryou");loadFeed()}
+function toggleAuthMode(){authSignup=!authSignup;$("authTitle").textContent=authSignup?"Create Rivo account":"Rivo Login";$("authBtn").textContent=authSignup?"Create account":"Login";$("authName").classList.toggle("hidden",!authSignup);$("authSwitch").textContent=authSignup?"Back to login":"Create account"}
+function openAuth(){authSignup=false;toggleAuthMode();toggleAuthMode();$("auth").classList.add("show")}
+async function submitAuth(){const email=$("authEmail").value.trim(),password=$("authPassword").value;if(!email||!password)return toast("Email and password required");let r;if(authSignup)r=await sb.auth.signUp({email,password,options:{data:{full_name:$("authName").value.trim()}}});else r=await sb.auth.signInWithPassword({email,password});if(r.error)return toast(r.error.message);closeModal("auth");await boot()}
+async function signOut(){await sb.auth.signOut();session=null;me=null;closeScreen("settings");toast("Logged out");renderFeed()}
+async function boot(){const r=await sb.auth.getSession();session=r.data.session;if(session){await loadMe();await loadFeed()}else{renderFeed();setTimeout(()=>openAuth(),500)}}
+async function loadMe(){if(!session)return;let r=await sb.from("profiles").select("*").eq("id",session.user.id).maybeSingle();if(r.error){console.error(r.error);return}if(!r.data){await sb.from("profiles").insert({id:session.user.id,username:"rivo_"+session.user.id.replaceAll("-","").slice(0,10),full_name:session.user.user_metadata?.full_name||"",avatar_url:"",bio:""});r=await sb.from("profiles").select("*").eq("id",session.user.id).single()}me=r.data}
+function defaultAvatar(){return "data:image/svg+xml;charset=utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><rect width="160" height="160" rx="80" fill="#252936"/><circle cx="80" cy="61" r="34" fill="#777"/><path d="M23 151c7-48 107-48 114 0" fill="#555"/></svg>')}
+function imgUrl(url){return url||defaultAvatar()}
+function mediaIsImage(url){return /\.(png|jpe?g|gif|webp|avif)(\?|$)/i.test(url||"")}
+function formatNum(n){n=Number(n||0);if(n>=1000000)return (n/1000000).toFixed(1)+"M";if(n>=1000)return (n/1000).toFixed(1)+"K";return String(n)}
+async function loadFeed(){const f=$("feed");f.innerHTML='<div class="empty">Loading Rivo…</div>';if(!session){f.innerHTML='<div class="empty"><div class="logoMark">▶</div><h2>Welcome to Rivo</h2><p>Login করে ভিডিও দেখুন ও আপলোড করুন।</p><button class="primary" onclick="openAuth()">Login / Create account</button></div>';return}
+let q=sb.from("videos").select("*,profiles!videos_user_id_fkey(id,username,full_name,avatar_url)").eq("status","published").order("created_at",{ascending:false}).limit(30);
+if(feedMode==="foryou")q=q.eq("visibility","Public");else{const fr=await sb.from("follows").select("following_id").eq("follower_id",session.user.id);const ids=(fr.data||[]).map(x=>x.following_id);if(!ids.length){f.innerHTML='<div class="empty">Following feed is empty.<br>Discover creators and follow them.</div>';return}q=q.in("user_id",ids)}
+const r=await q;if(r.error){console.error(r.error);f.innerHTML='<div class="empty">Feed load failed: '+esc(r.error.message)+'</div>';return}
+if(!r.data?.length){f.innerHTML='<div class="empty">No posts yet.<br><button class="primary" onclick="openScreen(\'upload\')">Upload first photo/video</button></div>';return}
+const ids=r.data.map(v=>v.id);
+const [lr,cr]=await Promise.all([
+  sb.from("likes").select("video_id").in("video_id",ids),
+  sb.from("comments").select("video_id").in("video_id",ids)
+]);
+const lc={},cc={};
+(lr.data||[]).forEach(x=>lc[x.video_id]=(lc[x.video_id]||0)+1);
+(cr.data||[]).forEach(x=>cc[x.video_id]=(cc[x.video_id]||0)+1);
+r.data.forEach(v=>{v.likes_count=lc[v.id]||0;v.comments_count=cc[v.id]||0});
+f.innerHTML=r.data.map(v=>cardHtml(v)).join("");wireVideos()}
+function cardHtml(v){const p=v.profiles||{};const url=v.video_url||"";const img=imgUrl(p.avatar_url);const media=mediaIsImage(url)?`<img src="${esc(url)}" alt="">`:`<video src="${esc(url)}" playsinline preload="metadata" controls></video>`;return `<article class="card" data-id="${v.id}">${media}<div class="shade"></div><div class="actions"><button class="act follow" onclick="followUser('${v.user_id}',this)">Follow</button><button class="act" onclick="toggleLike('${v.id}',this)"><b>♥</b><small>${formatNum(v.likes_count||0)}</small></button><button class="act" onclick="openComments('${v.id}')"><b>●</b><small>${formatNum(v.comments_count||0)}</small></button><button class="act" onclick="sharePost('${v.id}')"><b>↗</b><small>${formatNum(v.shares_count||0)}</small></button><button class="act" onclick="addView('${v.id}')"><b>◉</b><small>${formatNum(v.views||0)}</small></button></div><div class="info"><div class="userline"><img class="avatar" src="${img}"><div><div class="handle">@${esc(p.username||"rivo_user")} <span class="verified">●</span></div></div></div><div class="caption">${esc(v.caption||"")}</div><div class="sound">♫ ${v.audio_url?"Selected audio":"Original Sound"}</div></div></article>`}
+function wireVideos(){document.querySelectorAll(".card video").forEach(v=>v.addEventListener("click",()=>{if(v.paused)v.play().catch(()=>{});else v.pause()}))}
+async function followUser(uid,btn){if(!session)return openAuth();if(uid===session.user.id)return toast("নিজেকে follow করা যাবে না");const ex=await sb.from("follows").select("*").eq("follower_id",session.user.id).eq("following_id",uid).maybeSingle();if(ex.data){await sb.from("follows").delete().eq("follower_id",session.user.id).eq("following_id",uid);btn.textContent="Follow"}else{const r=await sb.from("follows").insert({follower_id:session.user.id,following_id:uid});if(r.error)return toast(r.error.message);btn.textContent="Following"}}
+async function toggleLike(vid,btn){if(!session)return openAuth();const ex=await sb.from("likes").select("*").eq("user_id",session.user.id).eq("video_id",vid).maybeSingle();if(ex.data){await sb.from("likes").delete().eq("user_id",session.user.id).eq("video_id",vid);btn.classList.remove("liked")}else{const r=await sb.from("likes").insert({user_id:session.user.id,video_id:vid});if(r.error)return toast(r.error.message);btn.classList.add("liked");toast("Liked")}}
+async function addView(vid){const r=await sb.rpc("rivo_increment_view",{p_video_id:vid});if(r.error){console.warn(r.error);return}toast("View counted")}
+async function sharePost(vid){try{await navigator.share({title:"Rivo video",url:location.href+"#video-"+vid})}catch(e){}await sb.from("shares").insert({video_id:vid,user_id:session?.user?.id||null});toast("Shared")}
+async function openComments(vid){const body=`<div class="box"><b>Comments</b><div id="commentList">Loading…</div><textarea id="commentText" placeholder="Write a comment..."></textarea><button class="primary" onclick="sendComment('${vid}')">Comment</button></div>`;showSheet(body);const r=await sb.from("comments").select("*,profiles!comments_user_id_fkey(username,avatar_url)").eq("video_id",vid).order("created_at",{ascending:false});$("commentList").innerHTML=(r.data||[]).map(c=>`<div class="row"><img class="listimg" src="${imgUrl(c.profiles?.avatar_url)}"><div class="grow"><b>@${esc(c.profiles?.username||"user")}</b><div class="muted">${esc(c.body)}</div></div></div>`).join("")||'<div class="muted">No comments yet.</div>'}
+async function sendComment(vid){const t=$("commentText").value.trim();if(!t)return;if(!session)return openAuth();const r=await sb.from("comments").insert({video_id:vid,user_id:session.user.id,body:t});if(r.error)return toast(r.error.message);toast("Comment added");closeSheet()}
+function showSheet(html){$("auth").classList.remove("show");let m=document.createElement("div");m.id="tempModal";m.className="modal show";m.innerHTML=`<div class="sheet"><button class="closex" onclick="closeSheet()">×</button>${html}</div>`;document.body.appendChild(m)}
+function closeSheet(){$("tempModal")?.remove()}
+function chooseAvatar(){$("avatarInput").click()}
+$("avatarInput").addEventListener("change",async e=>{const f=e.target.files[0];if(!f||!session)return;const path=`${session.user.id}/${Date.now()}_${f.name.replace(/[^a-zA-Z0-9._-]/g,"_")}`;const r=await sb.storage.from("avatars").upload(path,f,{contentType:f.type,upsert:false});if(r.error)return toast(r.error.message);const u=sb.storage.from("avatars").getPublicUrl(path).data.publicUrl;const up=await sb.from("profiles").update({avatar_url:u}).eq("id",session.user.id);if(up.error)return toast(up.error.message);me.avatar_url=u;renderProfile();loadMe();toast("Profile photo updated")})
+function loadEdit(){if(!me)return;$("editPhoto").src=imgUrl(me.avatar_url);$("profileName").value=me.full_name||"";$("profileUsername").value=me.username||"";$("profileBio").value=me.bio||""}
+async function saveProfile(){if(!me)return;const data={full_name:$("profileName").value.trim(),username:$("profileUsername").value.trim(),bio:$("profileBio").value.trim()};const r=await sb.from("profiles").update(data).eq("id",session.user.id);if(r.error)return toast(r.error.message);me={...me,...data};toast("Profile saved");closeScreen("edit");renderProfile()}
+async function renderProfile(){if(!me)await loadMe();const mine=await sb.from("videos").select("*").eq("user_id",session.user.id).order("created_at",{ascending:false});const fol=await sb.from("follows").select("*",{count:"exact",head:true}).eq("following_id",session.user.id);const likes=await sb.from("likes").select("*",{count:"exact",head:true}).eq("user_id",session.user.id);$("profileBody").innerHTML=`<div class="profile"><img class="photo" src="${imgUrl(me.avatar_url)}"><h2>@${esc(me.username)}</h2><div class="muted">${esc(me.bio||"Content Creator")}</div><div class="stats"><div><strong>${formatNum((mine.data||[]).length)}</strong><small>Videos</small></div><div><strong>${fol.count||0}</strong><small>Followers</small></div><div><strong>${likes.count||0}</strong><small>Likes</small></div></div><button class="outline" onclick="openScreen('edit')">Edit Profile</button></div><div class="box"><div class="row"><span class="grow">Creator Dashboard</span><button class="pill" onclick="openScreen('earn')">Open</button></div>${me.is_admin?'<div class="row"><span class="grow">Admin Panel</span><button class="pill" onclick="openScreen(\"admin\")">Open</button></div>':""}</div><div class="grid">${(mine.data||[]).map(v=>`<div class="tile">${mediaIsImage(v.video_url)?`<img src="${esc(v.video_url)}">`:`<video src="${esc(v.video_url)}" muted></video>`}</div>`).join("")||'<div class="muted" style="grid-column:1/-1;text-align:center;padding:30px">No posts</div>'}</div>`;$("adminEntry").classList.toggle("hidden",!me.is_admin)}
+async function publishPost(){if(!session)return openAuth();if(!selectedFile)return toast("আগে ছবি বা ভিডিও বাছাই করুন");const id=crypto.randomUUID();const safe=selectedFile.name.replace(/[^a-zA-Z0-9._-]/g,"_");const path=`${session.user.id}/${id}_${safe}`;toast("Uploading…");const r=await sb.storage.from("videos").upload(path,selectedFile,{contentType:selectedFile.type,cacheControl:"3600",upsert:false});if(r.error)return toast(r.error.message);const url=sb.storage.from("videos").getPublicUrl(path).data.publicUrl;let audioUrl="";if(selectedAudio){const ap=`${session.user.id}/${id}_${selectedAudio.name.replace(/[^a-zA-Z0-9._-]/g,"_")}`;const ar=await sb.storage.from("audio").upload(ap,selectedAudio,{contentType:selectedAudio.type,cacheControl:"3600",upsert:false});if(!ar.error)audioUrl=sb.storage.from("audio").getPublicUrl(ap).data.publicUrl}
+const ins=await sb.from("videos").insert({id,user_id:session.user.id,video_url:url,caption:$("caption").value.trim(),hashtags:$("hashtags").value.trim(),visibility:$("visibility").value,status:"published",audio_url:audioUrl});if(ins.error)return toast(ins.error.message);toast("Posted to Rivo");selectedFile=null;selectedAudio=null;$("cameraFile").value="";$("galleryFile").value="";$("audioFile").value="";$("imgPreview").classList.add("hidden");$("vidPreview").classList.add("hidden");$("caption").value="";$("hashtags").value="";closeScreen("upload");goHome()}
+function prepareMedia(file){if(!file)return;selectedFile=file;$("mediaName").textContent=file.name+" · "+Math.round(file.size/1024/1024*10)/10+" MB";const u=URL.createObjectURL(file);$("imgPreview").classList.add("hidden");$("vidPreview").classList.add("hidden");if(file.type.startsWith("image/")){$("imgPreview").src=u;$("imgPreview").classList.remove("hidden")}else{$("vidPreview").src=u;$("vidPreview").classList.remove("hidden");$("vidPreview").load()}}
+$("cameraFile").addEventListener("change",e=>prepareMedia(e.target.files[0]));$("galleryFile").addEventListener("change",e=>prepareMedia(e.target.files[0]));$("audioFile").addEventListener("change",e=>{selectedAudio=e.target.files[0];if(selectedAudio){$("audioPreview").src=URL.createObjectURL(selectedAudio);$("audioPreview").classList.remove("hidden")}})
+function applyFilter(btn,name){document.querySelectorAll(".filter").forEach(x=>x.classList.remove("on"));btn.classList.add("on");filterName=name;const css={none:"none",warm:"sepia(.22) saturate(1.25) brightness(1.05)",cool:"saturate(.9) hue-rotate(12deg) brightness(1.03)",mono:"grayscale(1)",vivid:"saturate(1.65) contrast(1.08)",cinema:"contrast(1.15) saturate(.8) brightness(.9)"}[name];$("imgPreview").style.filter=css;$("vidPreview").style.filter=css}
+async function requestPayout(){if(!session)return;const amount=Number($("earnBalance").textContent||0);if(amount<=0)return toast("No balance available");const r=await sb.from("payout_requests").insert({user_id:session.user.id,amount,payment_method:"manual",payment_account:""});if(r.error)return toast(r.error.message);toast("Payment request sent")}
+async function renderEarnings(){if(!session)return;const vids=await sb.from("videos").select("id,caption,views,earning_amount").eq("user_id",session.user.id);const er=await sb.from("creator_earnings").select("*").eq("user_id",session.user.id);const fol=await sb.from("follows").select("*",{count:"exact",head:true}).eq("following_id",session.user.id);const totalViews=(vids.data||[]).reduce((a,v)=>a+Number(v.views||0),0);const totalEarn=(er.data||[]).reduce((a,v)=>a+Number(v.amount||0),0);$("earnViews").textContent=formatNum(totalViews);$("earnTotal").textContent=totalEarn.toFixed(2);$("earnBalance").textContent=totalEarn.toFixed(2);$("earnFollowers").textContent=fol.count||0;$("earnVideosCount").textContent=(vids.data||[]).length;$("earningVideos").innerHTML=(vids.data||[]).map(v=>`<div class="row"><span class="grow">${esc(v.caption||"Untitled")}<br><span class="muted">${formatNum(v.views)} views</span></span><b>৳${Number(v.earning_amount||0).toFixed(2)}</b></div>`).join("")||'<div class="muted">No videos yet.</div>'}
+async function loadCreators(){const r=await sb.from("profiles").select("*").limit(20);$("creatorList").innerHTML=(r.data||[]).map(p=>`<div class="row"><img class="listimg" src="${imgUrl(p.avatar_url)}"><span class="grow"><b>${esc(p.full_name||p.username)}</b><br><span class="muted">@${esc(p.username)}</span></span><button class="pill" onclick="followUser('${p.id}',this)">Follow</button></div>`).join("")||'<div class="muted">No creators yet.</div>'}
+async function runSearch(){const q=$("discoverSearch").value.trim();if(!q)return loadCreators();const r=await sb.from("profiles").select("*").or(`username.ilike.%${q}%,full_name.ilike.%${q}%`).limit(20);$("creatorList").innerHTML=(r.data||[]).map(p=>`<div class="row"><img class="listimg" src="${imgUrl(p.avatar_url)}"><span class="grow"><b>${esc(p.full_name||p.username)}</b><br><span class="muted">@${esc(p.username)}</span></span><button class="pill" onclick="followUser('${p.id}',this)">Follow</button></div>`).join("")||'<div class="muted">No results.</div>'}
+async function loadInbox(){if(!session)return;const r=await sb.from("notifications").select("*").eq("user_id",session.user.id).order("created_at",{ascending:false}).limit(30);$("notificationList").innerHTML=(r.data||[]).map(n=>`<div class="row"><span class="grow">${esc(n.message||n.type||"Notification")}</span><span class="muted">${new Date(n.created_at).toLocaleString()}</span></div>`).join("")||'<div class="muted" style="padding:20px 0">No notifications.</div>'}
+let adminCurrent="users";
+async function loadAdmin(tab="users"){if(!me?.is_admin)return toast("Admin access required");adminCurrent=tab;const metrics=await Promise.all([sb.from("profiles").select("*",{count:"exact",head:true}),sb.from("videos").select("*",{count:"exact",head:true}),sb.from("videos").select("views"),sb.from("payout_requests").select("*",{count:"exact",head:true}).eq("status","pending")]);const views=(metrics[2].data||[]).reduce((a,v)=>a+Number(v.views||0),0);$("adminMetrics").innerHTML=`<div class="metric"><small>Users</small><strong>${metrics[0].count||0}</strong></div><div class="metric"><small>Videos</small><strong>${metrics[1].count||0}</strong></div><div class="metric"><small>Total Views</small><strong>${formatNum(views)}</strong></div><div class="metric"><small>Pending Payouts</small><strong>${metrics[3].count||0}</strong></div>`;await adminTab(tab,document.querySelector(".adminnav button.on"))}
+async function adminTab(tab,btn){if(!me?.is_admin)return;adminCurrent=tab;document.querySelectorAll(".adminnav button").forEach(x=>x.classList.remove("on"));btn?.classList.add("on");const b=$("adminBody");b.innerHTML="Loading…";if(tab==="users"){const r=await sb.from("profiles").select("*").order("created_at",{ascending:false}).limit(100);b.innerHTML=`<table><tr><th>User</th><th>Admin</th><th>Action</th></tr>${(r.data||[]).map(p=>`<tr><td>@${esc(p.username)}<br><span class="muted">${esc(p.full_name)}</span></td><td>${p.is_admin?"Yes":"No"}</td><td><button class="pill" onclick="toggleAdmin('${p.id}',${!p.is_admin})">${p.is_admin?"Remove":"Make admin"}</button></td></tr>`).join("")}</table>`}
+if(tab==="videos"){const r=await sb.from("videos").select("*,profiles!videos_user_id_fkey(username,full_name)").order("created_at",{ascending:false}).limit(100);b.innerHTML=`<table><tr><th>Video</th><th>Views</th><th>Status</th><th>Rate/1K</th><th>Action</th></tr>${(r.data||[]).map(v=>`<tr><td>@${esc(v.profiles?.username)}<br>${esc(v.caption||"")}</td><td>${formatNum(v.views)}</td><td>${esc(v.status)}</td><td><input id="rate_${v.id}" type="number" min="0" step="0.01" value="${Number(v.earning_rate||0)}"></td><td><button class="pill" onclick="saveVideoRate('${v.id}')">Save</button></td></tr>`).join("")}</table>`}
+if(tab==="payments"){const r=await sb.from("payout_requests").select("*").order("created_at",{ascending:false}).limit(100);b.innerHTML=`<table><tr><th>User</th><th>Amount</th><th>Status</th><th>Action</th></tr>${(r.data||[]).map(p=>`<tr><td>${esc(p.user_id.slice(0,8))}</td><td>৳${Number(p.amount).toFixed(2)}</td><td>${esc(p.status)}</td><td>${p.status==="pending"?`<button class="pill" onclick="setPayout('${p.id}','approved')">Approve</button> <button class="pill" onclick="setPayout('${p.id}','paid')">Paid</button>`:"—"}</td></tr>`).join("")}</table>`}}
+async function toggleAdmin(id,val){const r=await sb.from("profiles").update({is_admin:val}).eq("id",id);if(r.error)return toast(r.error.message);toast("Updated");loadAdmin("users")}
+async function saveVideoRate(id){const rate=Number($("rate_"+id).value||0);const r=await sb.from("videos").update({earning_rate:rate}).eq("id",id);if(r.error)return toast(r.error.message);const v=await sb.from("videos").select("id,user_id,views").eq("id",id).single();if(v.data){const amount=(Number(v.data.views||0)/1000)*rate;const ex=await sb.from("creator_earnings").select("id").eq("video_id",id).maybeSingle();if(ex.data){await sb.from("creator_earnings").update({views:Number(v.data.views||0),rate_per_1000:rate,amount,status:"approved"}).eq("id",ex.data.id)}else{await sb.from("creator_earnings").insert({user_id:v.data.user_id,video_id:id,views:Number(v.data.views||0),rate_per_1000:rate,amount,status:"approved"})}await sb.from("videos").update({earning_amount:amount}).eq("id",id)}toast("Rate saved");loadAdmin("videos")}
+async function setPayout(id,status){const r=await sb.from("payout_requests").update({status,paid_at:status==="paid"?new Date().toISOString():null}).eq("id",id);if(r.error)return toast(r.error.message);toast("Payment updated");loadAdmin("payments")}
+$("tabFollowing").classList.remove("active");$("tabForYou").classList.add("active");
+sb.auth.onAuthStateChange(async(_e,s)=>{session=s;if(s){await loadMe();loadFeed()}});
+boot();
+</script>
+</body>
+</html>
