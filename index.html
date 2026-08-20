@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 
 <link rel="manifest" href="./manifest.json">
 
@@ -17,8 +16,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@600;700;800&display=swap');
 
 :root{
-  --bg:#ffffff;
-  --card:#ffffff;
+  --bg:#fff;
+  --card:#fff;
   --soft:#f6f7f9;
   --border:#e7e8ec;
   --text:#111318;
@@ -33,8 +32,7 @@
   box-sizing:border-box;
 }
 
-html,
-body{
+html,body{
   margin:0;
   padding:0;
   background:#fff;
@@ -46,10 +44,7 @@ body{
   overflow-x:hidden;
 }
 
-button,
-input,
-textarea,
-select{
+button,input,textarea,select{
   font:inherit;
 }
 
@@ -72,15 +67,11 @@ button{
   position:sticky;
   top:0;
   z-index:50;
-
   display:flex;
   align-items:center;
-
   padding:0 13px;
-
   background:#ffffffee;
   backdrop-filter:blur(18px);
-
   border-bottom:1px solid #eee;
 }
 
@@ -88,16 +79,9 @@ button{
   font-family:Inter,sans-serif;
   font-size:27px;
   font-weight:800;
-
-  background:linear-gradient(
-    90deg,
-    var(--pink),
-    var(--purple)
-  );
-
+  background:linear-gradient(90deg,var(--pink),var(--purple));
   -webkit-background-clip:text;
   background-clip:text;
-
   color:transparent;
 }
 
@@ -121,18 +105,13 @@ button{
 .iconBtn{
   width:39px;
   height:39px;
-
   margin-left:6px;
-
   border:1px solid #e7e8ec;
   border-radius:13px;
-
   background:#fff;
   color:#111;
-
   display:grid;
   place-items:center;
-
   font-size:18px;
 }
 
@@ -145,6 +124,10 @@ button{
 
 .page.active{
   display:block;
+}
+
+#home.page{
+  padding:0;
 }
 
 .title{
@@ -179,16 +162,9 @@ button{
   border:0;
   border-radius:13px;
   padding:12px 15px;
-
   color:#fff;
   font-weight:700;
-
-  background:linear-gradient(
-    110deg,
-    var(--pink),
-    var(--purple)
-  );
-
+  background:linear-gradient(110deg,var(--pink),var(--purple));
   box-shadow:0 7px 20px #ff2f8625;
 }
 
@@ -196,10 +172,8 @@ button{
   border:1px solid #dddfe5;
   border-radius:13px;
   padding:11px 15px;
-
   color:#111;
   background:#fff;
-
   font-weight:700;
 }
 
@@ -212,16 +186,11 @@ button{
 
 .input{
   width:100%;
-
   padding:12px;
-
   margin:5px 0;
-
   border:1px solid #dddfe5;
   border-radius:13px;
-
   outline:none;
-
   color:#111;
   background:#fafafa;
 }
@@ -231,13 +200,7 @@ button{
   background:#fff;
 }
 
-/* =========================
-   FULL SCREEN FEED
-========================= */
-
-#home.page{
-  padding:0;
-}
+/* FEED */
 
 #feed{
   width:100%;
@@ -245,17 +208,10 @@ button{
 
 .post{
   width:100%;
-
   height:calc(100svh - 62px);
-
   min-height:540px;
-
   position:relative;
-
   overflow:hidden;
-
-  margin:0;
-
   background:#000;
 }
 
@@ -263,162 +219,108 @@ button{
 .post > img{
   width:100%;
   height:100%;
-
   object-fit:cover;
-
   display:block;
-
   background:#000;
-}
-
-/* video control */
-
-.post video{
-  cursor:pointer;
 }
 
 .shade{
   position:absolute;
   inset:0;
-
   pointer-events:none;
-
-  background:
-    linear-gradient(
-      180deg,
-      #00000015 0%,
-      transparent 40%,
-      #000000d9 100%
-    );
+  background:linear-gradient(
+    180deg,
+    #00000015 0%,
+    transparent 40%,
+    #000000d9 100%
+  );
 }
 
-/* USER AREA */
+/* USER */
 
 .postInfo{
   position:absolute;
-
   left:15px;
   right:95px;
   bottom:25px;
-
   z-index:10;
-
-  color:#fff;
-
-  text-shadow:
-    0 2px 7px #000;
+  color:#fff !important;
+  text-shadow:0 2px 7px #000;
 }
 
 .userLine{
   display:flex;
   align-items:center;
   gap:8px;
-
   margin-bottom:6px;
 }
 
 .feedAvatar{
   width:40px;
   height:40px;
-
   border-radius:50%;
-
   object-fit:cover;
-
   border:2px solid #fff;
-
   background:#eee;
 }
 
 .username{
   font-size:18px;
   font-weight:800;
-
   color:#fff !important;
-
-  text-shadow:
-    0 2px 8px #000;
+  text-shadow:0 2px 8px #000;
 }
 
 .caption{
   font-size:14px;
   line-height:1.45;
-
-  color:#fff;
-
-  text-shadow:
-    0 2px 7px #000;
+  color:#fff !important;
+  text-shadow:0 2px 7px #000;
 }
 
 /* FOLLOW */
 
 .followFeedBtn{
   border:1px solid #fff;
-
   padding:4px 12px;
-
   border-radius:20px;
-
   background:#ff2f86;
-
   color:#fff;
-
   font-size:12px;
-
   font-weight:700;
-}
-
-.followFeedBtn.following{
-  background:#ffffff;
-  color:#111;
 }
 
 /* ACTIONS */
 
 .actions{
   position:absolute;
-
   right:9px;
   bottom:104px;
-
   z-index:20;
-
   display:flex;
   flex-direction:column;
-
   gap:10px;
 }
 
 .action{
   width:55px;
   min-height:55px;
-
   border:0;
-
   border-radius:18px;
-
   color:#fff;
-
   background:#00000080;
-
   backdrop-filter:blur(8px);
-
   display:flex;
   flex-direction:column;
-
   align-items:center;
   justify-content:center;
-
   gap:1px;
-
-  text-shadow:
-    0 2px 5px #000;
+  text-shadow:0 2px 5px #000;
 }
 
 .actionIcon{
   width:25px;
   height:25px;
-
   display:grid;
   place-items:center;
 }
@@ -426,12 +328,9 @@ button{
 .actionIcon svg{
   width:24px;
   height:24px;
-
   fill:none;
   stroke:#fff;
-
   stroke-width:2.2;
-
   stroke-linecap:round;
   stroke-linejoin:round;
 }
@@ -445,8 +344,13 @@ button{
   background:#ff2f86;
 }
 
-.action.followAction .actionIcon svg{
-  fill:none;
+.action.followAction.following{
+  background:#fff;
+  color:#111;
+}
+
+.action.followAction.following .actionIcon svg{
+  stroke:#111;
 }
 
 .action small{
@@ -454,32 +358,26 @@ button{
   font-size:10px;
 }
 
+.action.followAction.following small{
+  color:#111;
+}
+
 /* PLAY */
 
 .play{
   position:absolute;
-
   left:50%;
   top:50%;
-
   transform:translate(-50%,-50%);
-
   width:70px;
   height:70px;
-
   z-index:18;
-
   border:0;
   border-radius:50%;
-
   color:#fff;
-
   background:#00000070;
-
   backdrop-filter:blur(6px);
-
   font-size:27px;
-
   display:grid;
   place-items:center;
 }
@@ -488,21 +386,15 @@ button{
 
 .soundBtn{
   position:absolute;
-
   right:12px;
   top:75px;
-
   z-index:20;
-
   width:44px;
   height:44px;
-
   border:1px solid #ffffff45;
   border-radius:50%;
-
   color:#fff;
   background:#00000070;
-
   font-size:19px;
 }
 
@@ -516,11 +408,8 @@ button{
 
 .metric{
   padding:14px;
-
   border-radius:16px;
-
   border:1px solid var(--border);
-
   background:#fafafa;
 }
 
@@ -535,9 +424,7 @@ button{
 .metric b{
   display:block;
   margin-top:3px;
-
   font-family:Inter;
-
   font-size:20px;
 }
 
@@ -545,42 +432,26 @@ button{
 
 .menu{
   width:100%;
-
   display:flex;
   align-items:center;
-
   gap:12px;
-
   margin:8px 0;
   padding:12px;
-
   border:1px solid var(--border);
   border-radius:16px;
-
   background:#fff;
-
   color:#111;
-
   text-align:left;
 }
 
 .menuIcon{
   width:43px;
   height:43px;
-
   flex:none;
-
   display:grid;
   place-items:center;
-
   border-radius:13px;
-
-  background:linear-gradient(
-    135deg,
-    #ff2f8618,
-    #7c4dff18
-  );
-
+  background:linear-gradient(135deg,#ff2f8618,#7c4dff18);
   font-size:21px;
 }
 
@@ -611,137 +482,66 @@ button{
 
 .profileAvatarWrap{
   position:relative;
-
   width:100px;
   height:100px;
-
   margin:auto;
 }
 
 .avatar{
   width:100px;
   height:100px;
-
   border-radius:50%;
-
   object-fit:cover;
-
   border:3px solid var(--pink);
-
   background:#eee;
 }
 
 .avatarEdit{
   position:absolute;
-
   right:0;
   bottom:0;
-
   width:34px;
   height:34px;
-
   border:3px solid #fff;
-
   border-radius:50%;
-
-  background:linear-gradient(
-    135deg,
-    var(--pink),
-    var(--purple)
-  );
-
+  background:linear-gradient(135deg,var(--pink),var(--purple));
   color:#fff;
-
   display:grid;
   place-items:center;
-
   font-size:15px;
 }
 
-/* PROFILE TABS */
-
-.profileTabs{
-  display:grid;
-
-  grid-template-columns:1fr 1fr 1fr;
-
-  border-bottom:1px solid var(--border);
-
-  margin-bottom:10px;
-}
-
-.profileTab{
-  border:0;
-
-  background:none;
-
-  padding:12px;
-
-  color:#888;
-
-  font-weight:700;
-}
-
-.profileTab.active{
-  color:#111;
-
-  border-bottom:2px solid var(--pink);
-}
-
-/* BOTTOM NAV */
+/* BOTTOM */
 
 .bottom{
   position:fixed;
-
   left:0;
   right:0;
   bottom:0;
-
   height:80px;
-
   z-index:60;
-
   background:#ffffffee;
-
   backdrop-filter:blur(18px);
-
   border-top:1px solid #e8e8eb;
 }
 
 .bottomInner{
   width:min(100%,540px);
-
   height:100%;
-
   margin:auto;
-
   display:grid;
-
-  grid-template-columns:
-    1fr
-    1fr
-    1fr
-    1fr
-    1fr;
+  grid-template-columns:1fr 1fr 1fr 1fr 1fr;
 }
 
 .nav{
   border:0;
-
   background:none;
-
   color:#858894;
-
   display:flex;
-
   flex-direction:column;
-
   align-items:center;
-
   justify-content:center;
-
   gap:2px;
-
   font-size:11px;
 }
 
@@ -756,43 +556,25 @@ button{
 .uploadBtn{
   width:54px;
   height:54px;
-
   margin:auto;
-
   border:0;
-
   border-radius:17px;
-
-  background:linear-gradient(
-    135deg,
-    var(--pink),
-    var(--purple)
-  );
-
+  background:linear-gradient(135deg,var(--pink),var(--purple));
   color:#fff;
-
   font-size:30px;
-
-  box-shadow:
-    0 8px 22px #ff2f8640;
+  box-shadow:0 8px 22px #ff2f8640;
 }
 
 /* MODAL */
 
 .modal{
   position:fixed;
-
   inset:0;
-
   z-index:100;
-
   display:none;
-
   align-items:center;
   justify-content:center;
-
   padding:14px;
-
   background:#0008;
 }
 
@@ -802,226 +584,92 @@ button{
 
 .sheet{
   width:min(500px,100%);
-
   max-height:94svh;
-
   overflow:auto;
-
   padding:18px;
-
   border:1px solid #ddd;
-
   border-radius:22px;
-
   background:#fff;
-
-  box-shadow:
-    0 25px 70px #0005;
+  box-shadow:0 25px 70px #0005;
 }
 
 .sheetHead{
   display:flex;
-
   align-items:center;
-
   margin-bottom:12px;
 }
 
 .sheetHead h3{
   flex:1;
-
   margin:0;
-
   font-size:21px;
 }
 
 .close{
   width:37px;
   height:37px;
-
   border:0;
-
   border-radius:50%;
-
   color:#111;
-
   background:#f1f2f5;
-
   font-size:22px;
 }
 
-/* AUTH */
+/* COMMENTS */
 
-.authTabs{
-  display:grid;
-
-  grid-template-columns:1fr 1fr;
-
-  gap:8px;
-
-  margin-bottom:10px;
-}
-
-/* NOTICE */
-
-.noticeModal{
-  position:fixed;
-
-  inset:0;
-
-  z-index:110;
-
-  display:none;
-
-  align-items:flex-start;
-
-  justify-content:center;
-
-  padding:74px 12px;
-
-  background:#0008;
-}
-
-.noticeModal.show{
-  display:flex;
-}
-
-.noticePanel{
-  width:min(500px,100%);
-
-  max-height:78vh;
-
+.commentList{
+  max-height:45vh;
   overflow:auto;
-
-  border:1px solid #ddd;
-
-  border-radius:20px;
-
-  background:#fff;
-}
-
-.noticeHeader{
-  display:flex;
-
-  padding:15px;
-
-  border-bottom:1px solid var(--border);
-}
-
-.noticeItem{
-  padding:14px 15px;
-
-  border-bottom:1px solid var(--border);
-}
-
-/* AD */
-
-.durationGrid{
-  display:grid;
-
-  grid-template-columns:
-    repeat(4,1fr);
-
-  gap:7px;
-
   margin:10px 0;
 }
 
-.duration{
-  padding:11px 3px;
-
-  border:1px solid #dcdde2;
-
-  border-radius:12px;
-
-  color:#111;
-
-  background:#fff;
+.commentItem{
+  display:flex;
+  gap:10px;
+  padding:10px 0;
+  border-bottom:1px solid var(--border);
 }
 
-.duration b,
-.duration small{
+.commentAvatar{
+  width:38px;
+  height:38px;
+  flex:none;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+.commentBody{
+  flex:1;
+}
+
+.commentBody b{
   display:block;
-
-  color:#111;
+  font-size:14px;
 }
 
-.duration.selected{
-  border-color:var(--pink);
-
-  background:linear-gradient(
-    135deg,
-    var(--pink),
-    var(--purple)
-  );
-
-  color:#fff;
-}
-
-.duration.selected b,
-.duration.selected small{
-  color:#fff;
-}
-
-/* PREVIEW */
-
-.preview{
-  height:28svh;
-
-  min-height:190px;
-
-  margin:8px 0;
-
-  overflow:hidden;
-
-  display:grid;
-
-  place-items:center;
-
-  border-radius:15px;
-
-  background:#f1f2f4;
-}
-
-.preview img,
-.preview video{
-  width:100%;
-  height:100%;
-
-  object-fit:contain;
+.commentBody p{
+  margin:2px 0 0;
+  font-size:13px;
+  color:#555;
 }
 
 /* TOAST */
 
 .toast{
   position:fixed;
-
   left:50%;
-
   bottom:96px;
-
   transform:translateX(-50%);
-
   z-index:200;
-
   display:none;
-
   max-width:90%;
-
   padding:10px 15px;
-
   border-radius:12px;
-
   color:#111;
-
   background:#fff;
-
   border:1px solid #ddd;
-
   box-shadow:0 10px 30px #0002;
-
   font-weight:700;
-
   text-align:center;
 }
 
@@ -1031,26 +679,17 @@ button{
 
 .pill{
   display:inline-flex;
-
   align-items:center;
-
   gap:5px;
-
   padding:5px 9px;
-
   border:1px solid #ddd;
-
   border-radius:20px;
-
   color:#555;
-
   background:#fafafa;
-
   font-size:12px;
 }
 
 @media(max-width:380px){
-
   .action{
     width:50px;
     min-height:50px;
@@ -1060,7 +699,6 @@ button{
     left:12px;
     right:80px;
   }
-
 }
 </style>
 </head>
@@ -1073,53 +711,32 @@ button{
 
   <div class="logo">Rivo</div>
 
-  <button
-    class="topTab active"
-    onclick="showPage('home')"
-  >
+  <button class="topTab active" onclick="showPage('home')">
     Following
   </button>
 
-  <button
-    class="topTab"
-    onclick="showPage('discover')"
-  >
+  <button class="topTab" onclick="showPage('discover')">
     Discover
   </button>
 
   <div class="headerSpace"></div>
 
-  <button
-    class="iconBtn"
-    onclick="openNotice()"
-  >
-    🔔
-  </button>
-
-  <button
-    class="iconBtn"
-    onclick="showPage('settings')"
-  >
-    ⚙️
-  </button>
+  <button class="iconBtn" onclick="openNotice()">🔔</button>
+  <button class="iconBtn" onclick="showPage('settings')">⚙️</button>
 
 </header>
 
 <!-- HOME -->
 
 <section id="home" class="page active">
-
   <div id="feed"></div>
-
 </section>
 
 <!-- DISCOVER -->
 
 <section id="discover" class="page">
 
-  <div class="title">
-    🔎 Discover
-  </div>
+  <div class="title">🔎 Discover</div>
 
   <input
     id="searchBox"
@@ -1132,23 +749,17 @@ button{
 
   <div class="card">
 
-    <div class="cardTitle">
-      📢 এখানে বিজ্ঞাপন দিন
-    </div>
+    <div class="cardTitle">📢 এখানে বিজ্ঞাপন দিন</div>
 
     <p class="muted">
       আপনার ব্যবসা Rivo-তে প্রচার করুন।
       <br>
       ৩ দিন · ৭ দিন · ১৫ দিন · ৩০ দিন
       <br>
-      WhatsApp:
-      <b>01742-361967</b>
+      WhatsApp: <b>01742-361967</b>
     </p>
 
-    <button
-      class="btn full"
-      onclick="openSponsor()"
-    >
+    <button class="btn full" onclick="openSponsor()">
       📢 বিজ্ঞাপন দিন
     </button>
 
@@ -1160,9 +771,7 @@ button{
 
 <section id="earnings" class="page">
 
-  <div class="title">
-    💰 Earnings
-  </div>
+  <div class="title">💰 Earnings</div>
 
   <div class="grid">
 
@@ -1194,14 +803,9 @@ button{
 
   <div class="card">
 
-    <div class="cardTitle">
-      💎 Monetization
-    </div>
+    <div class="cardTitle">💎 Monetization</div>
 
-    <p
-      id="monetizationBox"
-      class="muted"
-    >
+    <p id="monetizationBox" class="muted">
       তথ্য লোড হচ্ছে...
     </p>
 
@@ -1255,14 +859,9 @@ button{
       onchange="uploadAvatar()"
     >
 
-    <h2 id="uname">
-      @rivo_user
-    </h2>
+    <h2 id="uname">@rivo_user</h2>
 
-    <div
-      id="email"
-      class="muted"
-    >
+    <div id="email" class="muted">
       Account তৈরি করুন অথবা Login করুন
     </div>
 
@@ -1294,80 +893,63 @@ button{
 
   <div class="card">
 
-    <button
-      class="menu"
-      onclick="openModal('authModal')"
-    >
-
-      <span class="menuIcon">
-        👤
-      </span>
+    <button class="menu" onclick="openModal('authModal')">
+      <span class="menuIcon">👤</span>
 
       <span class="menuText">
         <b>Account</b>
-        <small>
-          Login অথবা নতুন Account তৈরি করুন
-        </small>
+        <small>Login অথবা নতুন Account তৈরি করুন</small>
+      </span>
+
+      <span class="arrow">›</span>
+    </button>
+
+    <button class="menu" onclick="openProfileEdit()">
+
+      <span class="menuIcon">✏️</span>
+
+      <span class="menuText">
+        <b>Profile Edit</b>
+        <small>নাম, username ও profile তথ্য পরিবর্তন করুন</small>
       </span>
 
       <span class="arrow">›</span>
 
     </button>
 
-    <button
-      class="menu"
-      onclick="showPage('settings')"
-    >
+    <button class="menu" onclick="showPage('settings')">
 
-      <span class="menuIcon">
-        ⚙️
-      </span>
+      <span class="menuIcon">⚙️</span>
 
       <span class="menuText">
         <b>Settings</b>
-        <small>
-          Account ও App settings
-        </small>
+        <small>Account ও App settings</small>
       </span>
 
       <span class="arrow">›</span>
 
     </button>
 
-    <button
-      class="menu"
-      onclick="showPage('guide')"
-    >
+    <button class="menu" onclick="showPage('guide')">
 
-      <span class="menuIcon">
-        📖
-      </span>
+      <span class="menuIcon">📖</span>
 
       <span class="menuText">
         <b>নির্দেশিকা</b>
-        <small>
-          Rivo ব্যবহারের নিয়ম
-        </small>
+        <small>Rivo ব্যবহারের নিয়ম</small>
       </span>
 
       <span class="arrow">›</span>
 
     </button>
 
-    <button
-      class="menu"
-      onclick="openSponsor()"
-    >
+    <button class="menu" onclick="openSponsor()">
 
-      <span class="menuIcon">
-        📢
-      </span>
+      <span class="menuIcon">📢</span>
 
       <span class="menuText">
         <b>এখানে বিজ্ঞাপন দিন</b>
-        <small>
-          ৩ / ৭ / ১৫ / ৩০ দিনের প্যাকেজ
-        </small>
+        <small>৩ / ৭ / ১৫ / ৩০ দিনের প্যাকেজ</small>
       </span>
 
       <span class="arrow">›</span>
@@ -1382,30 +964,49 @@ button{
 
 <section id="settings" class="page">
 
-  <div class="title">
-    ⚙️ Settings
-  </div>
+  <div class="title">⚙️ Settings</div>
 
   <div class="card">
 
-    <div class="cardTitle">
-      👤 Account
-    </div>
+    <div class="cardTitle">👤 Account</div>
 
-    <button
-      class="menu"
-      onclick="openModal('authModal')"
-    >
+    <button class="menu" onclick="openModal('authModal')">
 
-      <span class="menuIcon">
-        🔐
-      </span>
+      <span class="menuIcon">🔐</span>
 
       <span class="menuText">
         <b>Login / Create Account</b>
-        <small>
-          আপনার Rivo account পরিচালনা করুন
-        </small>
+        <small>আপনার Rivo account পরিচালনা করুন</small>
+      </span>
+
+      <span class="arrow">›</span>
+
+    </button>
+
+    <!-- PROFILE EDIT -->
+
+    <button class="menu" onclick="openProfileEdit()">
+
+      <span class="menuIcon">✏️</span>
+
+      <span class="menuText">
+        <b>Profile Edit</b>
+        <small>আপনার profile তথ্য পরিবর্তন করুন</small>
+      </span>
+
+      <span class="arrow">›</span>
+
+    </button>
+
+    <!-- MONETIZATION -->
+
+    <button class="menu" onclick="openMonetization()">
+
+      <span class="menuIcon">💰</span>
+
+      <span class="menuText">
+        <b>Monetization আবেদন</b>
+        <small>আপনার monetization আবেদন করুন</small>
       </span>
 
       <span class="arrow">›</span>
@@ -1416,44 +1017,28 @@ button{
 
   <div class="card">
 
-    <div class="cardTitle">
-      🛠️ Rivo
-    </div>
+    <div class="cardTitle">🛠️ Rivo</div>
 
-    <button
-      class="menu"
-      onclick="showPage('guide')"
-    >
+    <button class="menu" onclick="showPage('guide')">
 
-      <span class="menuIcon">
-        📖
-      </span>
+      <span class="menuIcon">📖</span>
 
       <span class="menuText">
         <b>ব্যবহার নির্দেশিকা</b>
-        <small>
-          ভিডিও, earning ও নিয়ম
-        </small>
+        <small>ভিডিও, earning ও নিয়ম</small>
       </span>
 
       <span class="arrow">›</span>
 
     </button>
 
-    <button
-      class="menu"
-      onclick="openNotice()"
-    >
+    <button class="menu" onclick="openNotice()">
 
-      <span class="menuIcon">
-        🔔
-      </span>
+      <span class="menuIcon">🔔</span>
 
       <span class="menuText">
         <b>Notice Board</b>
-        <small>
-          নতুন ঘোষণা ও অফার
-        </small>
+        <small>নতুন ঘোষণা ও অফার</small>
       </span>
 
       <span class="arrow">›</span>
@@ -1462,10 +1047,7 @@ button{
 
   </div>
 
-  <button
-    class="outline full"
-    onclick="logoutUser()"
-  >
+  <button class="outline full" onclick="logoutUser()">
     🚪 Logout
   </button>
 
@@ -1475,32 +1057,24 @@ button{
 
 <section id="guide" class="page">
 
-  <div class="title">
-    📖 Rivo নির্দেশিকা
-  </div>
+  <div class="title">📖 Rivo নির্দেশিকা</div>
 
   <div id="guideList"></div>
 
 </section>
 
-<!-- BOTTOM NAV -->
+<!-- BOTTOM -->
 
 <nav class="bottom">
 
   <div class="bottomInner">
 
-    <button
-      class="nav active"
-      data-page="home"
-    >
+    <button class="nav active" data-page="home">
       <span class="navIcon">⌂</span>
       Home
     </button>
 
-    <button
-      class="nav"
-      data-page="friends"
-    >
+    <button class="nav" data-page="friends">
       <span class="navIcon">👥</span>
       Friends
     </button>
@@ -1512,18 +1086,12 @@ button{
       +
     </button>
 
-    <button
-      class="nav"
-      data-page="earnings"
-    >
+    <button class="nav" data-page="earnings">
       <span class="navIcon">৳</span>
       Earnings
     </button>
 
-    <button
-      class="nav"
-      data-page="profile"
-    >
+    <button class="nav" data-page="profile">
       <span class="navIcon">♙</span>
       Profile
     </button>
@@ -1538,27 +1106,19 @@ button{
 
 <div
   id="noticeModal"
-  class="noticeModal"
-  onclick="if(event.target===this)closeNotice()"
+  class="modal"
+  onclick="if(event.target===this)closeModal('noticeModal')"
 >
 
-  <div class="noticePanel">
+  <div class="sheet">
 
-    <div class="noticeHeader">
+    <div class="sheetHead">
 
-      <div style="flex:1">
-
-        <b>🔔 Notice Board</b>
-
-        <div class="muted">
-          অফার, ঘোষণা ও গুরুত্বপূর্ণ খবর
-        </div>
-
-      </div>
+      <h3>🔔 Notice Board</h3>
 
       <button
         class="close"
-        onclick="closeNotice()"
+        onclick="closeModal('noticeModal')"
       >
         ×
       </button>
@@ -1573,23 +1133,15 @@ button{
 
 <!-- AUTH -->
 
-<div
-  id="authModal"
-  class="modal"
->
+<div id="authModal" class="modal">
 
   <div class="sheet">
 
     <div class="sheetHead">
 
-      <h3>
-        👤 Rivo Account
-      </h3>
+      <h3>👤 Rivo Account</h3>
 
-      <button
-        class="close"
-        onclick="closeModal('authModal')"
-      >
+      <button class="close" onclick="closeModal('authModal')">
         ×
       </button>
 
@@ -1631,19 +1183,13 @@ button{
         placeholder="Password"
       >
 
-      <button
-        class="btn full"
-        onclick="login()"
-      >
+      <button class="btn full" onclick="login()">
         🔐 Login
       </button>
 
     </div>
 
-    <div
-      id="authSignup"
-      class="hidden"
-    >
+    <div id="authSignup" class="hidden">
 
       <input
         id="signupName"
@@ -1671,19 +1217,153 @@ button{
         placeholder="Password"
       >
 
-      <button
-        class="btn full"
-        onclick="signup()"
-      >
+      <button class="btn full" onclick="signup()">
         ✨ Account তৈরি করুন
       </button>
 
     </div>
 
-    <p
-      id="authMsg"
-      class="muted"
-    ></p>
+    <p id="authMsg" class="muted"></p>
+
+  </div>
+
+</div>
+
+<!-- PROFILE EDIT -->
+
+<div id="profileEditModal" class="modal">
+
+  <div class="sheet">
+
+    <div class="sheetHead">
+
+      <h3>✏️ Profile Edit</h3>
+
+      <button
+        class="close"
+        onclick="closeModal('profileEditModal')"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <input
+      id="editFullName"
+      class="input"
+      placeholder="আপনার নাম"
+    >
+
+    <input
+      id="editUsername"
+      class="input"
+      placeholder="Username"
+    >
+
+    <textarea
+      id="editBio"
+      class="input"
+      rows="3"
+      placeholder="আপনার Bio"
+    ></textarea>
+
+    <button
+      class="btn full"
+      onclick="saveProfileEdit()"
+    >
+      💾 Profile Save করুন
+    </button>
+
+  </div>
+
+</div>
+
+<!-- MONETIZATION -->
+
+<div id="monetizationModal" class="modal">
+
+  <div class="sheet">
+
+    <div class="sheetHead">
+
+      <h3>💰 Monetization আবেদন</h3>
+
+      <button
+        class="close"
+        onclick="closeModal('monetizationModal')"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div class="card">
+
+      <b>Monetization-এর জন্য আবেদন করুন</b>
+
+      <p class="muted">
+        আপনার Followers এবং Views যোগ্য হলে
+        আবেদনটি Admin-এর কাছে পাঠানো হবে।
+      </p>
+
+      <div id="monetizationApplyInfo" class="muted">
+        তথ্য লোড হচ্ছে...
+      </div>
+
+    </div>
+
+    <button
+      class="btn full"
+      onclick="submitMonetizationApplication()"
+    >
+      ✅ Monetization আবেদন পাঠান
+    </button>
+
+  </div>
+
+</div>
+
+<!-- COMMENTS -->
+
+<div id="commentModal" class="modal">
+
+  <div class="sheet">
+
+    <div class="sheetHead">
+
+      <h3>💬 Comments</h3>
+
+      <button
+        class="close"
+        onclick="closeModal('commentModal')"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div
+      id="commentList"
+      class="commentList"
+    >
+      <div class="muted">
+        Comment লোড হচ্ছে...
+      </div>
+    </div>
+
+    <input
+      id="commentInput"
+      class="input"
+      maxlength="500"
+      placeholder="আপনার Comment লিখুন..."
+    >
+
+    <button
+      class="btn full"
+      onclick="submitComment()"
+    >
+      💬 Comment করুন
+    </button>
 
   </div>
 
@@ -1691,18 +1371,13 @@ button{
 
 <!-- UPLOAD -->
 
-<div
-  id="uploadModal"
-  class="modal"
->
+<div id="uploadModal" class="modal">
 
   <div class="sheet">
 
     <div class="sheetHead">
 
-      <h3>
-        ➕ ভিডিও / ছবি Upload
-      </h3>
+      <h3>➕ ভিডিও / ছবি Upload</h3>
 
       <button
         class="close"
@@ -1749,18 +1424,13 @@ button{
 
 <!-- WITHDRAW -->
 
-<div
-  id="withdrawModal"
-  class="modal"
->
+<div id="withdrawModal" class="modal">
 
   <div class="sheet">
 
     <div class="sheetHead">
 
-      <h3>
-        💳 Withdraw
-      </h3>
+      <h3>💳 Withdraw</h3>
 
       <button
         class="close"
@@ -1771,10 +1441,7 @@ button{
 
     </div>
 
-    <select
-      id="wMethod"
-      class="input"
-    >
+    <select id="wMethod" class="input">
       <option>bKash</option>
       <option>Nagad</option>
     </select>
@@ -1806,18 +1473,13 @@ button{
 
 <!-- SPONSOR -->
 
-<div
-  id="sponsorModal"
-  class="modal"
->
+<div id="sponsorModal" class="modal">
 
   <div class="sheet">
 
     <div class="sheetHead">
 
-      <h3>
-        📢 এখানে বিজ্ঞাপন দিন
-      </h3>
+      <h3>📢 এখানে বিজ্ঞাপন দিন</h3>
 
       <button
         class="close"
@@ -1833,10 +1495,7 @@ button{
       <b>01742-361967</b>
     </p>
 
-    <div
-      id="durationGrid"
-      class="durationGrid"
-    ></div>
+    <div id="durationGrid"></div>
 
     <input
       id="adName"
@@ -1863,10 +1522,7 @@ button{
       accept="video/*,image/*"
     >
 
-    <p
-      id="adPrice"
-      class="muted"
-    ></p>
+    <p id="adPrice" class="muted"></p>
 
     <button
       class="btn full"
@@ -1879,12 +1535,13 @@ button{
 
 </div>
 
-<div
-  id="toast"
-  class="toast"
-></div>
+<div id="toast" class="toast"></div>
 
 <script>
+
+/* =========================
+   SUPABASE
+========================= */
 
 const SUPABASE_URL =
 "https://ayoactrisfcdhmhsnrwz.supabase.co";
@@ -1901,6 +1558,11 @@ supabase.createClient(
 let me=null;
 let uploadFile=null;
 let selectedDuration=3;
+let currentCommentVideo=null;
+
+/* =========================
+   HELPERS
+========================= */
 
 const $=id=>
 document.getElementById(id);
@@ -1927,6 +1589,20 @@ function toast(text){
   },3000);
 }
 
+function escapeHtml(text){
+
+  return String(text||"")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+/* =========================
+   MODAL
+========================= */
+
 function openModal(id){
 
   $(id).classList.add("show");
@@ -1937,24 +1613,17 @@ function openModal(id){
 }
 
 function closeModal(id){
-  $(id).classList.remove("show");
+
+  const el=$(id);
+
+  if(el){
+    el.classList.remove("show");
+  }
 }
 
-function openNotice(){
-
-  $("noticeModal")
-    .classList.add("show");
-
-  loadNotices();
-}
-
-function closeNotice(){
-
-  $("noticeModal")
-    .classList.remove("show");
-}
-
-/* PAGE */
+/* =========================
+   PAGE
+========================= */
 
 function showPage(id){
 
@@ -1964,14 +1633,14 @@ function showPage(id){
       p.classList.remove("active");
     });
 
+  if(id==="friends"){
+    showFriends();
+    return;
+  }
+
   const page=$(id);
 
   if(!page){
-
-    if(id==="friends"){
-      showFriends();
-    }
-
     return;
   }
 
@@ -1984,12 +1653,6 @@ function showPage(id){
         "active",
         n.dataset.page===id
       );
-    });
-
-  document
-    .querySelectorAll(".topTab")
-    .forEach(t=>{
-      t.classList.remove("active");
     });
 
   if(id==="home"){
@@ -2009,7 +1672,9 @@ function showPage(id){
   }
 }
 
-/* FRIENDS */
+/* =========================
+   FRIENDS
+========================= */
 
 function showFriends(){
 
@@ -2029,15 +1694,11 @@ function showFriends(){
         n.dataset.page==="friends"
       );
     });
-
-  document
-    .querySelectorAll(".topTab")
-    .forEach(t=>{
-      t.classList.remove("active");
-    });
 }
 
-/* AUTH */
+/* =========================
+   AUTH
+========================= */
 
 function authMode(mode){
 
@@ -2066,8 +1727,6 @@ function authMode(mode){
   $("authMsg").textContent="";
 }
 
-/* SIGNUP */
-
 async function signup(){
 
   const email=
@@ -2079,7 +1738,7 @@ async function signup(){
   const name=
     $("signupName").value.trim();
 
-  let username=
+  const username=
     $("signupUser")
       .value
       .trim()
@@ -2150,8 +1809,6 @@ async function signup(){
   boot();
 }
 
-/* LOGIN */
-
 async function login(){
 
   const result=
@@ -2181,8 +1838,6 @@ async function login(){
 
   boot();
 }
-
-/* LOGOUT */
 
 async function logoutUser(){
 
@@ -2228,17 +1883,11 @@ async function loadFeed(){
   if(result.error){
 
     $("feed").innerHTML=`
-
       <div class="card">
-
-        <b>
-          Feed load হয়নি
-        </b>
-
+        <b>Feed load হয়নি</b>
         <p class="muted">
-          আবার চেষ্টা করুন।
+          ${escapeHtml(result.error.message)}
         </p>
-
       </div>
     `;
 
@@ -2250,17 +1899,13 @@ async function loadFeed(){
   if(!items.length){
 
     $("feed").innerHTML=`
-
       <div class="card">
-
         <div class="cardTitle">
           🎬 এখনো কোনো পোস্ট নেই
         </div>
-
         <p class="muted">
           প্রথম ভিডিও অথবা ছবি Upload করুন।
         </p>
-
       </div>
     `;
 
@@ -2284,12 +1929,7 @@ async function loadFeed(){
 
         ?
 
-        `
-        <img
-          src="${video.media_url}"
-          alt="Rivo"
-        >
-        `
+        `<img src="${video.media_url}" alt="Rivo">`
 
         :
 
@@ -2299,6 +1939,7 @@ async function loadFeed(){
           playsinline
           preload="metadata"
           loop
+          muted
         ></video>
 
         <button
@@ -2339,7 +1980,7 @@ async function loadFeed(){
 
         <div class="actions">
 
-          <!-- FOLLOW ABOVE LIKE -->
+          <!-- FOLLOW -->
 
           <button
             class="action followAction"
@@ -2348,30 +1989,27 @@ async function loadFeed(){
 
             <span class="actionIcon">
 
-              <svg
-                viewBox="0 0 24 24"
-              >
+              <svg viewBox="0 0 24 24">
+
                 <path
                   d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
-                ></path>
+                />
 
                 <circle
                   cx="9"
                   cy="7"
                   r="4"
-                ></circle>
+                />
 
                 <path
                   d="M19 8v6M16 11h6"
-                ></path>
+                />
 
               </svg>
 
             </span>
 
-            <small>
-              Follow
-            </small>
+            <small>Follow</small>
 
           </button>
 
@@ -2384,12 +2022,11 @@ async function loadFeed(){
 
             <span class="actionIcon">
 
-              <svg
-                viewBox="0 0 24 24"
-              >
+              <svg viewBox="0 0 24 24">
+
                 <path
                   d="M20.8 8.7c0 5.5-8.8 10.3-8.8 10.3S3.2 14.2 3.2 8.7A4.7 4.7 0 0 1 12 6.1a4.7 4.7 0 0 1 8.8 2.6Z"
-                ></path>
+                />
 
               </svg>
 
@@ -2410,20 +2047,17 @@ async function loadFeed(){
 
             <span class="actionIcon">
 
-              <svg
-                viewBox="0 0 24 24"
-              >
+              <svg viewBox="0 0 24 24">
+
                 <path
                   d="M21 11.5a8.4 8.4 0 0 1-9 8.5 9.2 9.2 0 0 1-4-.9L3 21l1.4-4A8.3 8.3 0 0 1 3 11.5 8.5 8.5 0 0 1 12 3a8.5 8.5 0 0 1 9 8.5Z"
-                ></path>
+                />
 
               </svg>
 
             </span>
 
-            <small>
-              Comment
-            </small>
+            <small>Comment</small>
 
           </button>
 
@@ -2436,16 +2070,10 @@ async function loadFeed(){
 
             <span class="actionIcon">
 
-              <svg
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M22 2 11 13"
-                ></path>
+              <svg viewBox="0 0 24 24">
 
-                <path
-                  d="m22 2-7 20-4-9-9-4Z"
-                ></path>
+                <path d="M22 2 11 13"/>
+                <path d="m22 2-7 20-4-9-9-4Z"/>
 
               </svg>
 
@@ -2469,9 +2097,13 @@ async function loadFeed(){
             >
 
             <div>
+
               <div class="username">
-                @${video.profiles?.username||"user"}
+                @${escapeHtml(
+                  video.profiles?.username||"user"
+                )}
               </div>
+
             </div>
 
           </div>
@@ -2483,7 +2115,6 @@ async function loadFeed(){
         </div>
 
       </article>
-
       `;
 
     }).join("");
@@ -2491,19 +2122,9 @@ async function loadFeed(){
   bindVideos();
 }
 
-/* ESCAPE */
-
-function escapeHtml(text){
-
-  return String(text)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-}
-
-/* VIDEO */
+/* =========================
+   VIDEO
+========================= */
 
 function toggleVideo(button,event){
 
@@ -2511,32 +2132,26 @@ function toggleVideo(button,event){
     event.stopPropagation();
   }
 
-  const post=
-    button.closest(".post");
-
   const video=
-    post.querySelector("video");
+    button
+      .closest(".post")
+      .querySelector("video");
 
   if(!video)
     return;
 
   if(video.paused){
 
-    video.play()
-      .catch(()=>{});
-
+    video.play().catch(()=>{});
     button.textContent="❚❚";
 
   }else{
 
     video.pause();
-
     button.textContent="▶";
 
   }
 }
-
-/* SOUND */
 
 function toggleSound(button,event){
 
@@ -2544,32 +2159,23 @@ function toggleSound(button,event){
     event.stopPropagation();
   }
 
-  const post=
-    button.closest(".post");
-
   const video=
-    post.querySelector("video");
+    button
+      .closest(".post")
+      .querySelector("video");
 
   if(!video)
     return;
 
-  video.muted=
-    !video.muted;
+  video.muted=!video.muted;
 
   button.textContent=
     video.muted
       ? "🔇"
       : "🔊";
 
-  if(!video.paused){
-
-    video.play()
-      .catch(()=>{});
-
-  }
+  video.play().catch(()=>{});
 }
-
-/* BIND */
 
 function bindVideos(){
 
@@ -2584,46 +2190,26 @@ function bindVideos(){
           .closest(".post")
           .dataset.id;
 
-      video.addEventListener(
-        "click",
-        ()=>{
-          if(video.paused){
-            video.play().catch(()=>{});
-          }else{
-            video.pause();
-          }
+      video.addEventListener("play",()=>{
+        started=Date.now();
+      });
+
+      video.addEventListener("pause",()=>{
+
+        if(started){
+
+          recordView(
+            id,
+            (Date.now()-started)/1000
+          );
+
+          started=0;
         }
-      );
 
-      video.addEventListener(
-        "play",
-        ()=>{
-          started=Date.now();
-        }
-      );
-
-      video.addEventListener(
-        "pause",
-        ()=>{
-
-          if(started){
-
-            recordView(
-              id,
-              (Date.now()-started)/1000
-            );
-
-            started=0;
-          }
-
-        }
-      );
+      });
 
     });
-
 }
-
-/* VIEW */
 
 async function recordView(id,seconds){
 
@@ -2638,10 +2224,7 @@ async function recordView(id,seconds){
   if(!post)
     return;
 
-  const owner=
-    post.dataset.owner;
-
-  if(owner===me.id)
+  if(post.dataset.owner===me.id)
     return;
 
   const session=
@@ -2662,21 +2245,21 @@ async function recordView(id,seconds){
   );
 }
 
-/* FOLLOW */
+/* =========================
+   FOLLOW
+========================= */
 
 async function followUser(userId,button){
 
   if(!me){
 
     openModal("authModal");
-
     return;
   }
 
   if(userId===me.id){
 
     toast("নিজেকে Follow করা যাবে না");
-
     return;
   }
 
@@ -2701,9 +2284,7 @@ async function followUser(userId,button){
       button.querySelector("small")
         .textContent="Follow";
 
-      button.classList.remove(
-        "following"
-      );
+      button.classList.remove("following");
 
       toast("Unfollow হয়েছে");
     }
@@ -2722,28 +2303,26 @@ async function followUser(userId,button){
   if(result.error){
 
     toast(result.error.message);
-
     return;
   }
 
   button.querySelector("small")
     .textContent="Following";
 
-  button.classList.add(
-    "following"
-  );
+  button.classList.add("following");
 
   toast("Follow হয়েছে");
 }
 
-/* LIKE */
+/* =========================
+   LIKE
+========================= */
 
 async function likeVideo(id,button){
 
   if(!me){
 
     openModal("authModal");
-
     return;
   }
 
@@ -2780,7 +2359,6 @@ async function likeVideo(id,button){
   if(result.error){
 
     toast(result.error.message);
-
     return;
   }
 
@@ -2789,21 +2367,173 @@ async function likeVideo(id,button){
   toast("Like হয়েছে");
 }
 
-/* COMMENT */
+/* =========================
+   COMMENTS
+========================= */
 
-function openComment(id){
+async function openComment(videoId){
 
   if(!me){
 
     openModal("authModal");
+    return;
+  }
+
+  currentCommentVideo=videoId;
+
+  $("commentInput").value="";
+
+  openModal("commentModal");
+
+  await loadComments(videoId);
+}
+
+async function loadComments(videoId){
+
+  $("commentList").innerHTML=
+    `<div class="muted">
+      Comment লোড হচ্ছে...
+    </div>`;
+
+  const result=
+    await sb
+      .from("comments")
+      .select(`
+        id,
+        user_id,
+        video_id,
+        comment,
+        created_at,
+        profiles(
+          username,
+          avatar_url
+        )
+      `)
+      .eq("video_id",videoId)
+      .order(
+        "created_at",
+        {ascending:true}
+      )
+      .limit(100);
+
+  if(result.error){
+
+    $("commentList").innerHTML=`
+      <div class="muted">
+        Comment load হয়নি। Supabase comments table/RLS যাচাই করুন।
+      </div>
+    `;
 
     return;
   }
 
-  toast("Comment system পরবর্তী আপডেটে চালু করা যাবে");
+  const list=result.data||[];
+
+  if(!list.length){
+
+    $("commentList").innerHTML=`
+      <div class="muted">
+        এখনো কোনো Comment নেই। প্রথম Comment করুন।
+      </div>
+    `;
+
+    return;
+  }
+
+  $("commentList").innerHTML=
+    list.map(c=>{
+
+      const avatar=
+        c.profiles?.avatar_url ||
+        `https://ui-avatars.com/api/?name=${
+          encodeURIComponent(
+            c.profiles?.username||"R"
+          )
+        }&background=ff2f86&color=fff`;
+
+      return `
+
+      <div class="commentItem">
+
+        <img
+          class="commentAvatar"
+          src="${avatar}"
+        >
+
+        <div class="commentBody">
+
+          <b>
+            @${escapeHtml(
+              c.profiles?.username||"user"
+            )}
+          </b>
+
+          <p>
+            ${escapeHtml(c.comment||"")}
+          </p>
+
+        </div>
+
+      </div>
+
+      `;
+
+    }).join("");
 }
 
-/* SHARE */
+async function submitComment(){
+
+  if(!me){
+
+    openModal("authModal");
+    return;
+  }
+
+  if(!currentCommentVideo)
+    return;
+
+  const text=
+    $("commentInput")
+      .value
+      .trim();
+
+  if(!text){
+
+    toast("Comment লিখুন");
+    return;
+  }
+
+  const result=
+    await sb
+      .from("comments")
+      .insert({
+        user_id:me.id,
+        video_id:currentCommentVideo,
+        comment:text
+      });
+
+  if(result.error){
+
+    toast(
+      "Comment করা যাচ্ছে না: "+
+      result.error.message
+    );
+
+    return;
+  }
+
+  $("commentInput").value="";
+
+  toast("Comment করা হয়েছে");
+
+  await loadComments(
+    currentCommentVideo
+  );
+}
+
+/* =========================
+   SHARE
+========================= */
 
 async function shareVideo(id){
 
@@ -2831,102 +2561,17 @@ async function shareVideo(id){
     }
 
   }catch{}
-
 }
 
-/* NOTICE */
-
-async function loadNotices(){
-
-  const result=
-    await sb
-      .from("notices")
-      .select(
-        "title,message,created_at"
-      )
-      .eq("is_active",true)
-      .order(
-        "created_at",
-        {ascending:false}
-      );
-
-  const list=result.data||[];
-
-  $("noticeList").innerHTML=
-    list.map(n=>`
-
-      <div class="noticeItem">
-
-        <b>
-          📌 ${escapeHtml(n.title||"Notice")}
-        </b>
-
-        <p class="muted">
-          ${escapeHtml(n.message||"")}
-        </p>
-
-      </div>
-
-    `).join("")
-
-    ||
-
-    `
-    <div class="noticeItem muted">
-      এখনো কোনো Notice নেই।
-    </div>
-    `;
-}
-
-/* GUIDE */
-
-async function loadGuide(){
-
-  const result=
-    await sb
-      .from("guides")
-      .select(
-        "title,body,sort_order"
-      )
-      .eq("is_active",true)
-      .order("sort_order");
-
-  const list=result.data||[];
-
-  $("guideList").innerHTML=
-    list.map(g=>`
-
-      <div class="card">
-
-        <div class="cardTitle">
-          📌 ${escapeHtml(g.title||"নির্দেশিকা")}
-        </div>
-
-        <p class="muted">
-          ${escapeHtml(g.body||"")}
-        </p>
-
-      </div>
-
-    `).join("")
-
-    ||
-
-    `
-    <div class="card muted">
-      এখনো নির্দেশিকা যোগ করা হয়নি।
-    </div>
-    `;
-}
-
-/* PROFILE */
+/* =========================
+   PROFILE
+========================= */
 
 async function loadProfile(){
 
   if(!me){
 
-    $("uname").textContent=
-      "@rivo_user";
+    $("uname").textContent="@rivo_user";
 
     $("email").textContent=
       "Account তৈরি করুন অথবা Login করুন";
@@ -2955,7 +2600,6 @@ async function loadProfile(){
 
     $("avatar").src=
       result.data.avatar_url||
-
       `https://ui-avatars.com/api/?name=${
         encodeURIComponent(
           result.data.username||"Rivo"
@@ -3006,14 +2650,111 @@ async function loadProfile(){
     likes.count||0;
 }
 
-/* AVATAR */
+/* =========================
+   PROFILE EDIT
+========================= */
+
+async function openProfileEdit(){
+
+  if(!me){
+
+    openModal("authModal");
+    return;
+  }
+
+  const result=
+    await sb
+      .from("profiles")
+      .select(
+        "username,full_name,bio"
+      )
+      .eq("id",me.id)
+      .maybeSingle();
+
+  if(result.data){
+
+    $("editUsername").value=
+      result.data.username||"";
+
+    $("editFullName").value=
+      result.data.full_name||"";
+
+    $("editBio").value=
+      result.data.bio||"";
+
+  }
+
+  openModal("profileEditModal");
+}
+
+async function saveProfileEdit(){
+
+  if(!me){
+
+    openModal("authModal");
+    return;
+  }
+
+  let username=
+    $("editUsername")
+      .value
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9_]/g,"");
+
+  const fullName=
+    $("editFullName")
+      .value
+      .trim();
+
+  const bio=
+    $("editBio")
+      .value
+      .trim();
+
+  if(!username){
+
+    toast("Username দিন");
+    return;
+  }
+
+  const result=
+    await sb
+      .from("profiles")
+      .update({
+        username,
+        full_name:fullName,
+        bio
+      })
+      .eq("id",me.id);
+
+  if(result.error){
+
+    toast(
+      "Profile update হয়নি: "+
+      result.error.message
+    );
+
+    return;
+  }
+
+  closeModal("profileEditModal");
+
+  toast("Profile আপডেট হয়েছে");
+
+  await loadProfile();
+  await loadFeed();
+}
+
+/* =========================
+   AVATAR
+========================= */
 
 function openAvatarPicker(){
 
   if(!me){
 
     openModal("authModal");
-
     return;
   }
 
@@ -3034,21 +2775,22 @@ async function uploadAvatar(){
   if(!file.type.startsWith("image/")){
 
     toast("শুধু ছবি নির্বাচন করুন");
-
     return;
   }
 
   if(file.size>5*1024*1024){
 
     toast("ছবির সাইজ ৫ MB-এর কম হতে হবে");
-
     return;
   }
 
   toast("Profile ছবি আপলোড হচ্ছে...");
 
+  const ext=
+    file.name.split(".").pop();
+
   const path=
-    `avatars/${me.id}.${file.name.split(".").pop()}`;
+    `avatars/${me.id}.${ext}`;
 
   const upload=
     await sb.storage
@@ -3107,7 +2849,9 @@ async function uploadAvatar(){
   loadFeed();
 }
 
-/* EARNINGS */
+/* =========================
+   EARNINGS
+========================= */
 
 async function loadDashboard(){
 
@@ -3212,28 +2956,72 @@ async function loadDashboard(){
     );
 }
 
-async function applyMonetization(){
+/* =========================
+   MONETIZATION
+========================= */
+
+async function openMonetization(){
+
+  if(!me){
+
+    openModal("authModal");
+    return;
+  }
+
+  await loadDashboard();
+
+  $("monetizationApplyInfo").innerHTML=
+    $("monetizationBox").innerHTML;
+
+  openModal("monetizationModal");
+}
+
+async function submitMonetizationApplication(){
+
+  if(!me){
+
+    openModal("authModal");
+    return;
+  }
 
   const result=
     await sb.rpc(
       "rivo_apply_monetization"
     );
 
+  if(result.error){
+
+    toast(
+      "আবেদন করা যায়নি: "+
+      result.error.message
+    );
+
+    return;
+  }
+
+  closeModal("monetizationModal");
+
   toast(
-    result.error
-      ? result.error.message
-      : "Monetization আবেদন জমা হয়েছে"
+    "Monetization আবেদন সফলভাবে জমা হয়েছে"
   );
+
+  loadDashboard();
 }
 
-/* WITHDRAW */
+async function applyMonetization(){
+
+  await submitMonetizationApplication();
+}
+
+/* =========================
+   WITHDRAW
+========================= */
 
 async function requestWithdraw(){
 
   if(!me){
 
     openModal("authModal");
-
     return;
   }
 
@@ -3248,7 +3036,6 @@ async function requestWithdraw(){
   if(!number || amount<=0){
 
     toast("সঠিক তথ্য দিন");
-
     return;
   }
 
@@ -3258,34 +3045,27 @@ async function requestWithdraw(){
       .insert({
 
         user_id:me.id,
-
         amount,
-
         payment_method:
           $("wMethod").value,
-
-        payment_account:
-          number
+        payment_account:number
 
       });
 
   if(result.error){
 
-    toast(
-      result.error.message
-    );
-
+    toast(result.error.message);
     return;
   }
 
   closeModal("withdrawModal");
 
-  toast(
-    "Withdraw request পাঠানো হয়েছে"
-  );
+  toast("Withdraw request পাঠানো হয়েছে");
 }
 
-/* UPLOAD PREVIEW */
+/* =========================
+   UPLOAD
+========================= */
 
 $("mediaFile").onchange=()=>{
 
@@ -3299,17 +3079,12 @@ $("mediaFile").onchange=()=>{
     .classList.remove("hidden");
 
   const url=
-    URL.createObjectURL(
-      uploadFile
-    );
+    URL.createObjectURL(uploadFile);
 
-  if(
-    uploadFile.type.startsWith("image/")
-  ){
+  if(uploadFile.type.startsWith("image/")){
 
-    $("uploadPreview").innerHTML=`
-      <img src="${url}">
-    `;
+    $("uploadPreview").innerHTML=
+      `<img src="${url}">`;
 
   }else{
 
@@ -3323,23 +3098,17 @@ $("mediaFile").onchange=()=>{
   }
 };
 
-/* UPLOAD */
-
 async function uploadPost(){
 
   if(!me){
 
     openModal("authModal");
-
     return;
   }
 
   if(!uploadFile){
 
-    toast(
-      "ভিডিও অথবা ছবি নির্বাচন করুন"
-    );
-
+    toast("ভিডিও অথবা ছবি নির্বাচন করুন");
     return;
   }
 
@@ -3364,10 +3133,7 @@ async function uploadPost(){
 
   if(upload.error){
 
-    toast(
-      upload.error.message
-    );
-
+    toast(upload.error.message);
     return;
   }
 
@@ -3390,8 +3156,7 @@ async function uploadPost(){
             ? "photo"
             : "video",
 
-        media_url:
-          publicUrl,
+        media_url:publicUrl,
 
         thumbnail_url:
           uploadFile.type
@@ -3420,10 +3185,7 @@ async function uploadPost(){
 
   if(result.error){
 
-    toast(
-      result.error.message
-    );
-
+    toast(result.error.message);
     return;
   }
 
@@ -3437,14 +3199,14 @@ async function uploadPost(){
   $("uploadPreview")
     .classList.add("hidden");
 
-  toast(
-    "Upload সফল হয়েছে"
-  );
+  toast("Upload সফল হয়েছে");
 
   showPage("home");
 }
 
-/* SPONSOR */
+/* =========================
+   SPONSOR
+========================= */
 
 async function loadSponsorOptions(){
 
@@ -3467,20 +3229,14 @@ async function loadSponsorOptions(){
       .map(days=>`
 
         <button
-          class="duration ${
-            days===selectedDuration
-              ? "selected"
-              : ""
-          }"
+          class="duration"
           onclick="
             selectedDuration=${days};
             loadSponsorOptions();
           "
         >
 
-          <b>
-            ${days} দিন
-          </b>
+          <b>${days} দিন</b>
 
           <small>
             ${
@@ -3489,17 +3245,13 @@ async function loadSponsorOptions(){
                   "sponsor_price_"+days
                 ]||0
               )
-
               ?
-
               money(
                 settings[
                   "sponsor_price_"+days
                 ]
               )
-
               :
-
               "যোগাযোগ"
             }
           </small>
@@ -3518,7 +3270,6 @@ function openSponsor(){
   if(!me){
 
     openModal("authModal");
-
     return;
   }
 
@@ -3532,10 +3283,7 @@ async function submitAd(){
 
   if(!file){
 
-    toast(
-      "বিজ্ঞাপনের ছবি অথবা ভিডিও দিন"
-    );
-
+    toast("বিজ্ঞাপনের ছবি অথবা ভিডিও দিন");
     return;
   }
 
@@ -3547,10 +3295,7 @@ async function submitAd(){
 
   if(!name || !title){
 
-    toast(
-      "নাম ও শিরোনাম দিন"
-    );
-
+    toast("নাম ও শিরোনাম দিন");
     return;
   }
 
@@ -3568,17 +3313,13 @@ async function submitAd(){
         path,
         file,
         {
-          contentType:
-            file.type
+          contentType:file.type
         }
       );
 
   if(upload.error){
 
-    toast(
-      upload.error.message
-    );
-
+    toast(upload.error.message);
     return;
   }
 
@@ -3587,11 +3328,9 @@ async function submitAd(){
       .from("sponsored_ads")
       .insert({
 
-        advertiser_id:
-          me.id,
+        advertiser_id:me.id,
 
-        advertiser_name:
-          name,
+        advertiser_name:name,
 
         advertiser_whatsapp:
           $("adWhatsapp")
@@ -3602,41 +3341,31 @@ async function submitAd(){
         title,
 
         media_type:
-          file.type
-            .startsWith("image/")
+          file.type.startsWith("image/")
             ? "image"
             : "video",
 
-        storage_path:
-          path,
+        storage_path:path,
 
-        duration_days:
-          selectedDuration,
+        duration_days:selectedDuration,
 
         price:0,
 
-        payment_status:
-          "unpaid",
+        payment_status:"unpaid",
 
-        status:
-          "pending"
+        status:"pending"
 
       });
 
   if(result.error){
 
-    toast(
-      result.error.message
-    );
-
+    toast(result.error.message);
     return;
   }
 
   closeModal("sponsorModal");
 
-  toast(
-    "বিজ্ঞাপন Admin-এর কাছে জমা হয়েছে"
-  );
+  toast("বিজ্ঞাপন Admin-এর কাছে জমা হয়েছে");
 
   window.open(
     "https://wa.me/8801742361967?text="+
@@ -3651,7 +3380,9 @@ async function submitAd(){
   );
 }
 
-/* SEARCH */
+/* =========================
+   SEARCH
+========================= */
 
 async function searchUsers(){
 
@@ -3686,9 +3417,7 @@ async function searchUsers(){
 
         <div class="menu">
 
-          <span class="menuIcon">
-            👤
-          </span>
+          <span class="menuIcon">👤</span>
 
           <span class="menuText">
 
@@ -3712,7 +3441,106 @@ async function searchUsers(){
       .join("");
 }
 
-/* NAV */
+/* =========================
+   NOTICE
+========================= */
+
+async function loadNotices(){
+
+  const result=
+    await sb
+      .from("notices")
+      .select(
+        "title,message,created_at"
+      )
+      .eq("is_active",true)
+      .order(
+        "created_at",
+        {ascending:false}
+      );
+
+  const list=result.data||[];
+
+  $("noticeList").innerHTML=
+    list.map(n=>`
+
+      <div class="card">
+
+        <b>
+          📌 ${escapeHtml(
+            n.title||"Notice"
+          )}
+        </b>
+
+        <p class="muted">
+          ${escapeHtml(
+            n.message||""
+          )}
+        </p>
+
+      </div>
+
+    `).join("")
+
+    ||
+
+    `
+    <div class="card muted">
+      এখনো কোনো Notice নেই।
+    </div>
+    `;
+}
+
+/* =========================
+   GUIDE
+========================= */
+
+async function loadGuide(){
+
+  const result=
+    await sb
+      .from("guides")
+      .select(
+        "title,body,sort_order"
+      )
+      .eq("is_active",true)
+      .order("sort_order");
+
+  const list=result.data||[];
+
+  $("guideList").innerHTML=
+    list.map(g=>`
+
+      <div class="card">
+
+        <div class="cardTitle">
+          📌 ${escapeHtml(
+            g.title||"নির্দেশিকা"
+          )}
+        </div>
+
+        <p class="muted">
+          ${escapeHtml(
+            g.body||""
+          )}
+        </p>
+
+      </div>
+
+    `).join("")
+
+    ||
+
+    `
+    <div class="card muted">
+      এখনো নির্দেশিকা যোগ করা হয়নি।
+    </div>
+    `;
+}
+
+/* =========================
+   NAV
+========================= */
 
 document
   .querySelectorAll(".nav")
@@ -3732,8 +3560,6 @@ document
     };
 
   });
-
-/* TOP TABS */
 
 document
   .querySelectorAll(".topTab")
@@ -3756,7 +3582,9 @@ document
 
   });
 
-/* BOOT */
+/* =========================
+   BOOT
+========================= */
 
 async function boot(){
 
@@ -3769,11 +3597,8 @@ async function boot(){
   await loadProfile();
 
   if(me){
-
     await loadDashboard();
-
   }
-
 }
 
 sb.auth
@@ -3789,10 +3614,7 @@ sb.auth
 
 /* SERVICE WORKER */
 
-if(
-  "serviceWorker"
-  in navigator
-){
+if("serviceWorker" in navigator){
 
   window.addEventListener(
     "load",
@@ -3802,9 +3624,7 @@ if(
         .register(
           "./service-worker.js"
         )
-        .catch(
-          console.error
-        );
+        .catch(console.error);
 
     }
   );
