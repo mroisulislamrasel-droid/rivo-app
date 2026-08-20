@@ -1,12 +1,13 @@
 {
   "name": "Rivo - Short Video Platform",
   "short_name": "Rivo",
-  "description": "Rivo short video and creator earning platform",
+  "description": "Rivo short video and creator platform",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#08080d",
+  "background_color": "#07080d",
   "theme_color": "#ff2f86",
+  "prefer_related_applications": false,
   "icons": []
 }
