@@ -3625,6 +3625,30 @@ if("serviceWorker" in navigator){
           "./service-worker.js"
         )
         .catch(console.error);
+      /* ===== RIVO FEED USERNAME FORCE WHITE ===== */
+
+.post .postInfo,
+.post .postInfo .userLine,
+.post .postInfo .username,
+.post .postInfo .username b,
+.post .postInfo .username span {
+  color: #ffffff !important;
+}
+
+.post .postInfo .username {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  text-shadow:
+    0 2px 4px rgba(0,0,0,0.9),
+    0 2px 10px rgba(0,0,0,0.9) !important;
+}
+
+.post .postInfo .username * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
 
     }
   );
