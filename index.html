@@ -1,18 +1,12 @@
 <!doctype html>
+
 <html lang="bn">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes"><link rel="manifest" href="./manifest.json"><title>Rivo</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>
 
-<link rel="manifest" href="./manifest.json">
-
-<title>Rivo</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
 @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@600;700;800&display=swap');
 
 :root{
@@ -236,16 +230,39 @@ button{
   );
 }
 
-/* USER */
+/*
+==================================================
+ USERNAME WHITE FIX
+==================================================
+স্ক্রিনের ভিডিওর ওপর username সবসময় সাদা থাকবে।
+*/
 
 .postInfo{
   position:absolute;
   left:15px;
   right:95px;
   bottom:25px;
-  z-index:10;
+  z-index:30;
+
   color:#fff !important;
-  text-shadow:0 2px 7px #000;
+
+  text-shadow:
+    0 2px 8px #000,
+    0 0 4px #000;
+}
+
+.postInfo *{
+  color:#fff !important;
+}
+
+.postInfo .username,
+.postInfo .username *{
+  color:#fff !important;
+  font-size:18px;
+  font-weight:800;
+  text-shadow:
+    0 2px 8px #000,
+    0 0 5px #000;
 }
 
 .userLine{
@@ -268,14 +285,18 @@ button{
   font-size:18px;
   font-weight:800;
   color:#fff !important;
-  text-shadow:0 2px 8px #000;
+  text-shadow:
+    0 2px 8px #000,
+    0 0 5px #000;
 }
 
 .caption{
   font-size:14px;
   line-height:1.45;
   color:#fff !important;
-  text-shadow:0 2px 7px #000;
+  text-shadow:
+    0 2px 7px #000,
+    0 0 4px #000;
 }
 
 /* FOLLOW */
@@ -296,7 +317,7 @@ button{
   position:absolute;
   right:9px;
   bottom:104px;
-  z-index:20;
+  z-index:40;
   display:flex;
   flex-direction:column;
   gap:10px;
@@ -371,7 +392,7 @@ button{
   transform:translate(-50%,-50%);
   width:70px;
   height:70px;
-  z-index:18;
+  z-index:35;
   border:0;
   border-radius:50%;
   color:#fff;
@@ -388,7 +409,7 @@ button{
   position:absolute;
   right:12px;
   top:75px;
-  z-index:20;
+  z-index:40;
   width:44px;
   height:44px;
   border:1px solid #ffffff45;
@@ -509,6 +530,13 @@ button{
   display:grid;
   place-items:center;
   font-size:15px;
+}
+
+/* PROFILE USERNAME */
+
+#uname{
+  color:#111 !important;
+  font-weight:800;
 }
 
 /* BOTTOM */
@@ -690,6 +718,7 @@ button{
 }
 
 @media(max-width:380px){
+
   .action{
     width:50px;
     min-height:50px;
@@ -699,845 +728,515 @@ button{
     left:12px;
     right:80px;
   }
+
+  .postInfo .username{
+    font-size:17px;
+  }
+
 }
-</style>
-</head>
 
-<body>
-
-<div class="app">
-
-<header class="header">
-
-  <div class="logo">Rivo</div>
-
-  <button class="topTab active" onclick="showPage('home')">
-    Following
-  </button>
-
-  <button class="topTab" onclick="showPage('discover')">
-    Discover
-  </button>
-
-  <div class="headerSpace"></div>
-
-  <button class="iconBtn" onclick="openNotice()">🔔</button>
-  <button class="iconBtn" onclick="showPage('settings')">⚙️</button>
-
-</header>
-
-<!-- HOME -->
-
-<section id="home" class="page active">
-  <div id="feed"></div>
-</section>
-
-<!-- DISCOVER -->
-
-<section id="discover" class="page">
-
-  <div class="title">🔎 Discover</div>
-
-  <input
-    id="searchBox"
-    class="input"
-    placeholder="ইউজার খুঁজুন..."
-    oninput="searchUsers()"
-  >
-
-  <div id="searchResults"></div>
-
-  <div class="card">
-
-    <div class="cardTitle">📢 এখানে বিজ্ঞাপন দিন</div>
-
-    <p class="muted">
-      আপনার ব্যবসা Rivo-তে প্রচার করুন।
-      <br>
-      ৩ দিন · ৭ দিন · ১৫ দিন · ৩০ দিন
-      <br>
-      WhatsApp: <b>01742-361967</b>
-    </p>
-
-    <button class="btn full" onclick="openSponsor()">
-      📢 বিজ্ঞাপন দিন
-    </button>
-
-  </div>
-
-</section>
-
-<!-- EARNINGS -->
-
-<section id="earnings" class="page">
-
-  <div class="title">💰 Earnings</div>
-
-  <div class="grid">
-
-    <div class="metric">
-      <div class="metricIcon">👁️</div>
-      <small>মোট Views</small>
-      <b id="myViews">0</b>
-    </div>
-
-    <div class="metric">
-      <div class="metricIcon">💰</div>
-      <small>Income</small>
-      <b id="myIncome">৳0</b>
-    </div>
-
-    <div class="metric">
-      <div class="metricIcon">👥</div>
-      <small>Followers</small>
-      <b id="myFollowers">0</b>
-    </div>
-
-    <div class="metric">
-      <div class="metricIcon">📈</div>
-      <small>প্রতি ১০০০ Views</small>
-      <b id="myRate">৳1</b>
-    </div>
-
-  </div>
-
-  <div class="card">
-
-    <div class="cardTitle">💎 Monetization</div>
-
-    <p id="monetizationBox" class="muted">
-      তথ্য লোড হচ্ছে...
-    </p>
-
-    <button
-      id="monetizeBtn"
-      class="btn full hidden"
-      onclick="applyMonetization()"
-    >
-      ✅ Monetization আবেদন করুন
-    </button>
-
-  </div>
-
-  <button
-    class="btn full"
-    onclick="openModal('withdrawModal')"
-  >
-    💳 bKash / Nagad Withdraw
-  </button>
-
-</section>
-
-<!-- PROFILE -->
-
-<section id="profile" class="page">
-
-  <div class="profile">
-
-    <div class="profileAvatarWrap">
-
-      <img
-        id="avatar"
-        class="avatar"
-        src="https://ui-avatars.com/api/?name=Rivo&background=eeeeee&color=111"
-      >
-
-      <button
-        class="avatarEdit"
-        onclick="openAvatarPicker()"
-      >
-        📷
-      </button>
-
-    </div>
-
-    <input
-      id="avatarFile"
-      type="file"
-      accept="image/*"
-      class="hidden"
-      onchange="uploadAvatar()"
-    >
-
-    <h2 id="uname">@rivo_user</h2>
-
-    <div id="email" class="muted">
-      Account তৈরি করুন অথবা Login করুন
-    </div>
-
-  </div>
-
-  <div class="grid">
-
-    <div class="metric">
-      <small>Following</small>
-      <b id="followingCount">0</b>
-    </div>
-
-    <div class="metric">
-      <small>Followers</small>
-      <b id="followersCount">0</b>
-    </div>
-
-    <div class="metric">
-      <small>Posts</small>
-      <b id="postCount">0</b>
-    </div>
-
-    <div class="metric">
-      <small>Likes</small>
-      <b id="likesCount">0</b>
-    </div>
-
-  </div>
-
-  <div class="card">
-
-    <button class="menu" onclick="openModal('authModal')">
-      <span class="menuIcon">👤</span>
-
-      <span class="menuText">
-        <b>Account</b>
-        <small>Login অথবা নতুন Account তৈরি করুন</small>
-      </span>
-
-      <span class="arrow">›</span>
-    </button>
-
-    <button class="menu" onclick="openProfileEdit()">
-
-      <span class="menuIcon">✏️</span>
-
-      <span class="menuText">
-        <b>Profile Edit</b>
-        <small>নাম, username ও profile তথ্য পরিবর্তন করুন</small>
-      </span>
-
-      <span class="arrow">›</span>
-
-    </button>
-
-    <button class="menu" onclick="showPage('settings')">
-
-      <span class="menuIcon">⚙️</span>
-
-      <span class="menuText">
-        <b>Settings</b>
-        <small>Account ও App settings</small>
-      </span>
-
-      <span class="arrow">›</span>
-
-    </button>
-
-    <button class="menu" onclick="showPage('guide')">
-
-      <span class="menuIcon">📖</span>
-
-      <span class="menuText">
-        <b>নির্দেশিকা</b>
-        <small>Rivo ব্যবহারের নিয়ম</small>
-      </span>
-
-      <span class="arrow">›</span>
-
-    </button>
-
-    <button class="menu" onclick="openSponsor()">
-
-      <span class="menuIcon">📢</span>
-
-      <span class="menuText">
-        <b>এখানে বিজ্ঞাপন দিন</b>
-        <small>৩ / ৭ / ১৫ / ৩০ দিনের প্যাকেজ</small>
-      </span>
-
-      <span class="arrow">›</span>
-
-    </button>
-
-  </div>
-
-</section>
-
-<!-- SETTINGS -->
-
-<section id="settings" class="page">
-
-  <div class="title">⚙️ Settings</div>
-
-  <div class="card">
-
-    <div class="cardTitle">👤 Account</div>
-
-    <button class="menu" onclick="openModal('authModal')">
-
-      <span class="menuIcon">🔐</span>
-
-      <span class="menuText">
-        <b>Login / Create Account</b>
-        <small>আপনার Rivo account পরিচালনা করুন</small>
-      </span>
-
-      <span class="arrow">›</span>
-
-    </button>
-
-    <!-- PROFILE EDIT -->
-
-    <button class="menu" onclick="openProfileEdit()">
-
-      <span class="menuIcon">✏️</span>
-
-      <span class="menuText">
-        <b>Profile Edit</b>
-        <small>আপনার profile তথ্য পরিবর্তন করুন</small>
-      </span>
-
-      <span class="arrow">›</span>
-
-    </button>
-
-    <!-- MONETIZATION -->
-
-    <button class="menu" onclick="openMonetization()">
-
-      <span class="menuIcon">💰</span>
-
-      <span class="menuText">
-        <b>Monetization আবেদন</b>
-        <small>আপনার monetization আবেদন করুন</small>
-      </span>
-
-      <span class="arrow">›</span>
-
-    </button>
-
-  </div>
-
-  <div class="card">
-
-    <div class="cardTitle">🛠️ Rivo</div>
-
-    <button class="menu" onclick="showPage('guide')">
-
-      <span class="menuIcon">📖</span>
-
-      <span class="menuText">
-        <b>ব্যবহার নির্দেশিকা</b>
-        <small>ভিডিও, earning ও নিয়ম</small>
-      </span>
-
-      <span class="arrow">›</span>
-
-    </button>
-
-    <button class="menu" onclick="openNotice()">
-
-      <span class="menuIcon">🔔</span>
-
-      <span class="menuText">
-        <b>Notice Board</b>
-        <small>নতুন ঘোষণা ও অফার</small>
-      </span>
-
-      <span class="arrow">›</span>
-
-    </button>
-
-  </div>
-
-  <button class="outline full" onclick="logoutUser()">
-    🚪 Logout
-  </button>
-
-</section>
-
-<!-- GUIDE -->
-
-<section id="guide" class="page">
-
-  <div class="title">📖 Rivo নির্দেশিকা</div>
-
-  <div id="guideList"></div>
-
-</section>
-
-<!-- BOTTOM -->
-
-<nav class="bottom">
-
-  <div class="bottomInner">
-
-    <button class="nav active" data-page="home">
-      <span class="navIcon">⌂</span>
-      Home
-    </button>
-
-    <button class="nav" data-page="friends">
-      <span class="navIcon">👥</span>
-      Friends
-    </button>
-
-    <button
-      class="uploadBtn"
-      onclick="openModal('uploadModal')"
-    >
-      +
-    </button>
-
-    <button class="nav" data-page="earnings">
-      <span class="navIcon">৳</span>
-      Earnings
-    </button>
-
-    <button class="nav" data-page="profile">
-      <span class="navIcon">♙</span>
-      Profile
-    </button>
-
-  </div>
-
-</nav>
-
-</div>
-
-<!-- NOTICE -->
+</style></head><body><div class="app"><header class="header"><div class="logo">Rivo</div><button class="topTab active" onclick="showPage('home')">
+Following
+</button><button class="topTab" onclick="showPage('discover')">
+Discover
+</button><div class="headerSpace"></div><button class="iconBtn" onclick="openNotice()">🔔</button>
+
+<button class="iconBtn" onclick="showPage('settings')">⚙️</button>
+
+</header><!-- HOME --><section id="home" class="page active"><div id="feed"></div></section><!-- DISCOVER --><section id="discover" class="page"><div class="title">🔎 Discover</div><input
+id="searchBox"
+class="input"
+placeholder="ইউজার খুঁজুন..."
+oninput="searchUsers()"
+
+«»
+
+<div id="searchResults"></div><div class="card"><div class="cardTitle">
+📢 এখানে বিজ্ঞাপন দিন
+</div><p class="muted">আপনার ব্যবসা Rivo-তে প্রচার করুন।
+
+<br>৩ দিন · ৭ দিন · ১৫ দিন · ৩০ দিন
+
+<br>WhatsApp: <b>01742-361967</b>
+
+</p><button class="btn full" onclick="openSponsor()">
+📢 বিজ্ঞাপন দিন
+</button></div></section><!-- EARNINGS --><section id="earnings" class="page"><div class="title">💰 Earnings</div><div class="grid"><div class="metric">
+<div class="metricIcon">👁️</div>
+<small>মোট Views</small>
+<b id="myViews">0</b>
+</div><div class="metric">
+<div class="metricIcon">💰</div>
+<small>Income</small>
+<b id="myIncome">৳0</b>
+</div><div class="metric">
+<div class="metricIcon">👥</div>
+<small>Followers</small>
+<b id="myFollowers">0</b>
+</div><div class="metric">
+<div class="metricIcon">📈</div>
+<small>প্রতি ১০০০ Views</small>
+<b id="myRate">৳1</b>
+</div></div><div class="card"><div class="cardTitle">
+💎 Monetization
+</div><p id="monetizationBox" class="muted">
+তথ্য লোড হচ্ছে...
+</p><button
+id="monetizeBtn"
+class="btn full hidden"
+onclick="applyMonetization()"
+
+«»
+
+✅ Monetization আবেদন করুন
+</button>
+
+</div><button
+class="btn full"
+onclick="openModal('withdrawModal')"
+
+«»
+
+💳 bKash / Nagad Withdraw
+</button>
+
+</section><!-- PROFILE --><section id="profile" class="page"><div class="profile"><div class="profileAvatarWrap"><img
+id="avatar"
+class="avatar"
+src="https://ui-avatars.com/api/?name=Rivo&background=eeeeee&color=111"
+
+«»
+
+<button
+class="avatarEdit"
+onclick="openAvatarPicker()"
+
+«»
+
+📷
+</button>
+
+</div><input
+id="avatarFile"
+type="file"
+accept="image/*"
+class="hidden"
+onchange="uploadAvatar()"
+
+«»
+
+<h2 id="uname">@rivo_user</h2><div id="email" class="muted">
+Account তৈরি করুন অথবা Login করুন
+</div></div><div class="grid"><div class="metric">
+<small>Following</small>
+<b id="followingCount">0</b>
+</div><div class="metric">
+<small>Followers</small>
+<b id="followersCount">0</b>
+</div><div class="metric">
+<small>Posts</small>
+<b id="postCount">0</b>
+</div><div class="metric">
+<small>Likes</small>
+<b id="likesCount">0</b>
+</div></div><div class="card"><button class="menu" onclick="openModal('authModal')"><span class="menuIcon">👤</span>
+
+<span class="menuText">
+<b>Account</b>
+<small>Login অথবা নতুন Account তৈরি করুন</small>
+</span><span class="arrow">›</span>
+
+</button><button class="menu" onclick="openProfileEdit()"><span class="menuIcon">✏️</span>
+
+<span class="menuText">
+<b>Profile Edit</b>
+<small>নাম, username ও profile তথ্য পরিবর্তন করুন</small>
+</span><span class="arrow">›</span>
+
+</button><button class="menu" onclick="showPage('settings')"><span class="menuIcon">⚙️</span>
+
+<span class="menuText">
+<b>Settings</b>
+<small>Account ও App settings</small>
+</span><span class="arrow">›</span>
+
+</button><button class="menu" onclick="showPage('guide')"><span class="menuIcon">📖</span>
+
+<span class="menuText">
+<b>নির্দেশিকা</b>
+<small>Rivo ব্যবহারের নিয়ম</small>
+</span><span class="arrow">›</span>
+
+</button><button class="menu" onclick="openSponsor()"><span class="menuIcon">📢</span>
+
+<span class="menuText">
+<b>এখানে বিজ্ঞাপন দিন</b>
+<small>৩ / ৭ / ১৫ / ৩০ দিনের প্যাকেজ</small>
+</span><span class="arrow">›</span>
+
+</button></div></section><!-- SETTINGS --><section id="settings" class="page"><div class="title">⚙️ Settings</div><div class="card"><div class="cardTitle">
+👤 Account
+</div><button class="menu" onclick="openModal('authModal')"><span class="menuIcon">🔐</span>
+
+<span class="menuText">
+<b>Login / Create Account</b>
+<small>আপনার Rivo account পরিচালনা করুন</small>
+</span><span class="arrow">›</span>
+
+</button><button class="menu" onclick="openProfileEdit()"><span class="menuIcon">✏️</span>
+
+<span class="menuText">
+<b>Profile Edit</b>
+<small>আপনার profile তথ্য পরিবর্তন করুন</small>
+</span><span class="arrow">›</span>
+
+</button><button class="menu" onclick="openMonetization()"><span class="menuIcon">💰</span>
+
+<span class="menuText">
+<b>Monetization আবেদন</b>
+<small>আপনার monetization আবেদন করুন</small>
+</span><span class="arrow">›</span>
+
+</button></div><div class="card"><div class="cardTitle">
+🛠️ Rivo
+</div><button class="menu" onclick="showPage('guide')"><span class="menuIcon">📖</span>
+
+<span class="menuText">
+<b>ব্যবহার নির্দেশিকা</b>
+<small>ভিডিও, earning ও নিয়ম</small>
+</span><span class="arrow">›</span>
+
+</button><button class="menu" onclick="openNotice()"><span class="menuIcon">🔔</span>
+
+<span class="menuText">
+<b>Notice Board</b>
+<small>নতুন ঘোষণা ও অফার</small>
+</span><span class="arrow">›</span>
+
+</button></div><button class="outline full" onclick="logoutUser()">
+🚪 Logout
+</button></section><!-- GUIDE --><section id="guide" class="page"><div class="title">
+📖 Rivo নির্দেশিকা
+</div><div id="guideList"></div></section><!-- BOTTOM --><nav class="bottom"><div class="bottomInner"><button class="nav active" data-page="home">
+<span class="navIcon">⌂</span>
+Home
+</button><button class="nav" data-page="friends">
+<span class="navIcon">👥</span>
+Friends
+</button><button
+class="uploadBtn"
+onclick="openModal('uploadModal')"
+
+«»
+
++ 
+
+</button><button class="nav" data-page="earnings">
+<span class="navIcon">৳</span>
+Earnings
+</button><button class="nav" data-page="profile">
+<span class="navIcon">♙</span>
+Profile
+</button></div></nav></div><!-- NOTICE --><div
+id="noticeModal"
+class="modal"
+onclick="if(event.target===this)closeModal('noticeModal')"
+><div class="sheet"><div class="sheetHead"><h3>🔔 Notice Board</h3><button
+class="close"
+onclick="closeModal('noticeModal')"
+
+«»
+
+×
+</button>
+
+</div><div id="noticeList"></div></div></div><!-- AUTH --><div id="authModal" class="modal"><div class="sheet"><div class="sheetHead"><h3>👤 Rivo Account</h3><button class="close" onclick="closeModal('authModal')">
+×
+</button></div><div class="authTabs"><button
+id="loginTab"
+class="btn"
+onclick="authMode('login')"
+
+«»
+
+Login
+</button>
+
+<button
+id="signupTab"
+class="outline"
+onclick="authMode('signup')"
+
+«»
+
+Create Account
+</button>
+
+</div><div id="authLogin"><input
+id="loginEmail"
+class="input"
+type="email"
+placeholder="Email"
+
+«»
+
+<input
+id="loginPass"
+class="input"
+type="password"
+placeholder="Password"
+
+«»
+
+<button class="btn full" onclick="login()">
+🔐 Login
+</button></div><div id="authSignup" class="hidden"><input
+id="signupName"
+class="input"
+placeholder="আপনার নাম"
+
+«»
+
+<input
+id="signupUser"
+class="input"
+placeholder="Username"
+
+«»
+
+<input
+id="signupEmail"
+class="input"
+type="email"
+placeholder="Email"
+
+«»
+
+<input
+id="signupPass"
+class="input"
+type="password"
+placeholder="Password"
+
+«»
+
+<button class="btn full" onclick="signup()">
+✨ Account তৈরি করুন
+</button></div><p id="authMsg" class="muted"></p></div></div><!-- PROFILE EDIT --><div id="profileEditModal" class="modal"><div class="sheet"><div class="sheetHead"><h3>✏️ Profile Edit</h3><button
+class="close"
+onclick="closeModal('profileEditModal')"
+
+«»
+
+×
+</button>
+
+</div><input
+id="editFullName"
+class="input"
+placeholder="আপনার নাম"
+
+«»
+
+<input
+id="editUsername"
+class="input"
+placeholder="Username"
+
+«»
+
+<textarea
+id="editBio"
+class="input"
+rows="3"
+placeholder="আপনার Bio"
+></textarea><button
+class="btn full"
+onclick="saveProfileEdit()"
+
+«»
+
+💾 Profile Save করুন
+</button>
+
+</div></div><!-- MONETIZATION --><div id="monetizationModal" class="modal"><div class="sheet"><div class="sheetHead"><h3>💰 Monetization আবেদন</h3><button
+class="close"
+onclick="closeModal('monetizationModal')"
+
+«»
+
+×
+</button>
+
+</div><div class="card"><b>Monetization-এর জন্য আবেদন করুন</b>
+
+<p class="muted">
+আপনার Followers এবং Views যোগ্য হলে
+আবেদনটি Admin-এর কাছে পাঠানো হবে।
+</p><div id="monetizationApplyInfo" class="muted">
+তথ্য লোড হচ্ছে...
+</div></div><button
+class="btn full"
+onclick="submitMonetizationApplication()"
+
+«»
+
+✅ Monetization আবেদন পাঠান
+</button>
+
+</div></div><!-- COMMENTS --><div id="commentModal" class="modal"><div class="sheet"><div class="sheetHead"><h3>💬 Comments</h3><button
+class="close"
+onclick="closeModal('commentModal')"
+
+«»
+
+×
+</button>
+
+</div><div
+id="commentList"
+class="commentList"
+><div class="muted">
+Comment লোড হচ্ছে...
+</div></div><input
+id="commentInput"
+class="input"
+maxlength="500"
+placeholder="আপনার Comment লিখুন..."
+
+«»
+
+<button
+class="btn full"
+onclick="submitComment()"
+
+«»
+
+💬 Comment করুন
+</button>
+
+</div></div><!-- UPLOAD --><div id="uploadModal" class="modal"><div class="sheet"><div class="sheetHead"><h3>➕ ভিডিও / ছবি Upload</h3><button
+class="close"
+onclick="closeModal('uploadModal')"
+
+«»
+
+×
+</button>
+
+</div><p class="muted">
+Gallery থেকে ছবি অথবা ভিডিও নির্বাচন করুন।
+</p><input
+id="mediaFile"
+class="input"
+type="file"
+accept="video/,image/"
+
+«»
 
 <div
-  id="noticeModal"
-  class="modal"
-  onclick="if(event.target===this)closeModal('noticeModal')"
->
+id="uploadPreview"
+class="preview hidden"
+></div><textarea
+id="caption"
+class="input"
+rows="3"
+placeholder="✍️ Caption লিখুন"
+></textarea><button
+class="btn full"
+onclick="uploadPost()"
 
-  <div class="sheet">
+«»
 
-    <div class="sheetHead">
+🚀 Upload করুন
+</button>
 
-      <h3>🔔 Notice Board</h3>
+</div></div><!-- WITHDRAW --><div id="withdrawModal" class="modal"><div class="sheet"><div class="sheetHead"><h3>💳 Withdraw</h3><button
+class="close"
+onclick="closeModal('withdrawModal')"
 
-      <button
-        class="close"
-        onclick="closeModal('noticeModal')"
-      >
-        ×
-      </button>
+«»
 
-    </div>
+×
+</button>
 
-    <div id="noticeList"></div>
+</div><select id="wMethod" class="input"><option>bKash</option>
+<option>Nagad</option></select><input
+id="wNumber"
+class="input"
+inputmode="numeric"
+placeholder="01XXXXXXXXX"
 
-  </div>
+«»
 
-</div>
+<input
+id="wAmount"
+class="input"
+type="number"
+placeholder="Amount ৳"
 
-<!-- AUTH -->
+«»
 
-<div id="authModal" class="modal">
+<button
+class="btn full"
+onclick="requestWithdraw()"
 
-  <div class="sheet">
+«»
 
-    <div class="sheetHead">
+💸 Withdraw Request
+</button>
 
-      <h3>👤 Rivo Account</h3>
+</div></div><!-- SPONSOR --><div id="sponsorModal" class="modal"><div class="sheet"><div class="sheetHead"><h3>📢 এখানে বিজ্ঞাপন দিন</h3><button
+class="close"
+onclick="closeModal('sponsorModal')"
 
-      <button class="close" onclick="closeModal('authModal')">
-        ×
-      </button>
+«»
 
-    </div>
+×
+</button>
 
-    <div class="authTabs">
+</div><p class="muted">
+বিজ্ঞাপনের জন্য WhatsApp:
+<b>01742-361967</b>
+</p><div id="durationGrid"></div><input
+id="adName"
+class="input"
+placeholder="বিজ্ঞাপনদাতার নাম"
 
-      <button
-        id="loginTab"
-        class="btn"
-        onclick="authMode('login')"
-      >
-        Login
-      </button>
+«»
 
-      <button
-        id="signupTab"
-        class="outline"
-        onclick="authMode('signup')"
-      >
-        Create Account
-      </button>
+<input
+id="adTitle"
+class="input"
+placeholder="বিজ্ঞাপনের শিরোনাম"
 
-    </div>
+«»
 
-    <div id="authLogin">
+<input
+id="adWhatsapp"
+class="input"
+value="01742-361967"
 
-      <input
-        id="loginEmail"
-        class="input"
-        type="email"
-        placeholder="Email"
-      >
+«»
 
-      <input
-        id="loginPass"
-        class="input"
-        type="password"
-        placeholder="Password"
-      >
+<input
+id="adFile"
+class="input"
+type="file"
+accept="video/,image/"
 
-      <button class="btn full" onclick="login()">
-        🔐 Login
-      </button>
+«»
 
-    </div>
+<p id="adPrice" class="muted"></p><button
+class="btn full"
+onclick="submitAd()"
 
-    <div id="authSignup" class="hidden">
+«»
 
-      <input
-        id="signupName"
-        class="input"
-        placeholder="আপনার নাম"
-      >
+📤 বিজ্ঞাপন জমা দিন
+</button>
 
-      <input
-        id="signupUser"
-        class="input"
-        placeholder="Username"
-      >
-
-      <input
-        id="signupEmail"
-        class="input"
-        type="email"
-        placeholder="Email"
-      >
-
-      <input
-        id="signupPass"
-        class="input"
-        type="password"
-        placeholder="Password"
-      >
-
-      <button class="btn full" onclick="signup()">
-        ✨ Account তৈরি করুন
-      </button>
-
-    </div>
-
-    <p id="authMsg" class="muted"></p>
-
-  </div>
-
-</div>
-
-<!-- PROFILE EDIT -->
-
-<div id="profileEditModal" class="modal">
-
-  <div class="sheet">
-
-    <div class="sheetHead">
-
-      <h3>✏️ Profile Edit</h3>
-
-      <button
-        class="close"
-        onclick="closeModal('profileEditModal')"
-      >
-        ×
-      </button>
-
-    </div>
-
-    <input
-      id="editFullName"
-      class="input"
-      placeholder="আপনার নাম"
-    >
-
-    <input
-      id="editUsername"
-      class="input"
-      placeholder="Username"
-    >
-
-    <textarea
-      id="editBio"
-      class="input"
-      rows="3"
-      placeholder="আপনার Bio"
-    ></textarea>
-
-    <button
-      class="btn full"
-      onclick="saveProfileEdit()"
-    >
-      💾 Profile Save করুন
-    </button>
-
-  </div>
-
-</div>
-
-<!-- MONETIZATION -->
-
-<div id="monetizationModal" class="modal">
-
-  <div class="sheet">
-
-    <div class="sheetHead">
-
-      <h3>💰 Monetization আবেদন</h3>
-
-      <button
-        class="close"
-        onclick="closeModal('monetizationModal')"
-      >
-        ×
-      </button>
-
-    </div>
-
-    <div class="card">
-
-      <b>Monetization-এর জন্য আবেদন করুন</b>
-
-      <p class="muted">
-        আপনার Followers এবং Views যোগ্য হলে
-        আবেদনটি Admin-এর কাছে পাঠানো হবে।
-      </p>
-
-      <div id="monetizationApplyInfo" class="muted">
-        তথ্য লোড হচ্ছে...
-      </div>
-
-    </div>
-
-    <button
-      class="btn full"
-      onclick="submitMonetizationApplication()"
-    >
-      ✅ Monetization আবেদন পাঠান
-    </button>
-
-  </div>
-
-</div>
-
-<!-- COMMENTS -->
-
-<div id="commentModal" class="modal">
-
-  <div class="sheet">
-
-    <div class="sheetHead">
-
-      <h3>💬 Comments</h3>
-
-      <button
-        class="close"
-        onclick="closeModal('commentModal')"
-      >
-        ×
-      </button>
-
-    </div>
-
-    <div
-      id="commentList"
-      class="commentList"
-    >
-      <div class="muted">
-        Comment লোড হচ্ছে...
-      </div>
-    </div>
-
-    <input
-      id="commentInput"
-      class="input"
-      maxlength="500"
-      placeholder="আপনার Comment লিখুন..."
-    >
-
-    <button
-      class="btn full"
-      onclick="submitComment()"
-    >
-      💬 Comment করুন
-    </button>
-
-  </div>
-
-</div>
-
-<!-- UPLOAD -->
-
-<div id="uploadModal" class="modal">
-
-  <div class="sheet">
-
-    <div class="sheetHead">
-
-      <h3>➕ ভিডিও / ছবি Upload</h3>
-
-      <button
-        class="close"
-        onclick="closeModal('uploadModal')"
-      >
-        ×
-      </button>
-
-    </div>
-
-    <p class="muted">
-      Gallery থেকে ছবি অথবা ভিডিও নির্বাচন করুন।
-    </p>
-
-    <input
-      id="mediaFile"
-      class="input"
-      type="file"
-      accept="video/*,image/*"
-    >
-
-    <div
-      id="uploadPreview"
-      class="preview hidden"
-    ></div>
-
-    <textarea
-      id="caption"
-      class="input"
-      rows="3"
-      placeholder="✍️ Caption লিখুন"
-    ></textarea>
-
-    <button
-      class="btn full"
-      onclick="uploadPost()"
-    >
-      🚀 Upload করুন
-    </button>
-
-  </div>
-
-</div>
-
-<!-- WITHDRAW -->
-
-<div id="withdrawModal" class="modal">
-
-  <div class="sheet">
-
-    <div class="sheetHead">
-
-      <h3>💳 Withdraw</h3>
-
-      <button
-        class="close"
-        onclick="closeModal('withdrawModal')"
-      >
-        ×
-      </button>
-
-    </div>
-
-    <select id="wMethod" class="input">
-      <option>bKash</option>
-      <option>Nagad</option>
-    </select>
-
-    <input
-      id="wNumber"
-      class="input"
-      inputmode="numeric"
-      placeholder="01XXXXXXXXX"
-    >
-
-    <input
-      id="wAmount"
-      class="input"
-      type="number"
-      placeholder="Amount ৳"
-    >
-
-    <button
-      class="btn full"
-      onclick="requestWithdraw()"
-    >
-      💸 Withdraw Request
-    </button>
-
-  </div>
-
-</div>
-
-<!-- SPONSOR -->
-
-<div id="sponsorModal" class="modal">
-
-  <div class="sheet">
-
-    <div class="sheetHead">
-
-      <h3>📢 এখানে বিজ্ঞাপন দিন</h3>
-
-      <button
-        class="close"
-        onclick="closeModal('sponsorModal')"
-      >
-        ×
-      </button>
-
-    </div>
-
-    <p class="muted">
-      বিজ্ঞাপনের জন্য WhatsApp:
-      <b>01742-361967</b>
-    </p>
-
-    <div id="durationGrid"></div>
-
-    <input
-      id="adName"
-      class="input"
-      placeholder="বিজ্ঞাপনদাতার নাম"
-    >
-
-    <input
-      id="adTitle"
-      class="input"
-      placeholder="বিজ্ঞাপনের শিরোনাম"
-    >
-
-    <input
-      id="adWhatsapp"
-      class="input"
-      value="01742-361967"
-    >
-
-    <input
-      id="adFile"
-      class="input"
-      type="file"
-      accept="video/*,image/*"
-    >
-
-    <p id="adPrice" class="muted"></p>
-
-    <button
-      class="btn full"
-      onclick="submitAd()"
-    >
-      📤 বিজ্ঞাপন জমা দিন
-    </button>
-
-  </div>
-
-</div>
-
-<div id="toast" class="toast"></div>
-
-<script>
+</div></div><div id="toast" class="toast"></div><script>
 
 /* =========================
    SUPABASE
@@ -1560,6 +1259,7 @@ let uploadFile=null;
 let selectedDuration=3;
 let currentCommentVideo=null;
 
+
 /* =========================
    HELPERS
 ========================= */
@@ -1572,7 +1272,8 @@ function money(n){
 }
 
 function fmt(n){
-  return Number(n||0).toLocaleString("en-US");
+  return Number(n||0)
+    .toLocaleString("en-US");
 }
 
 function toast(text){
@@ -1580,6 +1281,7 @@ function toast(text){
   const box=$("toast");
 
   box.textContent=text;
+
   box.style.display="block";
 
   clearTimeout(window.rivoToast);
@@ -1598,6 +1300,7 @@ function escapeHtml(text){
     .replace(/"/g,"&quot;")
     .replace(/'/g,"&#039;");
 }
+
 
 /* =========================
    MODAL
@@ -1620,6 +1323,7 @@ function closeModal(id){
     el.classList.remove("show");
   }
 }
+
 
 /* =========================
    PAGE
@@ -1672,6 +1376,7 @@ function showPage(id){
   }
 }
 
+
 /* =========================
    FRIENDS
 ========================= */
@@ -1684,7 +1389,8 @@ function showFriends(){
       p.classList.remove("active");
     });
 
-  $("discover").classList.add("active");
+  $("discover")
+    .classList.add("active");
 
   document
     .querySelectorAll(".nav")
@@ -1695,6 +1401,7 @@ function showFriends(){
       );
     });
 }
+
 
 /* =========================
    AUTH
@@ -1727,16 +1434,21 @@ function authMode(mode){
   $("authMsg").textContent="";
 }
 
+
 async function signup(){
 
   const email=
-    $("signupEmail").value.trim();
+    $("signupEmail")
+      .value
+      .trim();
 
   const password=
     $("signupPass").value;
 
   const name=
-    $("signupName").value.trim();
+    $("signupName")
+      .value
+      .trim();
 
   const username=
     $("signupUser")
@@ -1809,13 +1521,16 @@ async function signup(){
   boot();
 }
 
+
 async function login(){
 
   const result=
     await sb.auth.signInWithPassword({
 
       email:
-        $("loginEmail").value.trim(),
+        $("loginEmail")
+          .value
+          .trim(),
 
       password:
         $("loginPass").value
@@ -1839,6 +1554,7 @@ async function login(){
   boot();
 }
 
+
 async function logoutUser(){
 
   await sb.auth.signOut();
@@ -1849,6 +1565,7 @@ async function logoutUser(){
 
   loadProfile();
 }
+
 
 /* =========================
    FEED
@@ -1883,12 +1600,17 @@ async function loadFeed(){
   if(result.error){
 
     $("feed").innerHTML=`
+
       <div class="card">
+
         <b>Feed load হয়নি</b>
+
         <p class="muted">
           ${escapeHtml(result.error.message)}
         </p>
+
       </div>
+
     `;
 
     return;
@@ -1899,14 +1621,19 @@ async function loadFeed(){
   if(!items.length){
 
     $("feed").innerHTML=`
+
       <div class="card">
+
         <div class="cardTitle">
           🎬 এখনো কোনো পোস্ট নেই
         </div>
+
         <p class="muted">
           প্রথম ভিডিও অথবা ছবি Upload করুন।
         </p>
+
       </div>
+
     `;
 
     return;
@@ -1917,23 +1644,30 @@ async function loadFeed(){
 
       const avatar=
         video.profiles?.avatar_url ||
+
         `https://ui-avatars.com/api/?name=${
           encodeURIComponent(
             video.profiles?.username||"R"
           )
         }&background=ff2f86&color=fff`;
 
+
       const media=
+
         video.media_type==="photo" ||
         video.media_type==="image"
 
         ?
 
-        `<img src="${video.media_url}" alt="Rivo">`
+        `<img
+          src="${video.media_url}"
+          alt="Rivo"
+        >`
 
         :
 
         `
+
         <video
           src="${video.media_url}"
           playsinline
@@ -1948,7 +1682,9 @@ async function loadFeed(){
         >
           🔇
         </button>
+
         `;
+
 
       return `
 
@@ -1962,23 +1698,31 @@ async function loadFeed(){
 
         <div class="shade"></div>
 
+
         ${
           video.media_type==="video"
+
           ?
 
           `
+
           <button
             class="play"
             onclick="toggleVideo(this,event)"
           >
             ▶
           </button>
+
           `
 
-          :""
+          :
+
+          ""
         }
 
+
         <div class="actions">
+
 
           <!-- FOLLOW -->
 
@@ -2013,6 +1757,7 @@ async function loadFeed(){
 
           </button>
 
+
           <!-- LIKE -->
 
           <button
@@ -2038,6 +1783,7 @@ async function loadFeed(){
 
           </button>
 
+
           <!-- COMMENT -->
 
           <button
@@ -2061,6 +1807,7 @@ async function loadFeed(){
 
           </button>
 
+
           <!-- SHARE -->
 
           <button
@@ -2073,6 +1820,7 @@ async function loadFeed(){
               <svg viewBox="0 0 24 24">
 
                 <path d="M22 2 11 13"/>
+
                 <path d="m22 2-7 20-4-9-9-4Z"/>
 
               </svg>
@@ -2087,6 +1835,9 @@ async function loadFeed(){
 
         </div>
 
+
+        <!-- USER INFO -->
+
         <div class="postInfo">
 
           <div class="userLine">
@@ -2094,6 +1845,7 @@ async function loadFeed(){
             <img
               class="feedAvatar"
               src="${avatar}"
+              alt="Avatar"
             >
 
             <div>
@@ -2115,12 +1867,14 @@ async function loadFeed(){
         </div>
 
       </article>
+
       `;
 
     }).join("");
 
   bindVideos();
 }
+
 
 /* =========================
    VIDEO
@@ -2143,15 +1897,18 @@ function toggleVideo(button,event){
   if(video.paused){
 
     video.play().catch(()=>{});
+
     button.textContent="❚❚";
 
   }else{
 
     video.pause();
+
     button.textContent="▶";
 
   }
 }
+
 
 function toggleSound(button,event){
 
@@ -2177,6 +1934,7 @@ function toggleSound(button,event){
   video.play().catch(()=>{});
 }
 
+
 function bindVideos(){
 
   document
@@ -2191,7 +1949,9 @@ function bindVideos(){
           .dataset.id;
 
       video.addEventListener("play",()=>{
+
         started=Date.now();
+
       });
 
       video.addEventListener("pause",()=>{
@@ -2204,12 +1964,14 @@ function bindVideos(){
           );
 
           started=0;
+
         }
 
       });
 
     });
 }
+
 
 async function recordView(id,seconds){
 
@@ -2229,6 +1991,7 @@ async function recordView(id,seconds){
 
   const session=
     localStorage.rivoSession ||
+
     (
       localStorage.rivoSession=
       crypto.randomUUID()
@@ -2245,6 +2008,7 @@ async function recordView(id,seconds){
   );
 }
 
+
 /* =========================
    FOLLOW
 ========================= */
@@ -2254,12 +2018,14 @@ async function followUser(userId,button){
   if(!me){
 
     openModal("authModal");
+
     return;
   }
 
   if(userId===me.id){
 
     toast("নিজেকে Follow করা যাবে না");
+
     return;
   }
 
@@ -2281,12 +2047,14 @@ async function followUser(userId,button){
 
     if(!del.error){
 
-      button.querySelector("small")
+      button
+        .querySelector("small")
         .textContent="Follow";
 
       button.classList.remove("following");
 
       toast("Unfollow হয়েছে");
+
     }
 
     return;
@@ -2303,16 +2071,19 @@ async function followUser(userId,button){
   if(result.error){
 
     toast(result.error.message);
+
     return;
   }
 
-  button.querySelector("small")
+  button
+    .querySelector("small")
     .textContent="Following";
 
   button.classList.add("following");
 
   toast("Follow হয়েছে");
 }
+
 
 /* =========================
    LIKE
@@ -2323,6 +2094,7 @@ async function likeVideo(id,button){
   if(!me){
 
     openModal("authModal");
+
     return;
   }
 
@@ -2359,6 +2131,7 @@ async function likeVideo(id,button){
   if(result.error){
 
     toast(result.error.message);
+
     return;
   }
 
@@ -2366,6 +2139,7 @@ async function likeVideo(id,button){
 
   toast("Like হয়েছে");
 }
+
 
 /* =========================
    COMMENTS
@@ -2376,6 +2150,7 @@ async function openComment(videoId){
   if(!me){
 
     openModal("authModal");
+
     return;
   }
 
@@ -2387,6 +2162,7 @@ async function openComment(videoId){
 
   await loadComments(videoId);
 }
+
 
 async function loadComments(videoId){
 
@@ -2419,9 +2195,15 @@ async function loadComments(videoId){
   if(result.error){
 
     $("commentList").innerHTML=`
+
       <div class="muted">
-        Comment load হয়নি। Supabase comments table/RLS যাচাই করুন।
+
+        Comment load হয়নি।
+
+        Supabase comments table/RLS যাচাই করুন।
+
       </div>
+
     `;
 
     return;
@@ -2432,9 +2214,15 @@ async function loadComments(videoId){
   if(!list.length){
 
     $("commentList").innerHTML=`
+
       <div class="muted">
-        এখনো কোনো Comment নেই। প্রথম Comment করুন।
+
+        এখনো কোনো Comment নেই।
+
+        প্রথম Comment করুন।
+
       </div>
+
     `;
 
     return;
@@ -2445,6 +2233,7 @@ async function loadComments(videoId){
 
       const avatar=
         c.profiles?.avatar_url ||
+
         `https://ui-avatars.com/api/?name=${
           encodeURIComponent(
             c.profiles?.username||"R"
@@ -2481,11 +2270,13 @@ async function loadComments(videoId){
     }).join("");
 }
 
+
 async function submitComment(){
 
   if(!me){
 
     openModal("authModal");
+
     return;
   }
 
@@ -2500,6 +2291,7 @@ async function submitComment(){
   if(!text){
 
     toast("Comment লিখুন");
+
     return;
   }
 
@@ -2531,6 +2323,7 @@ async function submitComment(){
   );
 }
 
+
 /* =========================
    SHARE
 ========================= */
@@ -2547,9 +2340,13 @@ async function shareVideo(id){
     if(navigator.share){
 
       await navigator.share({
+
         title:"Rivo",
+
         text:"Rivo ভিডিও দেখুন",
+
         url
+
       });
 
     }else{
@@ -2561,7 +2358,9 @@ async function shareVideo(id){
     }
 
   }catch{}
+
 }
+
 
 /* =========================
    PROFILE
@@ -2600,6 +2399,7 @@ async function loadProfile(){
 
     $("avatar").src=
       result.data.avatar_url||
+
       `https://ui-avatars.com/api/?name=${
         encodeURIComponent(
           result.data.username||"Rivo"
@@ -2650,6 +2450,7 @@ async function loadProfile(){
     likes.count||0;
 }
 
+
 /* =========================
    PROFILE EDIT
 ========================= */
@@ -2659,6 +2460,7 @@ async function openProfileEdit(){
   if(!me){
 
     openModal("authModal");
+
     return;
   }
 
@@ -2687,11 +2489,13 @@ async function openProfileEdit(){
   openModal("profileEditModal");
 }
 
+
 async function saveProfileEdit(){
 
   if(!me){
 
     openModal("authModal");
+
     return;
   }
 
@@ -2715,6 +2519,7 @@ async function saveProfileEdit(){
   if(!username){
 
     toast("Username দিন");
+
     return;
   }
 
@@ -2743,8 +2548,10 @@ async function saveProfileEdit(){
   toast("Profile আপডেট হয়েছে");
 
   await loadProfile();
+
   await loadFeed();
 }
+
 
 /* =========================
    AVATAR
@@ -2755,11 +2562,13 @@ function openAvatarPicker(){
   if(!me){
 
     openModal("authModal");
+
     return;
   }
 
   $("avatarFile").click();
 }
+
 
 async function uploadAvatar(){
 
@@ -2775,12 +2584,14 @@ async function uploadAvatar(){
   if(!file.type.startsWith("image/")){
 
     toast("শুধু ছবি নির্বাচন করুন");
+
     return;
   }
 
   if(file.size>5*1024*1024){
 
     toast("ছবির সাইজ ৫ MB-এর কম হতে হবে");
+
     return;
   }
 
@@ -2848,6 +2659,7 @@ async function uploadAvatar(){
 
   loadFeed();
 }
+
 
 /* =========================
    EARNINGS
@@ -2934,16 +2746,22 @@ async function loadDashboard(){
   $("monetizationBox").innerHTML=`
 
     প্রয়োজন:
+
     <b>১,০০০ Followers</b>
+
     +
+
     <b>১ কোটি Views</b>
 
     <br><br>
 
     আপনার:
+
     ${fmt(followerCount)}
     Followers
+
     +
+
     ${fmt(views)}
     Views
 
@@ -2956,6 +2774,7 @@ async function loadDashboard(){
     );
 }
 
+
 /* =========================
    MONETIZATION
 ========================= */
@@ -2965,6 +2784,7 @@ async function openMonetization(){
   if(!me){
 
     openModal("authModal");
+
     return;
   }
 
@@ -2976,11 +2796,13 @@ async function openMonetization(){
   openModal("monetizationModal");
 }
 
+
 async function submitMonetizationApplication(){
 
   if(!me){
 
     openModal("authModal");
+
     return;
   }
 
@@ -3008,10 +2830,13 @@ async function submitMonetizationApplication(){
   loadDashboard();
 }
 
+
 async function applyMonetization(){
 
   await submitMonetizationApplication();
+
 }
+
 
 /* =========================
    WITHDRAW
@@ -3022,6 +2847,7 @@ async function requestWithdraw(){
   if(!me){
 
     openModal("authModal");
+
     return;
   }
 
@@ -3031,11 +2857,14 @@ async function requestWithdraw(){
     );
 
   const number=
-    $("wNumber").value.trim();
+    $("wNumber")
+      .value
+      .trim();
 
   if(!number || amount<=0){
 
     toast("সঠিক তথ্য দিন");
+
     return;
   }
 
@@ -3045,9 +2874,12 @@ async function requestWithdraw(){
       .insert({
 
         user_id:me.id,
+
         amount,
+
         payment_method:
           $("wMethod").value,
+
         payment_account:number
 
       });
@@ -3055,6 +2887,7 @@ async function requestWithdraw(){
   if(result.error){
 
     toast(result.error.message);
+
     return;
   }
 
@@ -3062,6 +2895,7 @@ async function requestWithdraw(){
 
   toast("Withdraw request পাঠানো হয়েছে");
 }
+
 
 /* =========================
    UPLOAD
@@ -3089,26 +2923,33 @@ $("mediaFile").onchange=()=>{
   }else{
 
     $("uploadPreview").innerHTML=`
+
       <video
         src="${url}"
         controls
         playsinline
       ></video>
+
     `;
+
   }
+
 };
+
 
 async function uploadPost(){
 
   if(!me){
 
     openModal("authModal");
+
     return;
   }
 
   if(!uploadFile){
 
     toast("ভিডিও অথবা ছবি নির্বাচন করুন");
+
     return;
   }
 
@@ -3134,6 +2975,7 @@ async function uploadPost(){
   if(upload.error){
 
     toast(upload.error.message);
+
     return;
   }
 
@@ -3186,12 +3028,14 @@ async function uploadPost(){
   if(result.error){
 
     toast(result.error.message);
+
     return;
   }
 
   closeModal("uploadModal");
 
   $("mediaFile").value="";
+
   $("caption").value="";
 
   uploadFile=null;
@@ -3203,6 +3047,7 @@ async function uploadPost(){
 
   showPage("home");
 }
+
 
 /* =========================
    SPONSOR
@@ -3239,21 +3084,27 @@ async function loadSponsorOptions(){
           <b>${days} দিন</b>
 
           <small>
+
             ${
               Number(
                 settings[
                   "sponsor_price_"+days
                 ]||0
               )
+
               ?
+
               money(
                 settings[
                   "sponsor_price_"+days
                 ]
               )
+
               :
+
               "যোগাযোগ"
             }
+
           </small>
 
         </button>
@@ -3265,16 +3116,19 @@ async function loadSponsorOptions(){
     `${selectedDuration} দিনের প্যাকেজ · WhatsApp 01742-361967`;
 }
 
+
 function openSponsor(){
 
   if(!me){
 
     openModal("authModal");
+
     return;
   }
 
   openModal("sponsorModal");
 }
+
 
 async function submitAd(){
 
@@ -3284,18 +3138,24 @@ async function submitAd(){
   if(!file){
 
     toast("বিজ্ঞাপনের ছবি অথবা ভিডিও দিন");
+
     return;
   }
 
   const name=
-    $("adName").value.trim();
+    $("adName")
+      .value
+      .trim();
 
   const title=
-    $("adTitle").value.trim();
+    $("adTitle")
+      .value
+      .trim();
 
   if(!name || !title){
 
     toast("নাম ও শিরোনাম দিন");
+
     return;
   }
 
@@ -3320,6 +3180,7 @@ async function submitAd(){
   if(upload.error){
 
     toast(upload.error.message);
+
     return;
   }
 
@@ -3360,6 +3221,7 @@ async function submitAd(){
   if(result.error){
 
     toast(result.error.message);
+
     return;
   }
 
@@ -3379,6 +3241,7 @@ async function submitAd(){
     "_blank"
   );
 }
+
 
 /* =========================
    SEARCH
@@ -3417,7 +3280,9 @@ async function searchUsers(){
 
         <div class="menu">
 
-          <span class="menuIcon">👤</span>
+          <span class="menuIcon">
+            👤
+          </span>
 
           <span class="menuText">
 
@@ -3441,6 +3306,7 @@ async function searchUsers(){
       .join("");
 }
 
+
 /* =========================
    NOTICE
 ========================= */
@@ -3462,6 +3328,7 @@ async function loadNotices(){
   const list=result.data||[];
 
   $("noticeList").innerHTML=
+
     list.map(n=>`
 
       <div class="card">
@@ -3485,11 +3352,14 @@ async function loadNotices(){
     ||
 
     `
+
     <div class="card muted">
       এখনো কোনো Notice নেই।
     </div>
+
     `;
 }
+
 
 /* =========================
    GUIDE
@@ -3509,20 +3379,25 @@ async function loadGuide(){
   const list=result.data||[];
 
   $("guideList").innerHTML=
+
     list.map(g=>`
 
       <div class="card">
 
         <div class="cardTitle">
+
           📌 ${escapeHtml(
             g.title||"নির্দেশিকা"
           )}
+
         </div>
 
         <p class="muted">
+
           ${escapeHtml(
             g.body||""
           )}
+
         </p>
 
       </div>
@@ -3532,11 +3407,14 @@ async function loadGuide(){
     ||
 
     `
+
     <div class="card muted">
       এখনো নির্দেশিকা যোগ করা হয়নি।
     </div>
+
     `;
 }
+
 
 /* =========================
    NAV
@@ -3552,14 +3430,19 @@ document
         nav.dataset.page;
 
       if(page==="friends"){
+
         showFriends();
+
       }else{
+
         showPage(page);
+
       }
 
     };
 
   });
+
 
 document
   .querySelectorAll(".topTab")
@@ -3582,6 +3465,7 @@ document
 
   });
 
+
 /* =========================
    BOOT
 ========================= */
@@ -3597,9 +3481,13 @@ async function boot(){
   await loadProfile();
 
   if(me){
+
     await loadDashboard();
+
   }
+
 }
+
 
 sb.auth
   .getUser()
@@ -3612,7 +3500,10 @@ sb.auth
 
   });
 
-/* SERVICE WORKER */
+
+/* =========================
+   SERVICE WORKER
+========================= */
 
 if("serviceWorker" in navigator){
 
@@ -3631,7 +3522,5 @@ if("serviceWorker" in navigator){
 
 }
 
-</script>
-
-</body>
+</script></body>
 </html>
