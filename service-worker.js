@@ -1,53 +1,59 @@
-const CACHE_NAME = "rivo-app-v5";
+const CACHE_NAME = "rivo-v1";
 
-const CORE_FILES = [
+const APP_FILES = [
   "./",
   "./index.html",
   "./manifest.json"
 ];
 
-self.addEventListener("install", (event) => {
+self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(CORE_FILES);
-    })
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(APP_FILES))
+      .then(() => self.skipWaiting())
   );
-
-  self.skipWaiting();
 });
 
-self.addEventListener("activate", (event) => {
+self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
-      );
-    })
+    caches.keys().then(keys =>
+      Promise.all(
+        keys
+          .filter(key => key !== CACHE_NAME)
+          .map(key => caches.delete(key))
+      )
+    ).then(() => self.clients.claim())
   );
-
-  self.clients.claim();
 });
 
-self.addEventListener("fetch", (event) => {
+self.addEventListener("fetch", event => {
+
   if (event.request.method !== "GET") {
     return;
   }
 
   event.respondWith(
     fetch(event.request)
-      .then((response) => {
-        const responseClone = response.clone();
+      .then(response => {
 
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseClone);
-        });
+        if (
+          response &&
+          response.status === 200 &&
+          response.type === "basic"
+        ) {
+          const copy = response.clone();
+
+          caches.open(CACHE_NAME)
+            .then(cache => {
+              cache.put(event.request, copy);
+            });
+        }
 
         return response;
       })
-      .catch(() => {
-        return caches.match(event.request);
-      })
+      .catch(() =>
+        caches.match(event.request)
+      )
   );
+
 });
