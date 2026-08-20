@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ff2f86">
+<link rel="manifest" href="./manifest.json">
+<title>Rivo</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#07080d;--card:#11131a;--line:#292c37;--muted:#9b9eaa;--pink:#ff2f86;--purple:#8d3dff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font-family:system-ui,Arial,sans-serif}
+.app{max-width:520px;margin:auto;min-height:100vh;padding-bottom:88px}.top{height:70px;position:sticky;top:0;z-index:40;background:#07080df5;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 14px;gap:14px}
+.brand{font-size:29px;font-weight:950}.tabs{display:flex;gap:20px;flex:1}.tab{background:none;color:#777b87;font-size:16px}.tab.on{color:#fff;font-weight:900}.icon{background:none;color:#fff;font-size:24px}
+.page{display:none;padding:10px 13px}.page.on{display:block}.title{font-size:25px;font-weight:900;margin:8px 0 14px}.sub{font-size:13px;color:var(--muted);line-height:1.55}
+.card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:15px;margin:10px 0}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.metric{background:#0d0f15;border-radius:14px;padding:12px}.metric b{display:block;font-size:20px}.metric small{color:var(--muted)}
+.btn{background:linear-gradient(100deg,var(--pink),#ff58a1);color:#fff;padding:11px 14px;border-radius:13px;font-weight:900}.outline{background:none;border:1px solid var(--pink);color:#ff72b0;padding:9px 12px;border-radius:12px;font-weight:800}
+.input{width:100%;background:#191b22;color:#fff;border:1px solid #2c2f3a;border-radius:12px;padding:11px;margin:5px 0}
+.bottom{position:fixed;left:0;right:0;bottom:0;height:84px;background:#090a0f;border-top:1px solid var(--line);z-index:50}.bottomIn{max-width:520px;margin:auto;height:100%;display:grid;grid-template-columns:1fr 1fr 1.2fr 1fr 1fr}
+.nav{background:none;color:#777a86;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px}.nav b{font-size:23px}.nav.on{color:#fff}
+.plus{width:66px;height:56px;margin:auto;border-radius:18px;background:#fff;color:#111;font-size:34px;font-weight:900}
+.post{height:calc(100svh - 190px);min-height:560px;border-radius:20px;overflow:hidden;position:relative;background:#111;margin:8px 0 14px}.media{position:absolute;inset:0}.media video,.media img{width:100%;height:100%;object-fit:cover;display:block}
+.shade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 42%,#000e)}.right{position:absolute;right:9px;bottom:143px;z-index:5;display:flex;flex-direction:column;gap:9px}
+.action{width:57px;min-height:57px;border-radius:17px;background:#08080add;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:22px}.action small{font-size:10px}
+.info{position:absolute;left:16px;right:78px;bottom:17px;z-index:5}.user{font-size:17px;font-weight:900}.caption{font-size:14px;margin-top:7px}
+.play{position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);width:70px;height:70px;border-radius:50%;background:#0009;color:#fff;font-size:29px}
+.modal{position:fixed;inset:0;background:#000b;z-index:100;display:none}.modal.show{display:flex;align-items:center;justify-content:center;padding:14px}
+.sheet{width:min(500px,100%);max-height:94svh;overflow:auto;background:#101219;border:1px solid #30333e;border-radius:20px;padding:18px}.close{background:#252832;color:#fff;border-radius:50%;width:35px;height:35px;font-size:21px}
+.row{display:flex;align-items:center;gap:8px}.grow{flex:1}.preview{height:32svh;min-height:210px;background:#050505;border-radius:15px;display:flex;align-items:center;justify-content:center;overflow:hidden}.preview img,.preview video{width:100%;height:100%;object-fit:contain}
+.durationGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0}.duration{background:#242733;color:#fff;border:1px solid #444856;border-radius:12px;padding:12px 4px;text-align:center}.duration b,.duration small{color:#fff;display:block}.duration.sel{background:linear-gradient(135deg,var(--pink),var(--purple));border-color:#fff}
+.noticeModal{position:fixed;inset:0;background:#000b;z-index:100;display:none;align-items:flex-start;justify-content:center;padding:75px 12px}.noticeModal.show{display:flex}.noticePanel{width:min(500px,100%);max-height:75vh;overflow:auto;background:#101219;border:1px solid #30333e;border-radius:20px}.noticeHead{padding:14px;display:flex;border-bottom:1px solid var(--line)}.noticeItem{padding:13px 14px;border-bottom:1px solid var(--line)}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:180;background:#fff;color:#111;border-radius:12px;padding:10px 14px;font-weight:800;display:none;max-width:90%;text-align:center}.settingsBtn{width:100%;margin-top:9px;text-align:left}.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div class="brand">Rivo</div><div class="tabs"><button class="tab on">For You</button><button class="tab">Following</button></div><button class="icon" onclick="openNotice()">🔔</button><button class="icon" onclick="showPage('settings')">⚙️</button></header>
+
+<section id="home" class="page on"><div id="feed"></div></section>
+
+<section id="discover" class="page">
+<div class="title">Discover</div>
+<input id="searchBox" class="input" placeholder="Search users" oninput="searchUsers()"><div id="searchResults"></div>
+<div class="card"><b>📢 এখানে বিজ্ঞাপন দিন</b><p class="sub">৩ দিন · ৭ দিন · ১৫ দিন · ৩০ দিন<br>WhatsApp: <b>01742-361967</b></p><button class="btn" onclick="openSponsor()">বিজ্ঞাপন দিন</button></div>
+</section>
+
+<section id="earnings" class="page">
+<div class="title">Creator Dashboard</div>
+<div class="card grid2"><div class="metric"><small>Qualified views</small><b id="myViews">0</b></div><div class="metric"><small>Income</small><b id="myIncome">৳0</b></div><div class="metric"><small>Followers</small><b id="myFollowers">0</b></div><div class="metric"><small>Rate / 1000</small><b id="myRate">৳1</b></div></div>
+<div class="card"><b>Monetization</b><p id="monetizationBox" class="sub"></p><button id="monetizeBtn" class="btn hidden" onclick="applyMonetization()">Monetization আবেদন করুন</button></div>
+<div class="card"><button class="btn" onclick="openModal('withdrawModal')">bKash / Nagad Withdraw</button></div>
+<div class="card"><b>Withdrawal History</b><div id="withdrawals" class="sub"></div></div>
+</section>
+
+<section id="profile" class="page">
+<div style="text-align:center"><img id="avatar" src="https://ui-avatars.com/api/?name=Rivo&background=30333d&color=fff" style="width:90px;height:90px;border-radius:50%"><h2 id="uname">@rivo_user</h2><div id="email" class="sub">Login করুন</div><button class="outline" onclick="openModal('loginModal')">Login</button></div>
+<div class="card grid2"><div class="metric"><small>Following</small><b id="followingCount">0</b></div><div class="metric"><small>Followers</small><b id="followersCount">0</b></div><div class="metric"><small>Posts</small><b id="postCount">0</b></div><div class="metric"><small>Likes</small><b id="likesCount">0</b></div></div>
+<div class="card"><button class="btn settingsBtn" onclick="showPage('settings')">⚙️ Settings</button><button class="outline settingsBtn" onclick="showPage('guide')">📖 নির্দেশিকা</button><button class="btn settingsBtn" onclick="openSponsor()">📢 এখানে বিজ্ঞাপন দিন</button></div>
+</section>
+
+<section id="settings" class="page">
+<div class="title">Settings</div>
+<div class="card"><b>Account Settings</b><button class="outline settingsBtn" onclick="openModal('loginModal')">Login / Account</button><button class="outline settingsBtn" onclick="showPage('profile')">Profile</button></div>
+<div class="card"><b>Rivo</b><button class="outline settingsBtn" onclick="showPage('guide')">📖 ব্যবহার নির্দেশিকা</button><button class="outline settingsBtn" onclick="openNotice()">🔔 Notice Board</button><button class="btn settingsBtn" onclick="openSponsor()">📢 এখানে বিজ্ঞাপন দিন</button></div>
+<div class="card"><button class="outline settingsBtn" onclick="logoutUser()">Logout</button></div>
+</section>
+
+<section id="guide" class="page"><div class="title">Rivo নির্দেশিকা</div><div id="guideList"></div></section>
+
+<nav class="bottom"><div class="bottomIn"><button class="nav on" data-page="home"><b>⌂</b>Home</button><button class="nav" data-page="discover"><b>⌕</b>Discover</button><button class="plus" onclick="openModal('uploadModal')">+</button><button class="nav" data-page="earnings"><b>৳</b>Earnings</button><button class="nav" data-page="profile"><b>♙</b>Profile</button></div></nav>
+</div>
+
+<div id="noticeModal" class="noticeModal" onclick="if(event.target===this)closeNotice()"><div class="noticePanel"><div class="noticeHead"><div class="grow"><b>🔔 Notice Board</b><div class="sub">অফার, ঘোষণা ও নিয়ম</div></div><button class="close" onclick="closeNotice()">×</button></div><div id="noticeList"></div></div></div>
+
+<div id="loginModal" class="modal" onclick="if(event.target===this)closeModal('loginModal')"><div class="sheet"><div class="row"><h3 class="grow">Rivo Login</h3><button class="close" onclick="closeModal('loginModal')">×</button></div><input id="loginEmail" class="input" type="email" placeholder="Email"><input id="loginPass" class="input" type="password" placeholder="Password"><button class="btn" onclick="login()">Login</button></div></div>
+
+<div id="uploadModal" class="modal" onclick="if(event.target===this)closeModal('uploadModal')"><div class="sheet"><div class="row"><h3 class="grow">ভিডিও / ছবি আপলোড</h3><button class="close" onclick="closeModal('uploadModal')">×</button></div><p class="sub">আপলোড শেষ হলেই Feed-এ দেখা যাবে। Admin পরে quality/copyright/fake-view check করতে পারবে।</p><input id="mediaFile" class="input" type="file" accept="video/*,image/*"><div id="uploadPreview" class="preview hidden"></div><textarea id="caption" class="input" rows="3" placeholder="Caption"></textarea><button class="btn" onclick="uploadPost()">আপলোড করুন</button></div></div>
+
+<div id="withdrawModal" class="modal" onclick="if(event.target===this)closeModal('withdrawModal')"><div class="sheet"><div class="row"><h3 class="grow">bKash / Nagad Withdraw</h3><button class="close" onclick="closeModal('withdrawModal')">×</button></div><select id="wMethod" class="input"><option>bKash</option><option>Nagad</option></select><input id="wNumber" class="input" inputmode="numeric" placeholder="01XXXXXXXXX"><input id="wAmount" class="input" type="number" placeholder="Amount ৳"><button class="btn" onclick="requestWithdraw()">Withdraw Request</button></div></div>
+
+<div id="sponsorModal" class="modal" onclick="if(event.target===this)closeModal('sponsorModal')"><div class="sheet"><div class="row"><h3 class="grow">এখানে বিজ্ঞাপন দিন</h3><button class="close" onclick="closeModal('sponsorModal')">×</button></div><p class="sub">WhatsApp: <a href="https://wa.me/8801742361967" target="_blank" style="color:#ff72b0">01742-361967</a></p><div id="durationGrid" class="durationGrid"></div><input id="adName" class="input" placeholder="বিজ্ঞাপনদাতার নাম"><input id="adTitle" class="input" placeholder="বিজ্ঞাপনের শিরোনাম"><input id="adWhatsapp" class="input" value="01742-361967"><input id="adFile" class="input" type="file" accept="video/*,image/*"><div id="adPreview" class="preview hidden"></div><p id="adPrice" class="sub"></p><button class="btn" onclick="submitAd()">বিজ্ঞাপন জমা দিন</button></div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+const sb=supabase.createClient('https://ayoactrisfcdhmhsnrwz.supabase.co','sb_publishable_pvPMH5zhPX3_vjarFMrYtw_9uZkagYX');
+let me=null,selectedDuration=3,uploadFile=null;
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),money=n=>'৳'+Number(n||0).toFixed(2),fmt=n=>Number(n||0).toLocaleString('en-US');
+function toast(t){const x=$('toast');x.textContent=t;x.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>x.style.display='none',3000)}
+function openModal(id){$(id).classList.add('show');if(id==='sponsorModal')loadSponsorOptions()}function closeModal(id){$(id).classList.remove('show')}
+function openNotice(){$('noticeModal').classList.add('show');loadNotices()}function closeNotice(){$('noticeModal').classList.remove('show')}
+function showPage(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));$(id).classList.add('on');document.querySelectorAll('.nav').forEach(x=>x.classList.toggle('on',x.dataset.page===id));if(id==='home')loadFeed();if(id==='earnings')loadDashboard();if(id==='profile')loadProfile();if(id==='guide')loadGuide()}
+async function loadFeed(){const q=await sb.from('videos').select('id,user_id,media_url,caption,views_count,likes_count,shares_count,media_type,profiles(username,avatar_url)').eq('status','approved').order('created_at',{ascending:false}).limit(40);if(q.error){console.error(q.error);$('feed').innerHTML='<div class="card"><b>Feed load হয়নি</b><p class="sub">Supabase database query-তে সমস্যা হয়েছে।</p></div>';return}const items=q.data||[];$('feed').innerHTML=items.map(renderVideo).join('')||'<div class="card"><b>এখনো কোনো ভিডিও/ছবি নেই</b><p class="sub">প্রথম ভিডিও বা ছবি আপলোড করুন।</p></div>';bindVideos()}
+function renderVideo(v){const photo=v.media_type==='photo'||v.media_type==='image';const m=photo?`<img src="${esc(v.media_url)}">`:`<video src="${esc(v.media_url)}" playsinline muted preload="metadata"></video>`;return `<article class="post" data-id="${v.id}" data-owner="${v.user_id}"><div class="media">${m}</div><div class="shade"></div>${photo?'':`<button class="play" onclick="toggleVideo(this)">▶</button>`}<div class="right"><button class="action" onclick="likeVideo('${v.id}',this)">♥<small>${fmt(v.likes_count)}</small></button><button class="action" onclick="shareVideo('${v.id}')">↗<small>${fmt(v.shares_count)}</small></button></div><div class="info"><div class="user">@${esc(v.profiles?.username||'user')}</div><div class="caption">${esc(v.caption||'')}</div></div></article>`}
+function toggleVideo(b){const v=b.parentElement.querySelector('video');if(!v)return;if(v.paused){v.play().catch(()=>{});b.textContent='❚❚'}else{v.pause();b.textContent='▶'}}
+function bindVideos(){document.querySelectorAll('.post video').forEach(v=>{let started=0;const id=v.closest('.post').dataset.id;v.addEventListener('play',()=>started=Date.now());v.addEventListener('pause',()=>{if(started){recordView(id,(Date.now()-started)/1000);started=0}});v.addEventListener('ended',()=>{if(started){recordView(id,(Date.now()-started)/1000);started=0}})})}
+async function recordView(id,sec){if(!me||sec<3)return;const owner=document.querySelector(`.post[data-id="${id}"]`)?.dataset.owner;if(owner===me.id)return;const session=localStorage.rivoSession||(localStorage.rivoSession=crypto.randomUUID());await sb.rpc('rivo_increment_view',{p_video_id:id,p_session_id:session,p_watch_seconds:Math.round(sec*10)/10})}
+async function likeVideo(id,b){if(!me)return openModal('loginModal');const r=await sb.from('likes').upsert({user_id:me.id,video_id:id});if(!r.error)b.querySelector('small').textContent='✓'}
+async function shareVideo(id){try{await navigator.clipboard.writeText(location.href+'?video='+id);toast('Share link copied')}catch{toast('Video ID: '+id)}}
+async function loadNotices(){const {data}=await sb.from('notices').select('title,message,created_at').eq('is_active',true).order('created_at',{ascending:false});$('noticeList').innerHTML=(data||[]).map(n=>`<div class="noticeItem"><b>${esc(n.title)}</b><p class="sub">${esc(n.message)}</p></div>`).join('')||'<div class="noticeItem sub">কোনো নতুন notice নেই।</div>'}
+async function loadGuide(){const {data}=await sb.from('guides').select('title,body,sort_order').eq('is_active',true).order('sort_order');$('guideList').innerHTML=(data||[]).map(g=>`<div class="card"><b>${esc(g.title)}</b><p class="sub">${esc(g.body)}</p></div>`).join('')||'<div class="sub">নির্দেশিকা এখনো যোগ করা হয়নি।</div>'}
+async function login(){const r=await sb.auth.signInWithPassword({email:$('loginEmail').value.trim(),password:$('loginPass').value});if(r.error)return toast(r.error.message);me=r.data.user;closeModal('loginModal');boot()}
+async function logoutUser(){await sb.auth.signOut();me=null;showPage('home');loadFeed();toast('Logout হয়েছে')}
+async function loadProfile(){if(!me)return;const {data:p}=await sb.from('profiles').select('*').eq('id',me.id).maybeSingle();if(!p)return;$('uname').textContent='@'+(p.username||'rivo_user');$('email').textContent=me.email||'';$('avatar').src=p.avatar_url||`https://ui-avatars.com/api/?name=${encodeURIComponent(p.username||'Rivo')}&background=30333d&color=fff`;const [a,b,c,d]=await Promise.all([sb.from('follows').select('*',{count:'exact',head:true}).eq('follower_id',me.id),sb.from('follows').select('*',{count:'exact',head:true}).eq('following_id',me.id),sb.from('videos').select('*',{count:'exact',head:true}).eq('user_id',me.id),sb.from('likes').select('*',{count:'exact',head:true}).eq('user_id',me.id)]);$('followingCount').textContent=a.count||0;$('followersCount').textContent=b.count||0;$('postCount').textContent=c.count||0;$('likesCount').textContent=d.count||0}
+async function loadDashboard(){if(!me)return;const {data:s}=await sb.from('app_settings').select('key,value');const st=Object.fromEntries((s||[]).map(x=>[x.key,x.value]));const {data:v}=await sb.from('videos').select('views_count').eq('user_id',me.id);const {data:e}=await sb.from('earnings_ledger').select('amount').eq('user_id',me.id);const {count:f}=await sb.from('follows').select('*',{count:'exact',head:true}).eq('following_id',me.id);const views=(v||[]).reduce((a,x)=>a+Number(x.views_count||0),0),income=(e||[]).reduce((a,x)=>a+Number(x.amount||0),0);$('myViews').textContent=fmt(views);$('myIncome').textContent=money(income);$('myFollowers').textContent=fmt(f||0);$('myRate').textContent=money(st.earning_rate_per_1000_views||1);const ok=(f||0)>=1000&&views>=10000000;$('monetizationBox').innerHTML='প্রয়োজন: ১,০০০ Followers + ১ কোটি Views<br>আপনার: '+fmt(f||0)+' Followers + '+fmt(views)+' Views';$('monetizeBtn').classList.toggle('hidden',!ok)}
+async function applyMonetization(){const r=await sb.rpc('rivo_apply_monetization');toast(r.error?r.error.message:'Monetization আবেদন জমা হয়েছে')}
+async function requestWithdraw(){if(!me)return openModal('loginModal');const amount=Number($('wAmount').value),number=$('wNumber').value.trim();if(!number||amount<=0)return toast('সব তথ্য দিন');const r=await sb.from('payout_requests').insert({user_id:me.id,amount,payment_method:$('wMethod').value,payment_account:number});if(r.error)return toast(r.error.message);closeModal('withdrawModal');toast('Withdrawal request পাঠানো হয়েছে');loadDashboard()}
+$('mediaFile').onchange=()=>{uploadFile=$('mediaFile').files?.[0];if(uploadFile){$('uploadPreview').classList.remove('hidden');$('uploadPreview').innerHTML=uploadFile.type.startsWith('image/')?`<img src="${URL.createObjectURL(uploadFile)}">`:`<video src="${URL.createObjectURL(uploadFile)}" controls muted playsinline></video>`}}
+async function uploadPost(){if(!me)return openModal('loginModal');if(!uploadFile)return toast('ভিডিও বা ছবি নির্বাচন করুন');const path=`${me.id}/${crypto.randomUUID()}-${uploadFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;toast('Upload হচ্ছে...');const up=await sb.storage.from('rivo-media').upload(path,uploadFile,{contentType:uploadFile.type});if(up.error)return toast(up.error.message);const url=sb.storage.from('rivo-media').getPublicUrl(path).data.publicUrl;const r=await sb.from('videos').insert({user_id:me.id,media_type:uploadFile.type.startsWith('image/')?'photo':'video',media_url:url,thumbnail_url:uploadFile.type.startsWith('image/')?url:null,caption:$('caption').value.trim(),hashtags:[],status:'approved',content_check_status:'pending',copyright_check_status:'pending',fake_view_status:'pending',moderation_status:'pending'});if(r.error){await sb.storage.from('rivo-media').remove([path]);return toast(r.error.message)}closeModal('uploadModal');$('caption').value='';$('mediaFile').value='';uploadFile=null;toast('সফলভাবে আপলোড হয়েছে');showPage('home');loadFeed()}
+async function loadSponsorOptions(){const {data}=await sb.from('app_settings').select('key,value');const s=Object.fromEntries((data||[]).map(x=>[x.key,x.value]));$('durationGrid').innerHTML=[3,7,15,30].map(d=>`<button class="duration ${d===selectedDuration?'sel':''}" onclick="selectedDuration=${d};loadSponsorOptions()"><b>${d} দিন</b><small>${Number(s['sponsor_price_'+d]||0)?money(s['sponsor_price_'+d]):'WhatsApp'}</small></button>`).join('');$('adPrice').textContent=`${selectedDuration} দিনের প্যাকেজ · মূল্য জানতে 01742-361967`}
+function openSponsor(){if(!me)return openModal('loginModal');openModal('sponsorModal')}
+async function submitAd(){const f=$('adFile').files?.[0];if(!f)return toast('বিজ্ঞাপনের ছবি/ভিডিও দিন');const name=$('adName').value.trim(),title=$('adTitle').value.trim();if(!name||!title)return toast('নাম ও শিরোনাম দিন');const ext=(f.name.split('.').pop()||'bin').toLowerCase(),path=`${me.id}/${crypto.randomUUID()}.${ext}`;const up=await sb.storage.from('rivo-ad-pending').upload(path,f,{contentType:f.type});if(up.error)return toast(up.error.message);const {data:s}=await sb.from('app_settings').select('key,value');const st=Object.fromEntries((s||[]).map(x=>[x.key,x.value]));const price=Number(st['sponsor_price_'+selectedDuration]||0);const r=await sb.from('sponsored_ads').insert({advertiser_id:me.id,advertiser_name:name,advertiser_whatsapp:$('adWhatsapp').value.trim()||'01742-361967',title,media_type:f.type.startsWith('image/')?'image':'video',storage_path:path,duration_days:selectedDuration,price,payment_status:'unpaid',status:'pending'});if(r.error){await sb.storage.from('rivo-ad-pending').remove([path]);return toast(r.error.message)}closeModal('sponsorModal');toast('বিজ্ঞাপন Admin-এর কাছে পাঠানো হয়েছে');window.open('https://wa.me/8801742361967?text='+encodeURIComponent('Rivo বিজ্ঞাপন: '+title+' | '+selectedDuration+' দিন'),'_blank')}
+async function searchUsers(){const q=$('searchBox').value.trim();if(!q)return $('searchResults').innerHTML='';const {data}=await sb.from('profiles').select('username,full_name').ilike('username','%'+q+'%').limit(10);$('searchResults').innerHTML=(data||[]).map(x=>`<div class="card"><b>@${esc(x.username||'user')}</b><div class="sub">${esc(x.full_name||'')}</div></div>`).join('')}
+document.querySelectorAll('.nav').forEach(n=>n.onclick=()=>showPage(n.dataset.page));
+async function boot(){await loadFeed();await loadNotices();await loadGuide();if(me){loadProfile();loadDashboard()}}
+sb.auth.getUser().then(r=>{me=r.data.user||null;boot()});
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(console.error));
+</script>
+</body>
+</html>
