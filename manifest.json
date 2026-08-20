@@ -1,1 +1,12 @@
 
+{
+  "name": "Rivo - Short Video Platform",
+  "short_name": "Rivo",
+  "description": "Rivo short video platform",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#08080d",
+  "theme_color": "#ff2d8d"
+}
