@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Rivo</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#05060a;color:#fff;font-family:Arial,sans-serif}button,input,textarea,select{font:inherit}
+#app{max-width:520px;margin:auto;min-height:100vh;background:#07080d;position:relative}
+header{height:62px;position:fixed;top:0;left:50%;transform:translateX(-50%);width:min(520px,100%);z-index:20;background:#08090df2;border-bottom:1px solid #20232d;display:flex;align-items:center;justify-content:center}
+.logo{position:absolute;left:14px;font-weight:900;font-size:23px;background:linear-gradient(90deg,#fff,#ff3f91,#8d72ff);-webkit-background-clip:text;color:transparent}
+.tabs{display:flex;gap:22px}.tabs button{background:none;border:0;color:#777;padding:9px}.tabs .active{color:#fff;border-bottom:2px solid #ff367f}
+.feed{padding:70px 6px 82px}.card{height:calc(100vh - 145px);min-height:520px;border-radius:18px;overflow:hidden;position:relative;background:#11141b;margin-bottom:8px}
+.card video,.card img{width:100%;height:100%;object-fit:cover}.shade{position:absolute;inset:0;background:linear-gradient(transparent 42%,#000d)}
+.actions{position:absolute;right:8px;bottom:105px;display:flex;flex-direction:column;gap:7px;z-index:4}.act{width:54px;min-height:52px;border:0;border-radius:15px;background:#0009;color:#fff;backdrop-filter:blur(7px)}.act b{display:block;font-size:20px}.act small{font-size:9px}.follow{background:linear-gradient(135deg,#ff2678,#7c48ff);font-weight:800}
+.info{position:absolute;left:13px;right:70px;bottom:14px;z-index:4}.user{display:flex;align-items:center;gap:8px}.avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;background:#252936;border:2px solid #fff}.caption{font-size:13px;margin-top:6px}.sound{font-size:11px;color:#bbb;margin-top:5px}
+nav{height:72px;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);z-index:30;background:#08090df2;border-top:1px solid #20232d;display:flex;justify-content:space-around;align-items:center}.nav{background:none;border:0;color:#777;display:flex;flex-direction:column;align-items:center;gap:3px}.nav b{font-size:21px}.nav small{font-size:9px}.nav.active{color:#fff}.add{width:57px;height:42px;border:0;border-radius:13px;background:linear-gradient(90deg,#fff,#ff438f);font-size:28px;font-weight:900}
+.screen{position:fixed;inset:0;background:#07080d;z-index:100;display:none;overflow:auto}.screen.show{display:block}.top{height:62px;position:sticky;top:0;z-index:5;background:#090a10;border-bottom:1px solid #222631;display:flex;align-items:center;justify-content:space-between;padding:0 13px}.back{background:none;border:0;color:#fff;font-size:28px}.content{padding:14px 14px 90px}
+.box{background:#151821;border:1px solid #292d38;border-radius:15px;padding:14px;margin-bottom:10px}.row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #20232d}.grow{flex:1}.muted{color:#858894;font-size:11px}.primary{width:100%;border:0;border-radius:12px;padding:13px;background:linear-gradient(135deg,#ff2678,#7447ff);color:#fff;font-weight:800}.outline{border:1px solid #ff3c86;background:none;color:#ff4b91;border-radius:10px;padding:8px 12px}
+input,textarea,select{width:100%;background:#151821;border:1px solid #2b2f3b;color:#fff;border-radius:11px;padding:11px;margin:5px 0 9px;outline:0}.file{display:block;text-align:center;border:1px dashed #555b6b;border-radius:13px;padding:15px;margin:8px 0;color:#ddd}.file input{display:none}
+.preview{width:100%;aspect-ratio:9/14;object-fit:cover;border-radius:16px;background:#101219}.filters{display:flex;gap:7px;overflow:auto;padding-bottom:8px}.filter{white-space:nowrap;background:#161922;border:1px solid #363a48;color:#ddd;border-radius:20px;padding:8px 12px;font-size:11px}.filter.on{border-color:#ff397f}
+.profile{text-align:center;padding:20px 0}.photo{width:98px;height:98px;border-radius:50%;object-fit:cover;background:#252936;border:3px solid #fff}.stats{display:flex;justify-content:center;gap:35px;margin:18px 0}.stats strong{display:block}.stats small{color:#777}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}.tile{aspect-ratio:3/4;background:#161922;overflow:hidden}.tile img,.tile video{width:100%;height:100%;object-fit:cover}
+.metricgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.metric{background:#151821;border-radius:13px;padding:14px}.metric strong{font-size:20px;display:block}.metric small{color:#777}
+.badge{display:inline-block;background:#1c202b;color:#bbb;padding:4px 8px;border-radius:20px;font-size:9px}.green{color:#3ce37a}.danger{color:#ff5a6e}
+.modal{position:fixed;inset:0;background:#000a;z-index:300;display:none;align-items:flex-end}.modal.show{display:flex}.sheet{width:min(520px,100%);background:#11131a;border-radius:20px 20px 0 0;padding:18px;max-height:85vh;overflow:auto}
+.toast{position:fixed;z-index:999;left:50%;bottom:90px;transform:translate(-50%,20px);opacity:0;background:#191c25;border:1px solid #343845;padding:10px 14px;border-radius:10px;font-size:12px;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body><div id="app">
+<header><div class="logo">Rivo</div><div class="tabs"><button class="active">Following</button><button>For You</button></div></header>
+<main id="feed" class="feed"></main>
+<nav><button class="nav active" onclick="home()"><b>⌂</b><small>Home</small></button><button class="nav" onclick="openS('discover')"><b>⌕</b><small>Discover</small></button><button class="add" onclick="openS('upload')">+</button><button class="nav" onclick="openS('earn')"><b>৳</b><small>Earnings</small></button><button class="nav" onclick="openS('profile')"><b>♙</b><small>Profile</small></button></nav>
+
+<section id="upload" class="screen"><div class="top"><button class="back" onclick="closeS('upload')">‹</button><b>Create</b><span></span></div><div class="content">
+<div class="box"><b>1. Choose media</b>
+<label class="file">📷 Camera Photo/Video<input id="camera" type="file" accept="image/*,video/*" capture="environment"></label>
+<label class="file">🖼️ Gallery — Photo or Video<input id="gallery" type="file" accept="image/*,video/*"></label>
+<div id="mediaName" class="muted"></div><img id="imgPreview" class="preview" style="display:none"><video id="vidPreview" class="preview" controls playsinline style="display:none"></video></div>
+<div class="box"><b>2. Edit</b><div class="filters"><button class="filter on" onclick="filter(this,'none')">Original</button><button class="filter" onclick="filter(this,'warm')">Warm</button><button class="filter" onclick="filter(this,'cool')">Cool</button><button class="filter" onclick="filter(this,'mono')">Mono</button><button class="filter" onclick="filter(this,'vivid')">Vivid</button><button class="filter" onclick="filter(this,'cinema')">Cinema</button></div>
+<label class="file">🎵 Add audio/song<input id="audio" type="file" accept="audio/*"></label><audio id="audioPreview" controls style="width:100%;display:none"></audio></div>
+<div class="box"><b>3. Details</b><textarea id="caption" placeholder="Caption..."></textarea><input id="tags" placeholder="#hashtags"><select id="visibility"><option>Public</option><option>Followers</option><option>Only Me</option></select><button class="primary" onclick="post()">Publish</button></div>
+</div></section>
+
+<section id="profile" class="screen"><div class="top"><button class="back" onclick="closeS('profile')">‹</button><b>Profile</b><button class="back" onclick="openS('settings')">⚙</button></div><div class="content" id="profileBody"></div></section>
+
+<section id="settings" class="screen"><div class="top"><button class="back" onclick="closeS('settings')">‹</button><b>Settings</b><span></span></div><div class="content">
+<div class="box"><button class="row" style="width:100%;background:none;color:#fff;border:0;text-align:left" onclick="openS('edit')">✎ <span>Edit Profile</span></button>
+<button class="row" style="width:100%;background:none;color:#fff;border:0;text-align:left" onclick="pickAvatar()">🖼 <span>Change Profile Photo</span></button></div>
+<div class="box"><div class="row">🔒 <span class="grow">Privacy</span><span class="muted">Manage</span></div><div class="row">🚫 <span class="grow">Blocked accounts</span><span class="muted">Manage</span></div><div class="row">🔔 <span class="grow">Notifications</span><span class="muted">Manage</span></div><div class="row">🛡 <span class="grow">Security</span><span class="muted">Manage</span></div></div>
+</div></section>
+
+<section id="edit" class="screen"><div class="top"><button class="back" onclick="closeS('edit')">‹</button><b>Edit Profile</b><button class="outline" onclick="saveProfile()">Save</button></div><div class="content">
+<div style="text-align:center"><img id="editPhoto" class="photo"><br><button class="outline" onclick="pickAvatar()">Change photo</button></div>
+<label>Full name<input id="name"></label><label>Username<input id="username"></label><label>Bio<textarea id="bio"></textarea></label></div></section>
+
+<section id="discover" class="screen"><div class="top"><button class="back" onclick="closeS('discover')">‹</button><b>Discover</b><span>⌕</span></div><div class="content"><div class="box">Search users, videos & hashtags<input placeholder="Search"></div><div class="box"><b>Trending</b><div class="row">#RivoChallenge <span class="grow"></span>12.5M</div><div class="row">#BanglaVibes <span class="grow"></span>8.2M</div><div class="row">#RivoCreators <span class="grow"></span>5.7M</div></div></div></section>
+
+<section id="earn" class="screen"><div class="top"><button class="back" onclick="closeS('earn')">‹</button><b>Earnings Dashboard</b><span></span></div><div class="content">
+<div class="box"><div class="muted">Available balance</div><div style="font-size:32px;font-weight:900">৳ <span id="balance">0.00</span></div><button class="primary" onclick="toast('Payment request submitted')">Request Payment</button></div>
+<div class="metricgrid"><div class="metric"><small>Total views</small><strong id="views">0</strong></div><div class="metric"><small>Earned</small><strong>৳ <span id="earned">0.00</span></strong></div></div>
+<div class="box"><b>My videos</b><div id="earningVideos"></div></div></div></section>
+
+<div id="toast" class="toast"></div><input id="avatar" type="file" accept="image/*" hidden></div>
+<script>
+const KEY="rivo_v3";let state=JSON.parse(localStorage.getItem(KEY)||"null")||{profile:{username:"rasel_khan",name:"Rasel Khan",bio:"Content Creator ✨",avatar:""},videos:[],rate:1};
+const $=id=>document.getElementById(id);function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function toast(t){let x=$("toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),1800)}
+function openS(id){$(id).classList.add("show");if(id==="profile")renderProfile();if(id==="earn")renderEarn();if(id==="edit")loadEdit()}
+function closeS(id){$(id).classList.remove("show")}function home(){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("show"));renderFeed()}
+function avatar(){return state.profile.avatar||"data:image/svg+xml;charset=utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="#252936"/><circle cx="50" cy="39" r="21" fill="#777"/><path d="M14 96c5-30 67-30 72 0" fill="#555"/></svg>')}
+function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function renderFeed(){let f=$("feed");if(!state.videos.length){f.innerHTML='<div class="card"><div style="height:100%;display:grid;place-items:center;text-align:center;padding:30px"><div><div style="font-size:58px">▶</div><h2>Welcome to Rivo</h2><p class="muted">Gallery or camera থেকে প্রথম ছবি/ভিডিও আপলোড করুন।</p><button class="primary" onclick="openS(\'upload\')">Create Post</button></div></div></div>';return}
+f.innerHTML=state.videos.map(v=>`<article class="card">${v.type==="image"?`<img src="${v.url}">`:`<video src="${v.url}" controls playsinline preload="metadata"></video>`}<div class="shade"></div><div class="actions"><button class="act follow" onclick="toast('Following')">Follow</button><button class="act" onclick="this.classList.toggle('liked')"><b>♥</b><small>${v.likes||0}</small></button><button class="act" onclick="toast('Comments')"><b>●</b><small>${v.comments||0}</small></button><button class="act" onclick="toast('Share')"><b>↗</b><small>${v.shares||0}</small></button><button class="act"><b>◉</b><small>${v.views||0}</small></button></div><div class="info"><div class="user"><img class="avatar" src="${avatar()}"><b>@${esc(v.user)}</b></div><div class="caption">${esc(v.caption)}</div><div class="sound">♫ ${esc(v.audio||"Original")}</div></div></article>`).join("")}
+let media=null,filterValue="none";function handleFile(f){if(!f)return;media=f;$("mediaName").textContent=f.name+" · "+Math.round(f.size/1024/1024*10)/10+" MB";let u=URL.createObjectURL(f);$("imgPreview").style.display=f.type.startsWith("image/")?"block":"none";$("vidPreview").style.display=f.type.startsWith("video/")?"block":"none";if(f.type.startsWith("image/"))$("imgPreview").src=u;else{$("vidPreview").src=u;$("vidPreview").load()}}
+$("camera").onchange=e=>handleFile(e.target.files[0]);$("gallery").onchange=e=>handleFile(e.target.files[0]);$("audio").onchange=e=>{let f=e.target.files[0];if(f){$("audioPreview").src=URL.createObjectURL(f);$("audioPreview").style.display="block"}}
+function filter(b,t){document.querySelectorAll(".filter").forEach(x=>x.classList.remove("on"));b.classList.add("on");filterValue=t;let val={none:"none",warm:"sepia(.25) saturate(1.35)",cool:"hue-rotate(18deg)",mono:"grayscale(1)",vivid:"saturate(1.8) contrast(1.12)",cinema:"contrast(1.2) saturate(.8)"}[t];$("imgPreview").style.filter=val;$("vidPreview").style.filter=val}
+function post(){if(!media){toast("Camera বা Gallery থেকে media নির্বাচন করুন");return}let u=URL.createObjectURL(media);let a=$("audio").files[0];state.videos.unshift({url:u,type:media.type.startsWith("image/")?"image":"video",user:state.profile.username,caption:$("caption").value,visibility:$("visibility").value,audio:a?a.name:"Original",views:0,likes:0,comments:0,shares:0,rate:state.rate});save();closeS("upload");renderFeed();toast("Published ✓")}
+function renderProfile(){$("profileBody").innerHTML=`<div class="profile"><img class="photo" src="${avatar()}"><h2>@${esc(state.profile.username)}</h2><div class="stats"><div><strong>120</strong><small>Following</small></div><div><strong>12.5K</strong><small>Followers</small></div><div><strong>${state.videos.reduce((a,v)=>a+(v.likes||0),0)}</strong><small>Likes</small></div></div><button class="outline" onclick="openS('edit')">Edit Profile</button><p class="muted">${esc(state.profile.bio)}</p></div><div class="grid">${state.videos.map(v=>`<div class="tile">${v.type==="image"?`<img src="${v.url}">`:`<video src="${v.url}" muted></video>`}</div>`).join("")}</div>`}
+function loadEdit(){$("editPhoto").src=avatar();$("name").value=state.profile.name;$("username").value=state.profile.username;$("bio").value=state.profile.bio}
+function saveProfile(){state.profile.name=$("name").value||state.profile.name;state.profile.username=$("username").value.replace(/^@/,"")||state.profile.username;state.profile.bio=$("bio").value;save();closeS("edit");renderProfile();toast("Profile saved")}
+function pickAvatar(){$("avatar").click()}$("avatar").onchange=e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{state.profile.avatar=r.result;save();if($("editPhoto"))$("editPhoto").src=r.result;renderProfile();toast("Profile photo updated ✓")};r.readAsDataURL(f)}
+function renderEarn(){let views=state.videos.reduce((a,v)=>a+(v.views||0),0),earned=state.videos.reduce((a,v)=>a+((v.views||0)/1000*(v.rate||state.rate)),0);$("views").textContent=views;$("earned").textContent=earned.toFixed(2);$("balance").textContent=earned.toFixed(2);$("earningVideos").innerHTML=state.videos.map(v=>`<div class="row"><div class="grow"><b>${esc(v.caption||"Untitled")}</b><div class="muted">${v.views||0} views · ৳ ${(((v.views||0)/1000)*(v.rate||state.rate)).toFixed(2)}</div></div><span class="badge">${esc(v.visibility)}</span></div>`).join("")}
+renderFeed();
+</script></body></html>
