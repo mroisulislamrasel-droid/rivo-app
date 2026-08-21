@@ -1,0 +1,4627 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="manifest" href="./manifest.json">
+
+<title>Rivo</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@600;700;800&display=swap');
+
+:root{
+  --bg:#fff;
+  --card:#fff;
+  --soft:#f6f7f9;
+  --border:#e7e8ec;
+  --text:#111318;
+  --muted:#737783;
+  --pink:#ff2f86;
+  --purple:#7c4dff;
+  --green:#20b875;
+  --red:#ff3b5c;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:#fff;
+  color:var(--text);
+  font-family:"Hind Siliguri",sans-serif;
+}
+
+body{
+  overflow-x:hidden;
+}
+
+button,
+input,
+textarea,
+select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.app{
+  width:min(100%,540px);
+  min-height:100vh;
+  margin:auto;
+  padding-bottom:86px;
+  background:#fff;
+}
+
+/* HEADER */
+
+.header{
+  height:62px;
+  position:sticky;
+  top:0;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  padding:0 13px;
+  background:#ffffffee;
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid #eee;
+}
+
+.logo{
+  font-family:Inter,sans-serif;
+  font-size:27px;
+  font-weight:800;
+  background:linear-gradient(90deg,var(--pink),var(--purple));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.headerSpace{
+  flex:1;
+}
+
+.topTab{
+  border:0;
+  background:none;
+  color:#999;
+  font-weight:700;
+  padding:8px 7px;
+}
+
+.topTab.active{
+  color:#111;
+  border-bottom:2px solid var(--pink);
+}
+
+.iconBtn{
+  width:39px;
+  height:39px;
+  margin-left:6px;
+  border:1px solid #e7e8ec;
+  border-radius:13px;
+  background:#fff;
+  color:#111;
+  display:grid;
+  place-items:center;
+  font-size:18px;
+}
+
+/* PAGE */
+
+.page{
+  display:none;
+  padding:12px;
+}
+
+.page.active{
+  display:block;
+}
+
+#home.page{
+  padding:0;
+}
+
+.title{
+  font-size:24px;
+  font-weight:800;
+  margin:5px 0 15px;
+}
+
+.card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:15px;
+  margin:10px 0;
+  box-shadow:0 5px 20px #00000008;
+}
+
+.cardTitle{
+  font-size:18px;
+  font-weight:700;
+}
+
+.muted{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.65;
+}
+
+/* BUTTONS */
+
+.btn{
+  border:0;
+  border-radius:13px;
+  padding:12px 15px;
+  color:#fff;
+  font-weight:700;
+  background:linear-gradient(110deg,var(--pink),var(--purple));
+  box-shadow:0 7px 20px #ff2f8625;
+}
+
+.outline{
+  border:1px solid #dddfe5;
+  border-radius:13px;
+  padding:11px 15px;
+  color:#111;
+  background:#fff;
+  font-weight:700;
+}
+
+.full{
+  width:100%;
+  margin-top:8px;
+}
+
+/* INPUT */
+
+.input{
+  width:100%;
+  padding:12px;
+  margin:5px 0;
+  border:1px solid #dddfe5;
+  border-radius:13px;
+  outline:none;
+  color:#111;
+  background:#fafafa;
+}
+
+.input:focus{
+  border-color:var(--pink);
+  background:#fff;
+}
+
+/* FEED */
+
+#feed{
+  width:100%;
+}
+
+.post{
+  width:100%;
+  height:calc(100svh - 62px);
+  min-height:540px;
+  position:relative;
+  overflow:hidden;
+  background:#000;
+}
+
+.post video,
+.post > img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  background:#000;
+}
+
+.shade{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(
+    180deg,
+    #00000015 0%,
+    transparent 40%,
+    #000000d9 100%
+  );
+}
+
+/* USER */
+
+.postInfo{
+  position:absolute;
+  left:15px;
+  right:95px;
+  bottom:25px;
+  z-index:10;
+  color:#fff !important;
+  text-shadow:0 2px 7px #000;
+}
+
+.userLine{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:6px;
+}
+
+.feedAvatar{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid #fff;
+  background:#eee;
+}
+
+.username{
+  font-size:18px;
+  font-weight:800;
+  color:#fff !important;
+  text-shadow:0 2px 8px #000;
+}
+
+.caption{
+  font-size:14px;
+  line-height:1.45;
+  color:#fff !important;
+  text-shadow:0 2px 7px #000;
+}
+
+/* FOLLOW */
+
+.followFeedBtn{
+  border:1px solid #fff;
+  padding:4px 12px;
+  border-radius:20px;
+  background:#ff2f86;
+  color:#fff;
+  font-size:12px;
+  font-weight:700;
+}
+
+/* ACTIONS */
+
+.actions{
+  position:absolute;
+  right:9px;
+  bottom:104px;
+  z-index:20;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.action{
+  width:55px;
+  min-height:55px;
+  border:0;
+  border-radius:18px;
+  color:#fff;
+  background:#00000080;
+  backdrop-filter:blur(8px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:1px;
+  text-shadow:0 2px 5px #000;
+}
+
+.actionIcon{
+  width:25px;
+  height:25px;
+  display:grid;
+  place-items:center;
+}
+
+.actionIcon svg{
+  width:24px;
+  height:24px;
+  fill:none;
+  stroke:#fff;
+  stroke-width:2.2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.action.liked .actionIcon svg{
+  fill:#ff2f86;
+  stroke:#ff2f86;
+}
+
+.action.followAction{
+  background:#ff2f86;
+}
+
+.action.followAction.following{
+  background:#fff;
+  color:#111;
+}
+
+.action.followAction.following .actionIcon svg{
+  stroke:#111;
+}
+
+.action small{
+  color:#fff;
+  font-size:10px;
+}
+
+.action.followAction.following small{
+  color:#111;
+}
+
+/* PLAY */
+
+.play{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:70px;
+  height:70px;
+  z-index:18;
+  border:0;
+  border-radius:50%;
+  color:#fff;
+  background:#00000070;
+  backdrop-filter:blur(6px);
+  font-size:27px;
+  display:grid;
+  place-items:center;
+}
+
+/* SOUND */
+
+.soundBtn{
+  position:absolute;
+  right:12px;
+  top:75px;
+  z-index:20;
+  width:44px;
+  height:44px;
+  border:1px solid #ffffff45;
+  border-radius:50%;
+  color:#fff;
+  background:#00000070;
+  font-size:19px;
+}
+
+/* GRID */
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.metric{
+  padding:14px;
+  border-radius:16px;
+  border:1px solid var(--border);
+  background:#fafafa;
+}
+
+.metricIcon{
+  font-size:23px;
+}
+
+.metric small{
+  color:var(--muted);
+}
+
+.metric b{
+  display:block;
+  margin-top:3px;
+  font-family:Inter;
+  font-size:20px;
+}
+
+/* MENU */
+
+.menu{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:8px 0;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:#fff;
+  color:#111;
+  text-align:left;
+}
+
+.menuIcon{
+  width:43px;
+  height:43px;
+  flex:none;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  background:linear-gradient(135deg,#ff2f8618,#7c4dff18);
+  font-size:21px;
+}
+
+.menuText{
+  flex:1;
+}
+
+.menuText b{
+  display:block;
+  font-size:15px;
+}
+
+.menuText small{
+  color:var(--muted);
+}
+
+.arrow{
+  color:#858995;
+  font-size:23px;
+}
+
+/* PROFILE */
+
+.profile{
+  text-align:center;
+  padding:10px 0 15px;
+}
+
+.profileAvatarWrap{
+  position:relative;
+  width:100px;
+  height:100px;
+  margin:auto;
+}
+
+.avatar{
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid var(--pink);
+  background:#eee;
+}
+
+.avatarEdit{
+  position:absolute;
+  right:0;
+  bottom:0;
+  width:34px;
+  height:34px;
+  border:3px solid #fff;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-size:15px;
+}
+
+/* BOTTOM */
+
+.bottom{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  height:80px;
+  z-index:60;
+  background:#ffffffee;
+  backdrop-filter:blur(18px);
+  border-top:1px solid #e8e8eb;
+}
+
+.bottomInner{
+  width:min(100%,540px);
+  height:100%;
+  margin:auto;
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr 1fr 1fr;
+}
+
+.nav{
+  border:0;
+  background:none;
+  color:#858894;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  font-size:11px;
+}
+
+.navIcon{
+  font-size:22px;
+}
+
+.nav.active{
+  color:#111;
+}
+
+.uploadBtn{
+  width:54px;
+  height:54px;
+  margin:auto;
+  border:0;
+  border-radius:17px;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  color:#fff;
+  font-size:30px;
+  box-shadow:0 8px 22px #ff2f8640;
+}
+
+/* MODAL */
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:14px;
+  background:#0008;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.sheet{
+  width:min(500px,100%);
+  max-height:94svh;
+  overflow:auto;
+  padding:18px;
+  border:1px solid #ddd;
+  border-radius:22px;
+  background:#fff;
+  box-shadow:0 25px 70px #0005;
+}
+
+.sheetHead{
+  display:flex;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.sheetHead h3{
+  flex:1;
+  margin:0;
+  font-size:21px;
+}
+
+.close{
+  width:37px;
+  height:37px;
+  border:0;
+  border-radius:50%;
+  color:#111;
+  background:#f1f2f5;
+  font-size:22px;
+}
+
+/* COMMENTS */
+
+.commentList{
+  max-height:45vh;
+  overflow:auto;
+  margin:10px 0;
+}
+
+.commentItem{
+  display:flex;
+  gap:10px;
+  padding:10px 0;
+  border-bottom:1px solid var(--border);
+}
+
+.commentAvatar{
+  width:38px;
+  height:38px;
+  flex:none;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+.commentBody{
+  flex:1;
+}
+
+.commentBody b{
+  display:block;
+  font-size:14px;
+}
+
+.commentBody p{
+  margin:2px 0 0;
+  font-size:13px;
+  color:#555;
+}
+
+/* TOAST */
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:96px;
+  transform:translateX(-50%);
+  z-index:200;
+  display:none;
+  max-width:90%;
+  padding:10px 15px;
+  border-radius:12px;
+  color:#111;
+  background:#fff;
+  border:1px solid #ddd;
+  box-shadow:0 10px 30px #0002;
+  font-weight:700;
+  text-align:center;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.preview img,
+.preview video{
+  width:100%;
+  max-height:300px;
+  object-fit:contain;
+  border-radius:15px;
+  margin-top:8px;
+}
+
+.durationGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.duration{
+  border:1px solid #dddfe5;
+  background:#fafafa;
+  border-radius:14px;
+  padding:12px;
+}
+
+.duration.selected{
+  border-color:var(--pink);
+  background:#fff0f6;
+}
+
+.authTabs{
+  display:flex;
+  gap:8px;
+  margin-bottom:10px;
+}
+
+.authTabs button{
+  flex:1;
+}
+
+@media(max-width:380px){
+  .action{
+    width:50px;
+    min-height:50px;
+  }
+
+  .postInfo{
+    left:12px;
+    right:80px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="header">
+
+  <div class="logo">Rivo</div>
+
+  <button
+    type="button"
+    class="topTab active"
+    data-top-page="home"
+  >
+    Following
+  </button>
+
+  <button
+    type="button"
+    class="topTab"
+    data-top-page="discover"
+  >
+    Discover
+  </button>
+
+  <div class="headerSpace"></div>
+
+  <button
+    type="button"
+    class="iconBtn"
+    id="noticeBtn"
+  >
+    🔔
+  </button>
+
+  <button
+    type="button"
+    class="iconBtn"
+    id="settingsBtn"
+  >
+    ⚙️
+  </button>
+
+</header>
+
+<!-- HOME -->
+
+<section id="home" class="page active">
+  <div id="feed"></div>
+</section>
+
+<!-- DISCOVER -->
+
+<section id="discover" class="page">
+
+  <div class="title">🔎 Discover</div>
+
+  <input
+    id="searchBox"
+    class="input"
+    placeholder="ইউজার খুঁজুন..."
+  >
+
+  <div id="searchResults"></div>
+
+  <div class="card">
+
+    <div class="cardTitle">
+      📢 এখানে বিজ্ঞাপন দিন
+    </div>
+
+    <p class="muted">
+      আপনার ব্যবসা Rivo-তে প্রচার করুন।
+      <br>
+      ৩ দিন · ৭ দিন · ১৫ দিন · ৩০ দিন
+      <br>
+      WhatsApp:
+      <b>01742-361967</b>
+    </p>
+
+    <button
+      type="button"
+      class="btn full"
+      id="sponsorBtn1"
+    >
+      📢 বিজ্ঞাপন দিন
+    </button>
+
+  </div>
+
+</section>
+
+<!-- EARNINGS -->
+
+<section id="earnings" class="page">
+
+  <div class="title">💰 Earnings</div>
+
+  <div class="grid">
+
+    <div class="metric">
+      <div class="metricIcon">👁️</div>
+      <small>মোট Views</small>
+      <b id="myViews">0</b>
+    </div>
+
+    <div class="metric">
+      <div class="metricIcon">💰</div>
+      <small>Income</small>
+      <b id="myIncome">৳0</b>
+    </div>
+
+    <div class="metric">
+      <div class="metricIcon">👥</div>
+      <small>Followers</small>
+      <b id="myFollowers">0</b>
+    </div>
+
+    <div class="metric">
+      <div class="metricIcon">📈</div>
+      <small>প্রতি ১০০০ Views</small>
+      <b id="myRate">৳1</b>
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <div class="cardTitle">
+      💎 Monetization
+    </div>
+
+    <p id="monetizationBox" class="muted">
+      তথ্য লোড হচ্ছে...
+    </p>
+
+    <button
+      type="button"
+      id="monetizeBtn"
+      class="btn full hidden"
+    >
+      ✅ Monetization আবেদন করুন
+    </button>
+
+  </div>
+
+  <button
+    type="button"
+    class="btn full"
+    id="withdrawBtn"
+  >
+    💳 bKash / Nagad Withdraw
+  </button>
+
+</section>
+
+<!-- PROFILE -->
+
+<section id="profile" class="page">
+
+  <div class="profile">
+
+    <div class="profileAvatarWrap">
+
+      <img
+        id="avatar"
+        class="avatar"
+        src="https://ui-avatars.com/api/?name=Rivo&background=eeeeee&color=111"
+      >
+
+      <button
+        type="button"
+        class="avatarEdit"
+        id="avatarEditBtn"
+      >
+        📷
+      </button>
+
+    </div>
+
+    <input
+      id="avatarFile"
+      type="file"
+      accept="image/*"
+      class="hidden"
+    >
+
+    <h2 id="uname">@rivo_user</h2>
+
+    <div id="email" class="muted">
+      Account তৈরি করুন অথবা Login করুন
+    </div>
+
+  </div>
+
+  <div class="grid">
+
+    <div class="metric">
+      <small>Following</small>
+      <b id="followingCount">0</b>
+    </div>
+
+    <div class="metric">
+      <small>Followers</small>
+      <b id="followersCount">0</b>
+    </div>
+
+    <div class="metric">
+      <small>Posts</small>
+      <b id="postCount">0</b>
+    </div>
+
+    <div class="metric">
+      <small>Likes</small>
+      <b id="likesCount">0</b>
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <button type="button" class="menu" id="accountMenu">
+      <span class="menuIcon">👤</span>
+      <span class="menuText">
+        <b>Account</b>
+        <small>Login অথবা নতুন Account তৈরি করুন</small>
+      </span>
+      <span class="arrow">›</span>
+    </button>
+
+    <button type="button" class="menu" id="profileEditMenu">
+      <span class="menuIcon">✏️</span>
+      <span class="menuText">
+        <b>Profile Edit</b>
+        <small>নাম, username ও profile তথ্য পরিবর্তন করুন</small>
+      </span>
+      <span class="arrow">›</span>
+    </button>
+
+    <button type="button" class="menu" id="settingsMenu">
+      <span class="menuIcon">⚙️</span>
+      <span class="menuText">
+        <b>Settings</b>
+        <small>Account ও App settings</small>
+      </span>
+      <span class="arrow">›</span>
+    </button>
+
+    <button type="button" class="menu" id="guideMenu">
+      <span class="menuIcon">📖</span>
+      <span class="menuText">
+        <b>নির্দেশিকা</b>
+        <small>Rivo ব্যবহারের নিয়ম</small>
+      </span>
+      <span class="arrow">›</span>
+    </button>
+
+    <button type="button" class="menu" id="sponsorMenu">
+      <span class="menuIcon">📢</span>
+      <span class="menuText">
+        <b>এখানে বিজ্ঞাপন দিন</b>
+        <small>৩ / ৭ / ১৫ / ৩০ দিনের প্যাকেজ</small>
+      </span>
+      <span class="arrow">›</span>
+    </button>
+
+  </div>
+
+</section>
+
+<!-- SETTINGS -->
+
+<section id="settings" class="page">
+
+  <div class="title">⚙️ Settings</div>
+
+  <div class="card">
+
+    <div class="cardTitle">👤 Account</div>
+
+    <button type="button" class="menu" id="settingsAccountMenu">
+      <span class="menuIcon">🔐</span>
+      <span class="menuText">
+        <b>Login / Create Account</b>
+        <small>আপনার Rivo account পরিচালনা করুন</small>
+      </span>
+      <span class="arrow">›</span>
+    </button>
+
+    <button type="button" class="menu" id="settingsProfileMenu">
+      <span class="menuIcon">✏️</span>
+      <span class="menuText">
+        <b>Profile Edit</b>
+        <small>আপনার profile তথ্য পরিবর্তন করুন</small>
+      </span>
+      <span class="arrow">›</span>
+    </button>
+
+    <button type="button" class="menu" id="monetizationMenu">
+      <span class="menuIcon">💰</span>
+      <span class="menuText">
+        <b>Monetization আবেদন</b>
+        <small>আপনার monetization আবেদন করুন</small>
+      </span>
+      <span class="arrow">›</span>
+    </button>
+
+  </div>
+
+  <div class="card">
+
+    <div class="cardTitle">🛠️ Rivo</div>
+
+    <button type="button" class="menu" id="settingsGuideMenu">
+      <span class="menuIcon">📖</span>
+      <span class="menuText">
+        <b>ব্যবহার নির্দেশিকা</b>
+        <small>ভিডিও, earning ও নিয়ম</small>
+      </span>
+      <span class="arrow">›</span>
+    </button>
+
+    <button type="button" class="menu" id="settingsNoticeMenu">
+      <span class="menuIcon">🔔</span>
+      <span class="menuText">
+        <b>Notice Board</b>
+        <small>নতুন ঘোষণা ও অফার</small>
+      </span>
+      <span class="arrow">›</span>
+    </button>
+
+  </div>
+
+  <button
+    type="button"
+    class="outline full"
+    id="logoutBtn"
+  >
+    🚪 Logout
+  </button>
+
+</section>
+
+<!-- GUIDE -->
+
+<section id="guide" class="page">
+
+  <div class="title">📖 Rivo নির্দেশিকা</div>
+
+  <div id="guideList"></div>
+
+</section>
+
+<!-- BOTTOM -->
+
+<nav class="bottom">
+
+  <div class="bottomInner">
+
+    <button
+      type="button"
+      class="nav active"
+      data-page="home"
+    >
+      <span class="navIcon">⌂</span>
+      Home
+    </button>
+
+    <button
+      type="button"
+      class="nav"
+      data-page="friends"
+    >
+      <span class="navIcon">👥</span>
+      Friends
+    </button>
+
+    <button
+      type="button"
+      class="uploadBtn"
+      id="uploadBtn"
+    >
+      +
+    </button>
+
+    <button
+      type="button"
+      class="nav"
+      data-page="earnings"
+    >
+      <span class="navIcon">৳</span>
+      Earnings
+    </button>
+
+    <button
+      type="button"
+      class="nav"
+      data-page="profile"
+    >
+      <span class="navIcon">♙</span>
+      Profile
+    </button>
+
+  </div>
+
+</nav>
+
+</div>
+
+<!-- NOTICE -->
+
+<div id="noticeModal" class="modal">
+
+  <div class="sheet">
+
+    <div class="sheetHead">
+
+      <h3>🔔 Notice Board</h3>
+
+      <button
+        type="button"
+        class="close"
+        data-close="noticeModal"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div id="noticeList"></div>
+
+  </div>
+
+</div>
+
+<!-- AUTH -->
+
+<div id="authModal" class="modal">
+
+  <div class="sheet">
+
+    <div class="sheetHead">
+
+      <h3>👤 Rivo Account</h3>
+
+      <button
+        type="button"
+        class="close"
+        data-close="authModal"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div class="authTabs">
+
+      <button
+        type="button"
+        id="loginTab"
+        class="btn"
+      >
+        Login
+      </button>
+
+      <button
+        type="button"
+        id="signupTab"
+        class="outline"
+      >
+        Create Account
+      </button>
+
+    </div>
+
+    <div id="authLogin">
+
+      <input
+        id="loginEmail"
+        class="input"
+        type="email"
+        placeholder="Email"
+      >
+
+      <input
+        id="loginPass"
+        class="input"
+        type="password"
+        placeholder="Password"
+      >
+
+      <button
+        type="button"
+        class="btn full"
+        id="loginBtn"
+      >
+        🔐 Login
+      </button>
+
+    </div>
+
+    <div id="authSignup" class="hidden">
+
+      <input
+        id="signupName"
+        class="input"
+        placeholder="আপনার নাম"
+      >
+
+      <input
+        id="signupUser"
+        class="input"
+        placeholder="Username"
+      >
+
+      <input
+        id="signupEmail"
+        class="input"
+        type="email"
+        placeholder="Email"
+      >
+
+      <input
+        id="signupPass"
+        class="input"
+        type="password"
+        placeholder="Password"
+      >
+
+      <button
+        type="button"
+        class="btn full"
+        id="signupBtn"
+      >
+        ✨ Account তৈরি করুন
+      </button>
+
+    </div>
+
+    <p id="authMsg" class="muted"></p>
+
+  </div>
+
+</div>
+
+<!-- PROFILE EDIT -->
+
+<div id="profileEditModal" class="modal">
+
+  <div class="sheet">
+
+    <div class="sheetHead">
+
+      <h3>✏️ Profile Edit</h3>
+
+      <button
+        type="button"
+        class="close"
+        data-close="profileEditModal"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <input
+      id="editFullName"
+      class="input"
+      placeholder="আপনার নাম"
+    >
+
+    <input
+      id="editUsername"
+      class="input"
+      placeholder="Username"
+    >
+
+    <textarea
+      id="editBio"
+      class="input"
+      rows="3"
+      placeholder="আপনার Bio"
+    ></textarea>
+
+    <button
+      type="button"
+      class="btn full"
+      id="saveProfileBtn"
+    >
+      💾 Profile Save করুন
+    </button>
+
+  </div>
+
+</div>
+
+<!-- MONETIZATION -->
+
+<div id="monetizationModal" class="modal">
+
+  <div class="sheet">
+
+    <div class="sheetHead">
+
+      <h3>💰 Monetization আবেদন</h3>
+
+      <button
+        type="button"
+        class="close"
+        data-close="monetizationModal"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div class="card">
+
+      <b>Monetization-এর জন্য আবেদন করুন</b>
+
+      <p class="muted">
+        আপনার Followers এবং Views যোগ্য হলে
+        আবেদনটি Admin-এর কাছে পাঠানো হবে।
+      </p>
+
+      <div
+        id="monetizationApplyInfo"
+        class="muted"
+      >
+        তথ্য লোড হচ্ছে...
+      </div>
+
+    </div>
+
+    <button
+      type="button"
+      class="btn full"
+      id="submitMonetizationBtn"
+    >
+      ✅ Monetization আবেদন পাঠান
+    </button>
+
+  </div>
+
+</div>
+
+<!-- COMMENTS -->
+
+<div id="commentModal" class="modal">
+
+  <div class="sheet">
+
+    <div class="sheetHead">
+
+      <h3>💬 Comments</h3>
+
+      <button
+        type="button"
+        class="close"
+        data-close="commentModal"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div
+      id="commentList"
+      class="commentList"
+    >
+      <div class="muted">
+        Comment লোড হচ্ছে...
+      </div>
+    </div>
+
+    <input
+      id="commentInput"
+      class="input"
+      maxlength="500"
+      placeholder="আপনার Comment লিখুন..."
+    >
+
+    <button
+      type="button"
+      class="btn full"
+      id="commentSubmitBtn"
+    >
+      💬 Comment করুন
+    </button>
+
+  </div>
+
+</div>
+
+<!-- UPLOAD -->
+
+<div id="uploadModal" class="modal">
+
+  <div class="sheet">
+
+    <div class="sheetHead">
+
+      <h3>➕ ভিডিও / ছবি Upload</h3>
+
+      <button
+        type="button"
+        class="close"
+        data-close="uploadModal"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <p class="muted">
+      Gallery থেকে ছবি অথবা ভিডিও নির্বাচন করুন।
+    </p>
+
+    <input
+      id="mediaFile"
+      class="input"
+      type="file"
+      accept="video/*,image/*"
+    >
+
+    <div
+      id="uploadPreview"
+      class="preview hidden"
+    ></div>
+
+    <textarea
+      id="caption"
+      class="input"
+      rows="3"
+      placeholder="✍️ Caption লিখুন"
+    ></textarea>
+
+    <button
+      type="button"
+      class="btn full"
+      id="uploadSubmitBtn"
+    >
+      🚀 Upload করুন
+    </button>
+
+  </div>
+
+</div>
+
+<!-- WITHDRAW -->
+
+<div id="withdrawModal" class="modal">
+
+  <div class="sheet">
+
+    <div class="sheetHead">
+
+      <h3>💳 Withdraw</h3>
+
+      <button
+        type="button"
+        class="close"
+        data-close="withdrawModal"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <select id="wMethod" class="input">
+      <option>bKash</option>
+      <option>Nagad</option>
+    </select>
+
+    <input
+      id="wNumber"
+      class="input"
+      inputmode="numeric"
+      placeholder="01XXXXXXXXX"
+    >
+
+    <input
+      id="wAmount"
+      class="input"
+      type="number"
+      placeholder="Amount ৳"
+    >
+
+    <button
+      type="button"
+      class="btn full"
+      id="withdrawSubmitBtn"
+    >
+      💸 Withdraw Request
+    </button>
+
+  </div>
+
+</div>
+
+<!-- SPONSOR -->
+
+<div id="sponsorModal" class="modal">
+
+  <div class="sheet">
+
+    <div class="sheetHead">
+
+      <h3>📢 এখানে বিজ্ঞাপন দিন</h3>
+
+      <button
+        type="button"
+        class="close"
+        data-close="sponsorModal"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <p class="muted">
+      বিজ্ঞাপনের জন্য WhatsApp:
+      <b>01742-361967</b>
+    </p>
+
+    <div
+      id="durationGrid"
+      class="durationGrid"
+    ></div>
+
+    <input
+      id="adName"
+      class="input"
+      placeholder="বিজ্ঞাপনদাতার নাম"
+    >
+
+    <input
+      id="adTitle"
+      class="input"
+      placeholder="বিজ্ঞাপনের শিরোনাম"
+    >
+
+    <input
+      id="adWhatsapp"
+      class="input"
+      value="01742-361967"
+    >
+
+    <input
+      id="adFile"
+      class="input"
+      type="file"
+      accept="video/*,image/*"
+    >
+
+    <p id="adPrice" class="muted"></p>
+
+    <button
+      type="button"
+      class="btn full"
+      id="submitAdBtn"
+    >
+      📤 বিজ্ঞাপন জমা দিন
+    </button>
+
+  </div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+/* =========================================================
+   RIVO APP
+   Navigation + Modal fixed version
+   ========================================================= */
+
+/* SUPABASE */
+
+const SUPABASE_URL =
+  "https://ayoactrisfcdhmhsnrwz.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_pvPMH5zhPX3_vjarFMrYtw_9uZkagYX";
+
+const sb =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+/* STATE */
+
+let me = null;
+let uploadFile = null;
+let selectedDuration = 3;
+let currentCommentVideo = null;
+
+/* HELPER */
+
+const $ = id =>
+  document.getElementById(id);
+
+function money(n){
+  return "৳" +
+    Number(n || 0).toFixed(2);
+}
+
+function fmt(n){
+  return Number(n || 0)
+    .toLocaleString("en-US");
+}
+
+function toast(text){
+
+  const box = $("toast");
+
+  if(!box) return;
+
+  box.textContent = text;
+  box.style.display = "block";
+
+  clearTimeout(window.rivoToast);
+
+  window.rivoToast =
+    setTimeout(() => {
+      box.style.display = "none";
+    },3000);
+}
+
+function escapeHtml(text){
+
+  return String(text || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+/* =========================================================
+   MODAL SYSTEM
+   ========================================================= */
+
+function openModal(id){
+
+  const modal = $(id);
+
+  if(!modal){
+    console.error("Modal not found:",id);
+    return;
+  }
+
+  modal.classList.add("show");
+
+  document.body.style.overflow = "hidden";
+
+  if(id === "sponsorModal"){
+    loadSponsorOptions();
+  }
+}
+
+function closeModal(id){
+
+  const modal = $(id);
+
+  if(!modal) return;
+
+  modal.classList.remove("show");
+
+  const open =
+    document.querySelector(".modal.show");
+
+  if(!open){
+    document.body.style.overflow = "";
+  }
+}
+
+/* CLOSE BUTTONS */
+
+document
+  .querySelectorAll("[data-close]")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      event => {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        closeModal(
+          button.dataset.close
+        );
+      }
+    );
+
+  });
+
+/* CLICK OUTSIDE MODAL */
+
+document
+  .querySelectorAll(".modal")
+  .forEach(modal => {
+
+    modal.addEventListener(
+      "click",
+      event => {
+
+        if(event.target === modal){
+          closeModal(modal.id);
+        }
+
+      }
+    );
+
+  });
+
+/* ESCAPE */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if(event.key !== "Escape")
+      return;
+
+    document
+      .querySelectorAll(".modal.show")
+      .forEach(modal => {
+        closeModal(modal.id);
+      });
+
+  }
+);
+
+/* =========================================================
+   PAGE SYSTEM
+   ========================================================= */
+
+function updateNav(id){
+
+  document
+    .querySelectorAll(".nav")
+    .forEach(nav => {
+
+      nav.classList.toggle(
+        "active",
+        nav.dataset.page === id
+      );
+
+    });
+}
+
+function updateTopTabs(id){
+
+  document
+    .querySelectorAll(".topTab")
+    .forEach(tab => {
+
+      tab.classList.toggle(
+        "active",
+        tab.dataset.topPage === id
+      );
+
+    });
+}
+
+function showPage(id){
+
+  if(id === "friends"){
+    showFriends();
+    return;
+  }
+
+  const page = $(id);
+
+  if(!page){
+    console.error(
+      "Page not found:",
+      id
+    );
+    return;
+  }
+
+  document
+    .querySelectorAll(".page")
+    .forEach(p => {
+      p.classList.remove("active");
+    });
+
+  page.classList.add("active");
+
+  updateNav(id);
+
+  if(id === "home"){
+    updateTopTabs("home");
+    loadFeed();
+  }
+
+  if(id === "discover"){
+    updateTopTabs("discover");
+  }
+
+  if(id === "profile"){
+    loadProfile();
+  }
+
+  if(id === "earnings"){
+    loadDashboard();
+  }
+
+  if(id === "guide"){
+    loadGuide();
+  }
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+function showFriends(){
+
+  document
+    .querySelectorAll(".page")
+    .forEach(p => {
+      p.classList.remove("active");
+    });
+
+  $("discover")
+    .classList.add("active");
+
+  document
+    .querySelectorAll(".nav")
+    .forEach(nav => {
+
+      nav.classList.toggle(
+        "active",
+        nav.dataset.page === "friends"
+      );
+
+    });
+
+  updateTopTabs("discover");
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+/* =========================================================
+   NAVIGATION EVENTS
+   ========================================================= */
+
+document
+  .querySelectorAll(".nav")
+  .forEach(nav => {
+
+    nav.addEventListener(
+      "click",
+      event => {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const page =
+          nav.dataset.page;
+
+        if(page === "friends"){
+          showFriends();
+        }else{
+          showPage(page);
+        }
+
+      }
+    );
+
+  });
+
+document
+  .querySelectorAll(".topTab")
+  .forEach(tab => {
+
+    tab.addEventListener(
+      "click",
+      event => {
+
+        event.preventDefault();
+
+        const page =
+          tab.dataset.topPage;
+
+        showPage(page);
+
+      }
+    );
+
+  });
+
+/* =========================================================
+   HEADER BUTTONS
+   ========================================================= */
+
+$("noticeBtn")
+  .addEventListener(
+    "click",
+    () => {
+      openModal("noticeModal");
+      loadNotices();
+    }
+  );
+
+$("settingsBtn")
+  .addEventListener(
+    "click",
+    () => {
+      showPage("settings");
+    }
+  );
+
+/* =========================================================
+   PROFILE / SETTINGS MENUS
+   ========================================================= */
+
+$("accountMenu")
+  .addEventListener(
+    "click",
+    () => {
+      openModal("authModal");
+    }
+  );
+
+$("settingsAccountMenu")
+  .addEventListener(
+    "click",
+    () => {
+      openModal("authModal");
+    }
+  );
+
+$("profileEditMenu")
+  .addEventListener(
+    "click",
+    () => {
+      openProfileEdit();
+    }
+  );
+
+$("settingsProfileMenu")
+  .addEventListener(
+    "click",
+    () => {
+      openProfileEdit();
+    }
+  );
+
+$("settingsMenu")
+  .addEventListener(
+    "click",
+    () => {
+      showPage("settings");
+    }
+  );
+
+$("guideMenu")
+  .addEventListener(
+    "click",
+    () => {
+      showPage("guide");
+    }
+  );
+
+$("settingsGuideMenu")
+  .addEventListener(
+    "click",
+    () => {
+      showPage("guide");
+    }
+  );
+
+$("sponsorMenu")
+  .addEventListener(
+    "click",
+    () => {
+      openSponsor();
+    }
+  );
+
+$("sponsorBtn1")
+  .addEventListener(
+    "click",
+    () => {
+      openSponsor();
+    }
+  );
+
+$("settingsNoticeMenu")
+  .addEventListener(
+    "click",
+    () => {
+      openModal("noticeModal");
+      loadNotices();
+    }
+  );
+
+$("monetizationMenu")
+  .addEventListener(
+    "click",
+    () => {
+      openMonetization();
+    }
+  );
+
+/* =========================================================
+   AUTH
+   ========================================================= */
+
+function authMode(mode){
+
+  $("authLogin")
+    .classList.toggle(
+      "hidden",
+      mode !== "login"
+    );
+
+  $("authSignup")
+    .classList.toggle(
+      "hidden",
+      mode !== "signup"
+    );
+
+  $("loginTab").className =
+    mode === "login"
+      ? "btn"
+      : "outline";
+
+  $("signupTab").className =
+    mode === "signup"
+      ? "btn"
+      : "outline";
+
+  $("authMsg").textContent = "";
+}
+
+$("loginTab")
+  .addEventListener(
+    "click",
+    () => authMode("login")
+  );
+
+$("signupTab")
+  .addEventListener(
+    "click",
+    () => authMode("signup")
+  );
+
+async function signup(){
+
+  const email =
+    $("signupEmail")
+      .value
+      .trim();
+
+  const password =
+    $("signupPass").value;
+
+  const name =
+    $("signupName")
+      .value
+      .trim();
+
+  const username =
+    $("signupUser")
+      .value
+      .trim()
+      .toLowerCase()
+      .replace(
+        /[^a-z0-9_]/g,
+        ""
+      );
+
+  if(
+    !email ||
+    !password ||
+    !name ||
+    !username
+  ){
+
+    $("authMsg").textContent =
+      "সব তথ্য পূরণ করুন।";
+
+    return;
+  }
+
+  if(password.length < 6){
+
+    $("authMsg").textContent =
+      "Password কমপক্ষে ৬ অক্ষরের হতে হবে।";
+
+    return;
+  }
+
+  $("authMsg").textContent =
+    "Account তৈরি হচ্ছে...";
+
+  const result =
+    await sb.auth.signUp({
+      email,
+      password
+    });
+
+  if(result.error){
+
+    $("authMsg").textContent =
+      result.error.message;
+
+    return;
+  }
+
+  if(!result.data.user){
+
+    $("authMsg").textContent =
+      "Email confirmation প্রয়োজন হতে পারে।";
+
+    return;
+  }
+
+  const profile =
+    await sb
+      .from("profiles")
+      .upsert({
+        id:result.data.user.id,
+        username,
+        full_name:name
+      });
+
+  if(profile.error){
+
+    $("authMsg").textContent =
+      profile.error.message;
+
+    return;
+  }
+
+  me = result.data.user;
+
+  closeModal("authModal");
+
+  toast(
+    "Account সফলভাবে তৈরি হয়েছে"
+  );
+
+  await boot();
+}
+
+async function login(){
+
+  const result =
+    await sb.auth.signInWithPassword({
+
+      email:
+        $("loginEmail")
+          .value
+          .trim(),
+
+      password:
+        $("loginPass").value
+
+    });
+
+  if(result.error){
+
+    $("authMsg").textContent =
+      result.error.message;
+
+    return;
+  }
+
+  me = result.data.user;
+
+  closeModal("authModal");
+
+  toast("Login সফল হয়েছে");
+
+  await boot();
+}
+
+$("loginBtn")
+  .addEventListener(
+    "click",
+    login
+  );
+
+$("signupBtn")
+  .addEventListener(
+    "click",
+    signup
+  );
+
+async function logoutUser(){
+
+  await sb.auth.signOut();
+
+  me = null;
+
+  toast("Logout হয়েছে");
+
+  showPage("home");
+
+  await loadProfile();
+}
+
+$("logoutBtn")
+  .addEventListener(
+    "click",
+    logoutUser
+  );
+
+/* =========================================================
+   FEED
+   ========================================================= */
+
+async function loadFeed(){
+
+  const result =
+    await sb
+      .from("videos")
+      .select(`
+        id,
+        user_id,
+        media_url,
+        caption,
+        views_count,
+        likes_count,
+        shares_count,
+        media_type,
+        profiles(
+          username,
+          avatar_url
+        )
+      `)
+      .eq(
+        "status",
+        "approved"
+      )
+      .order(
+        "created_at",
+        {
+          ascending:false
+        }
+      )
+      .limit(40);
+
+  if(result.error){
+
+    $("feed").innerHTML = `
+      <div class="card">
+        <b>Feed load হয়নি</b>
+        <p class="muted">
+          ${escapeHtml(
+            result.error.message
+          )}
+        </p>
+      </div>
+    `;
+
+    return;
+  }
+
+  const items =
+    result.data || [];
+
+  if(!items.length){
+
+    $("feed").innerHTML = `
+      <div class="card">
+        <div class="cardTitle">
+          🎬 এখনো কোনো পোস্ট নেই
+        </div>
+        <p class="muted">
+          প্রথম ভিডিও অথবা ছবি Upload করুন।
+        </p>
+      </div>
+    `;
+
+    return;
+  }
+
+  $("feed").innerHTML =
+    items
+      .map(video => {
+
+        const username =
+          video.profiles?.username ||
+          "user";
+
+        const avatar =
+          video.profiles?.avatar_url ||
+          `https://ui-avatars.com/api/?name=${
+            encodeURIComponent(username)
+          }&background=ff2f86&color=fff`;
+
+        let media = "";
+
+        if(
+          video.media_type === "photo" ||
+          video.media_type === "image"
+        ){
+
+          media = `
+            <img
+              src="${escapeHtml(
+                video.media_url
+              )}"
+              alt="Rivo"
+            >
+          `;
+
+        }else{
+
+          media = `
+            <video
+              src="${escapeHtml(
+                video.media_url
+              )}"
+              playsinline
+              preload="metadata"
+              loop
+              muted
+            ></video>
+
+            <button
+              type="button"
+              class="soundBtn"
+              onclick="toggleSound(this,event)"
+            >
+              🔇
+            </button>
+          `;
+        }
+
+        return `
+
+        <article
+          class="post"
+          data-id="${video.id}"
+          data-owner="${video.user_id}"
+        >
+
+          ${media}
+
+          <div class="shade"></div>
+
+          ${
+            video.media_type === "video"
+              ?
+              `
+              <button
+                type="button"
+                class="play"
+                onclick="toggleVideo(this,event)"
+              >
+                ▶
+              </button>
+              `
+              :
+              ""
+          }
+
+          <div class="actions">
+
+            <button
+              type="button"
+              class="action followAction"
+              onclick="followUser('${video.user_id}',this)"
+            >
+
+              <span class="actionIcon">
+
+                <svg viewBox="0 0 24 24">
+
+                  <path
+                    d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+                  />
+
+                  <circle
+                    cx="9"
+                    cy="7"
+                    r="4"
+                  />
+
+                  <path
+                    d="M19 8v6M16 11h6"
+                  />
+
+                </svg>
+
+              </span>
+
+              <small>Follow</small>
+
+            </button>
+
+            <button
+              type="button"
+              class="action"
+              onclick="likeVideo('${video.id}',this)"
+            >
+
+              <span class="actionIcon">
+
+                <svg viewBox="0 0 24 24">
+
+                  <path
+                    d="M20.8 8.7c0 5.5-8.8 10.3-8.8 10.3S3.2 14.2 3.2 8.7A4.7 4.7 0 0 1 12 6.1a4.7 4.7 0 0 1 8.8 2.6Z"
+                  />
+
+                </svg>
+
+              </span>
+
+              <small>
+                ${fmt(video.likes_count)}
+              </small>
+
+            </button>
+
+            <button
+              type="button"
+              class="action"
+              onclick="openComment('${video.id}')"
+            >
+
+              <span class="actionIcon">
+
+                <svg viewBox="0 0 24 24">
+
+                  <path
+                    d="M21 11.5a8.4 8.4 0 0 1-9 8.5 9.2 9.2 0 0 1-4-.9L3 21l1.4-4A8.3 8.3 0 0 1 3 11.5 8.5 8.5 0 0 1 12 3a8.5 8.5 0 0 1 9 8.5Z"
+                  />
+
+                </svg>
+
+              </span>
+
+              <small>Comment</small>
+
+            </button>
+
+            <button
+              type="button"
+              class="action"
+              onclick="shareVideo('${video.id}')"
+            >
+
+              <span class="actionIcon">
+
+                <svg viewBox="0 0 24 24">
+
+                  <path d="M22 2 11 13"/>
+                  <path d="m22 2-7 20-4-9-9-4Z"/>
+
+                </svg>
+
+              </span>
+
+              <small>
+                ${fmt(video.shares_count)}
+              </small>
+
+            </button>
+
+          </div>
+
+          <div class="postInfo">
+
+            <div class="userLine">
+
+              <img
+                class="feedAvatar"
+                src="${escapeHtml(avatar)}"
+                alt=""
+              >
+
+              <div>
+
+                <div class="username">
+                  @${escapeHtml(username)}
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="caption">
+              ${escapeHtml(
+                video.caption || ""
+              )}
+            </div>
+
+          </div>
+
+        </article>
+
+        `;
+
+      })
+      .join("");
+
+  bindVideos();
+}
+
+/* =========================================================
+   VIDEO
+   ========================================================= */
+
+function toggleVideo(
+  button,
+  event
+){
+
+  if(event){
+    event.stopPropagation();
+  }
+
+  const post =
+    button.closest(".post");
+
+  if(!post) return;
+
+  const video =
+    post.querySelector("video");
+
+  if(!video) return;
+
+  if(video.paused){
+
+    video.play()
+      .catch(()=>{});
+
+    button.textContent = "❚❚";
+
+  }else{
+
+    video.pause();
+
+    button.textContent = "▶";
+  }
+}
+
+function toggleSound(
+  button,
+  event
+){
+
+  if(event){
+    event.stopPropagation();
+  }
+
+  const post =
+    button.closest(".post");
+
+  if(!post) return;
+
+  const video =
+    post.querySelector("video");
+
+  if(!video) return;
+
+  video.muted =
+    !video.muted;
+
+  button.textContent =
+    video.muted
+      ? "🔇"
+      : "🔊";
+
+  video.play()
+    .catch(()=>{});
+}
+
+function bindVideos(){
+
+  document
+    .querySelectorAll(
+      ".post video"
+    )
+    .forEach(video => {
+
+      let started = 0;
+
+      const id =
+        video
+          .closest(".post")
+          ?.dataset.id;
+
+      video.addEventListener(
+        "play",
+        () => {
+          started = Date.now();
+        }
+      );
+
+      video.addEventListener(
+        "pause",
+        () => {
+
+          if(!started)
+            return;
+
+          recordView(
+            id,
+            (Date.now() - started) /
+            1000
+          );
+
+          started = 0;
+
+        }
+      );
+
+    });
+}
+
+async function recordView(
+  id,
+  seconds
+){
+
+  if(
+    !me ||
+    !id ||
+    seconds < 3
+  ){
+    return;
+  }
+
+  const post =
+    document.querySelector(
+      `.post[data-id="${id}"]`
+    );
+
+  if(!post)
+    return;
+
+  if(
+    post.dataset.owner === me.id
+  ){
+    return;
+  }
+
+  const session =
+    localStorage.rivoSession ||
+    (
+      localStorage.rivoSession =
+      crypto.randomUUID()
+    );
+
+  await sb.rpc(
+    "rivo_increment_view",
+    {
+      p_video_id:id,
+      p_session_id:session,
+      p_watch_seconds:
+        Math.round(
+          seconds * 10
+        ) / 10
+    }
+  );
+}
+
+/* =========================================================
+   FOLLOW
+   ========================================================= */
+
+async function followUser(
+  userId,
+  button
+){
+
+  if(!me){
+
+    openModal("authModal");
+
+    return;
+  }
+
+  if(userId === me.id){
+
+    toast(
+      "নিজেকে Follow করা যাবে না"
+    );
+
+    return;
+  }
+
+  const existing =
+    await sb
+      .from("follows")
+      .select("id")
+      .eq(
+        "follower_id",
+        me.id
+      )
+      .eq(
+        "following_id",
+        userId
+      )
+      .maybeSingle();
+
+  if(existing.data){
+
+    const del =
+      await sb
+        .from("follows")
+        .delete()
+        .eq(
+          "id",
+          existing.data.id
+        );
+
+    if(!del.error){
+
+      button
+        .querySelector("small")
+        .textContent =
+        "Follow";
+
+      button
+        .classList
+        .remove("following");
+
+      toast(
+        "Unfollow হয়েছে"
+      );
+    }
+
+    return;
+  }
+
+  const result =
+    await sb
+      .from("follows")
+      .insert({
+        follower_id:me.id,
+        following_id:userId
+      });
+
+  if(result.error){
+
+    toast(
+      result.error.message
+    );
+
+    return;
+  }
+
+  button
+    .querySelector("small")
+    .textContent =
+    "Following";
+
+  button
+    .classList
+    .add("following");
+
+  toast("Follow হয়েছে");
+}
+
+/* =========================================================
+   LIKE
+   ========================================================= */
+
+async function likeVideo(
+  id,
+  button
+){
+
+  if(!me){
+
+    openModal("authModal");
+
+    return;
+  }
+
+  const existing =
+    await sb
+      .from("likes")
+      .select("id")
+      .eq(
+        "user_id",
+        me.id
+      )
+      .eq(
+        "video_id",
+        id
+      )
+      .maybeSingle();
+
+  if(existing.data){
+
+    await sb
+      .from("likes")
+      .delete()
+      .eq(
+        "id",
+        existing.data.id
+      );
+
+    button
+      .classList
+      .remove("liked");
+
+    toast(
+      "Like সরানো হয়েছে"
+    );
+
+    return;
+  }
+
+  const result =
+    await sb
+      .from("likes")
+      .insert({
+        user_id:me.id,
+        video_id:id
+      });
+
+  if(result.error){
+
+    toast(
+      result.error.message
+    );
+
+    return;
+  }
+
+  button
+    .classList
+    .add("liked");
+
+  toast("Like হয়েছে");
+}
+
+/* =========================================================
+   COMMENTS
+   ========================================================= */
+
+async function openComment(
+  videoId
+){
+
+  if(!me){
+
+    openModal("authModal");
+
+    return;
+  }
+
+  currentCommentVideo =
+    videoId;
+
+  $("commentInput").value = "";
+
+  openModal("commentModal");
+
+  await loadComments(videoId);
+}
+
+async function loadComments(
+  videoId
+){
+
+  $("commentList").innerHTML =
+    `
+    <div class="muted">
+      Comment লোড হচ্ছে...
+    </div>
+    `;
+
+  const result =
+    await sb
+      .from("comments")
+      .select(`
+        id,
+        user_id,
+        video_id,
+        comment,
+        created_at,
+        profiles(
+          username,
+          avatar_url
+        )
+      `)
+      .eq(
+        "video_id",
+        videoId
+      )
+      .order(
+        "created_at",
+        {
+          ascending:true
+        }
+      )
+      .limit(100);
+
+  if(result.error){
+
+    $("commentList").innerHTML =
+      `
+      <div class="muted">
+        Comment load হয়নি।
+        Supabase comments table/RLS যাচাই করুন।
+      </div>
+      `;
+
+    return;
+  }
+
+  const list =
+    result.data || [];
+
+  if(!list.length){
+
+    $("commentList").innerHTML =
+      `
+      <div class="muted">
+        এখনো কোনো Comment নেই।
+        প্রথম Comment করুন।
+      </div>
+      `;
+
+    return;
+  }
+
+  $("commentList").innerHTML =
+    list
+      .map(c => {
+
+        const username =
+          c.profiles?.username ||
+          "user";
+
+        const avatar =
+          c.profiles?.avatar_url ||
+          `https://ui-avatars.com/api/?name=${
+            encodeURIComponent(username)
+          }&background=ff2f86&color=fff`;
+
+        return `
+
+          <div class="commentItem">
+
+            <img
+              class="commentAvatar"
+              src="${escapeHtml(avatar)}"
+              alt=""
+            >
+
+            <div class="commentBody">
+
+              <b>
+                @${escapeHtml(username)}
+              </b>
+
+              <p>
+                ${escapeHtml(
+                  c.comment || ""
+                )}
+              </p>
+
+            </div>
+
+          </div>
+
+        `;
+
+      })
+      .join("");
+}
+
+async function submitComment(){
+
+  if(!me){
+
+    openModal("authModal");
+
+    return;
+  }
+
+  if(!currentCommentVideo)
+    return;
+
+  const text =
+    $("commentInput")
+      .value
+      .trim();
+
+  if(!text){
+
+    toast(
+      "Comment লিখুন"
+    );
+
+    return;
+  }
+
+  const result =
+    await sb
+      .from("comments")
+      .insert({
+        user_id:me.id,
+        video_id:
+          currentCommentVideo,
+        comment:text
+      });
+
+  if(result.error){
+
+    toast(
+      "Comment করা যাচ্ছে না: " +
+      result.error.message
+    );
+
+    return;
+  }
+
+  $("commentInput").value = "";
+
+  toast(
+    "Comment করা হয়েছে"
+  );
+
+  await loadComments(
+    currentCommentVideo
+  );
+}
+
+$("commentSubmitBtn")
+  .addEventListener(
+    "click",
+    submitComment
+  );
+
+/* =========================================================
+   SHARE
+   ========================================================= */
+
+async function shareVideo(id){
+
+  const url =
+    location.origin +
+    location.pathname +
+    "?video=" +
+    id;
+
+  try{
+
+    if(navigator.share){
+
+      await navigator.share({
+        title:"Rivo",
+        text:"Rivo ভিডিও দেখুন",
+        url
+      });
+
+    }else{
+
+      await navigator.clipboard
+        .writeText(url);
+
+      toast(
+        "Share link copied"
+      );
+    }
+
+  }catch(error){
+
+    console.log(
+      "Share cancelled"
+    );
+
+  }
+}
+
+/* =========================================================
+   PROFILE
+   ========================================================= */
+
+async function loadProfile(){
+
+  if(!me){
+
+    $("uname").textContent =
+      "@rivo_user";
+
+    $("email").textContent =
+      "Account তৈরি করুন অথবা Login করুন";
+
+    return;
+  }
+
+  const result =
+    await sb
+      .from("profiles")
+      .select("*")
+      .eq(
+        "id",
+        me.id
+      )
+      .maybeSingle();
+
+  if(result.data){
+
+    const username =
+      result.data.username ||
+      "rivo_user";
+
+    $("uname").textContent =
+      "@" + username;
+
+    $("email").textContent =
+      me.email || "";
+
+    $("avatar").src =
+      result.data.avatar_url ||
+      `https://ui-avatars.com/api/?name=${
+        encodeURIComponent(username)
+      }&background=ff2f86&color=fff`;
+  }
+
+  const [
+    following,
+    followers,
+    posts,
+    likes
+  ] =
+    await Promise.all([
+
+      sb
+        .from("follows")
+        .select("*",{
+          count:"exact",
+          head:true
+        })
+        .eq(
+          "follower_id",
+          me.id
+        ),
+
+      sb
+        .from("follows")
+        .select("*",{
+          count:"exact",
+          head:true
+        })
+        .eq(
+          "following_id",
+          me.id
+        ),
+
+      sb
+        .from("videos")
+        .select("*",{
+          count:"exact",
+          head:true
+        })
+        .eq(
+          "user_id",
+          me.id
+        ),
+
+      sb
+        .from("likes")
+        .select("*",{
+          count:"exact",
+          head:true
+        })
+        .eq(
+          "user_id",
+          me.id
+        )
+
+    ]);
+
+  $("followingCount")
+    .textContent =
+    following.count || 0;
+
+  $("followersCount")
+    .textContent =
+    followers.count || 0;
+
+  $("postCount")
+    .textContent =
+    posts.count || 0;
+
+  $("likesCount")
+    .textContent =
+    likes.count || 0;
+}
+
+/* =========================================================
+   PROFILE EDIT
+   ========================================================= */
+
+async function openProfileEdit(){
+
+  if(!me){
+
+    openModal("authModal");
+
+    return;
+  }
+
+  const result =
+    await sb
+      .from("profiles")
+      .select(
+        "username,full_name,bio"
+      )
+      .eq(
+        "id",
+        me.id
+      )
+      .maybeSingle();
+
+  if(result.data){
+
+    $("editUsername").value =
+      result.data.username || "";
+
+    $("editFullName").value =
+      result.data.full_name || "";
+
+    $("editBio").value =
+      result.data.bio || "";
+  }
+
+  openModal(
+    "profileEditModal"
+  );
+}
+
+async function saveProfileEdit(){
+
+  if(!me){
+
+    openModal("authModal");
+
+    return;
+  }
+
+  const username =
+    $("editUsername")
+      .value
+      .trim()
+      .toLowerCase()
+      .replace(
+        /[^a-z0-9_]/g,
+        ""
+      );
+
+  const fullName =
+    $("editFullName")
+      .value
+      .trim();
+
+  const bio =
+    $("editBio")
+      .value
+      .trim();
+
+  if(!username){
+
+    toast(
+      "Username দিন"
+    );
+
+    return;
+  }
+
+  const result =
+    await sb
+      .from("profiles")
+      .update({
+        username,
+        full_name:fullName,
+        bio
+      })
+      .eq(
+        "id",
+        me.id
+      );
+
+  if(result.error){
+
+    toast(
+      "Profile update হয়নি: " +
+      result.error.message
+    );
+
+    return;
+  }
+
+  closeModal(
+    "profileEditModal"
+  );
+
+  toast(
+    "Profile আপডেট হয়েছে"
+  );
+
+  await loadProfile();
+  await loadFeed();
+}
+
+$("saveProfileBtn")
+  .addEventListener(
+    "click",
+    saveProfileEdit
+  );
+
+/* =========================================================
+   AVATAR
+   ========================================================= */
+
+function openAvatarPicker(){
+
+  if(!me){
+
+    openModal("authModal");
+
+    return;
+  }
+
+  $("avatarFile").click();
+}
+
+$("avatarEditBtn")
+  .addEventListener(
+    "click",
+    openAvatarPicker
+  );
+
+$("avatarFile")
+  .addEventListener(
+    "change",
+    uploadAvatar
+  );
+
+async function uploadAvatar(){
+
+  if(!me)
+    return;
+
+  const file =
+    $("avatarFile")
+      .files?.[0];
+
+  if(!file)
+    return;
+
+  if(
+    !file.type.startsWith(
+      "image/"
+    )
+  ){
+
+    toast(
+      "শুধু ছবি নির্বাচন করুন"
+    );
+
+    return;
+  }
+
+  if(
+    file.size >
+    5 * 1024 * 1024
+  ){
+
+    toast(
+      "ছবির সাইজ ৫ MB-এর কম হতে হবে"
+    );
+
+    return;
+  }
+
+  toast(
+    "Profile ছবি আপলোড হচ্ছে..."
+  );
+
+  const ext =
+    file.name
+      .split(".")
+      .pop();
+
+  const path =
+    `avatars/${me.id}.${ext}`;
+
+  const upload =
+    await sb.storage
+      .from("rivo-media")
+      .upload(
+        path,
+        file,
+        {
+          contentType:
+            file.type,
+          upsert:true
+        }
+      );
+
+  if(upload.error){
+
+    toast(
+      "ছবি আপলোড হয়নি: " +
+      upload.error.message
+    );
+
+    return;
+  }
+
+  const publicUrl =
+    sb.storage
+      .from("rivo-media")
+      .getPublicUrl(path)
+      .data.publicUrl;
+
+  const finalUrl =
+    publicUrl +
+    "?t=" +
+    Date.now();
+
+  const update =
+    await sb
+      .from("profiles")
+      .update({
+        avatar_url:
+          finalUrl
+      })
+      .eq(
+        "id",
+        me.id
+      );
+
+  if(update.error){
+
+    toast(
+      "Profile update হয়নি: " +
+      update.error.message
+    );
+
+    return;
+  }
+
+  $("avatar").src =
+    finalUrl;
+
+  toast(
+    "Profile ছবি পরিবর্তন হয়েছে"
+  );
+
+  await loadFeed();
+}
+
+/* =========================================================
+   EARNINGS
+   ========================================================= */
+
+async function loadDashboard(){
+
+  if(!me){
+
+    $("monetizationBox").innerHTML =
+      "আগে Login করুন।";
+
+    return;
+  }
+
+  const settings =
+    await sb
+      .from("app_settings")
+      .select("key,value");
+
+  const values =
+    Object.fromEntries(
+      (settings.data || [])
+        .map(x => [
+          x.key,
+          x.value
+        ])
+    );
+
+  const videos =
+    await sb
+      .from("videos")
+      .select("views_count")
+      .eq(
+        "user_id",
+        me.id
+      );
+
+  const earnings =
+    await sb
+      .from("earnings_ledger")
+      .select("amount")
+      .eq(
+        "user_id",
+        me.id
+      );
+
+  const followers =
+    await sb
+      .from("follows")
+      .select("*",{
+        count:"exact",
+        head:true
+      })
+      .eq(
+        "following_id",
+        me.id
+      );
+
+  const views =
+    (videos.data || [])
+      .reduce(
+        (total,v) =>
+          total +
+          Number(
+            v.views_count || 0
+          ),
+        0
+      );
+
+  const income =
+    (earnings.data || [])
+      .reduce(
+        (total,e) =>
+          total +
+          Number(
+            e.amount || 0
+          ),
+        0
+      );
+
+  const followerCount =
+    followers.count || 0;
+
+  $("myViews").textContent =
+    fmt(views);
+
+  $("myIncome").textContent =
+    money(income);
+
+  $("myFollowers").textContent =
+    fmt(followerCount);
+
+  $("myRate").textContent =
+    money(
+      values
+        .earning_rate_per_1000_views ||
+      1
+    );
+
+  const eligible =
+    followerCount >= 1000 &&
+    views >= 10000000;
+
+  $("monetizationBox")
+    .innerHTML = `
+
+      প্রয়োজন:
+      <b>১,০০০ Followers</b>
+      +
+      <b>১ কোটি Views</b>
+
+      <br><br>
+
+      আপনার:
+      ${fmt(followerCount)}
+      Followers
+      +
+      ${fmt(views)}
+      Views
+
+    `;
+
+  $("monetizeBtn")
+    .classList.toggle(
+      "hidden",
+      !eligible
+    );
+}
+
+$("monetizeBtn")
+  .addEventListener(
+    "click",
+    submitMonetizationApplication
+  );
+
+/* =========================================================
+   MONETIZATION
+   ========================================================= */
+
+async function openMonetization(){
+
+  if(!me){
+
+    openModal("authModal");
+
+    return;
+  }
+
+  await loadDashboard();
+
+  $("monetizationApplyInfo")
+    .innerHTML =
+    $("monetizationBox")
+      .innerHTML;
+
+  openModal(
+    "monetizationModal"
+  );
+}
+
+async function submitMonetizationApplication(){
+
+  if(!me){
+
+    openModal("authModal");
+
+    return;
+  }
+
+  const result =
+    await sb.rpc(
+      "rivo_apply_monetization"
+    );
+
+  if(result.error){
+
+    toast(
+      "আবেদন করা যায়নি: " +
+      result.error.message
+    );
+
+    return;
+  }
+
+  closeModal(
+    "monetizationModal"
+  );
+
+  toast(
+    "Monetization আবেদন সফলভাবে জমা হয়েছে"
+  );
+
+  await loadDashboard();
+}
+
+$("submitMonetizationBtn")
+  .addEventListener(
+    "click",
+    submitMonetizationApplication
+  );
+
+/* =========================================================
+   WITHDRAW
+   ========================================================= */
+
+$("withdrawBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      if(!me){
+        openModal("authModal");
+        return;
+      }
+
+      openModal(
+        "withdrawModal"
+      );
+    }
+  );
+
+async function requestWithdraw(){
+
+  if(!me){
+
+    openModal("authModal");
+
+    return;
+  }
+
+  const amount =
+    Number(
+      $("wAmount").value
+    );
+
+  const number =
+    $("wNumber")
+      .value
+      .trim();
+
+  if(
+    !number ||
+    amount <= 0
+  ){
+
+    toast(
+      "সঠিক তথ্য দিন"
+    );
+
+    return;
+  }
+
+  const result =
+    await sb
+      .from("payout_requests")
+      .insert({
+
+        user_id:me.id,
+
+        amount,
+
+        payment_method:
+          $("wMethod").value,
+
+        payment_account:
+          number
+
+      });
+
+  if(result.error){
+
+    toast(
+      result.error.message
+    );
+
+    return;
+  }
+
+  closeModal(
+    "withdrawModal"
+  );
+
+  toast(
+    "Withdraw request পাঠানো হয়েছে"
+  );
+}
+
+$("withdrawSubmitBtn")
+  .addEventListener(
+    "click",
+    requestWithdraw
+  );
+
+/* =========================================================
+   UPLOAD
+   ========================================================= */
+
+$("uploadBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      if(!me){
+
+        openModal("authModal");
+
+        return;
+      }
+
+      openModal(
+        "uploadModal"
+      );
+    }
+  );
+
+$("mediaFile")
+  .addEventListener(
+    "change",
+    () => {
+
+      uploadFile =
+        $("mediaFile")
+          .files?.[0];
+
+      if(!uploadFile)
+        return;
+
+      $("uploadPreview")
+        .classList
+        .remove("hidden");
+
+      const url =
+        URL.createObjectURL(
+          uploadFile
+        );
+
+      if(
+        uploadFile.type
+          .startsWith("image/")
+      ){
+
+        $("uploadPreview")
+          .innerHTML =
+          `<img src="${url}">`;
+
+      }else{
+
+        $("uploadPreview")
+          .innerHTML = `
+            <video
+              src="${url}"
+              controls
+              playsinline
+            ></video>
+          `;
+      }
+
+    }
+  );
+
+async function uploadPost(){
+
+  if(!me){
+
+    openModal("authModal");
+
+    return;
+  }
+
+  if(!uploadFile){
+
+    toast(
+      "ভিডিও অথবা ছবি নির্বাচন করুন"
+    );
+
+    return;
+  }
+
+  const safeName =
+    uploadFile.name
+      .replace(
+        /[^a-zA-Z0-9._-]/g,
+        "_"
+      );
+
+  const path =
+    `${me.id}/${crypto.randomUUID()}-${safeName}`;
+
+  const upload =
+    await sb.storage
+      .from("rivo-media")
+      .upload(
+        path,
+        uploadFile,
+        {
+          contentType:
+            uploadFile.type
+        }
+      );
+
+  if(upload.error){
+
+    toast(
+      upload.error.message
+    );
+
+    return;
+  }
+
+  const publicUrl =
+    sb.storage
+      .from("rivo-media")
+      .getPublicUrl(path)
+      .data.publicUrl;
+
+  const isImage =
+    uploadFile.type
+      .startsWith("image/");
+
+  const result =
+    await sb
+      .from("videos")
+      .insert({
+
+        user_id:me.id,
+
+        media_type:
+          isImage
+            ? "photo"
+            : "video",
+
+        media_url:
+          publicUrl,
+
+        thumbnail_url:
+          isImage
+            ? publicUrl
+            : null,
+
+        caption:
+          $("caption")
+            .value
+            .trim(),
+
+        hashtags:[],
+
+        status:"approved",
+
+        content_check_status:
+          "pending",
+
+        copyright_check_status:
+          "pending",
+
+        fake_view_status:
+          "pending",
+
+        moderation_status:
+          "pending"
+
+      });
+
+  if(result.error){
+
+    toast(
+      result.error.message
+    );
+
+    return;
+  }
+
+  closeModal(
+    "uploadModal"
+  );
+
+  $("mediaFile").value = "";
+  $("caption").value = "";
+
+  uploadFile = null;
+
+  $("uploadPreview")
+    .classList
+    .add("hidden");
+
+  $("uploadPreview")
+    .innerHTML = "";
+
+  toast(
+    "Upload সফল হয়েছে"
+  );
+
+  showPage("home");
+}
+
+$("uploadSubmitBtn")
+  .addEventListener(
+    "click",
+    uploadPost
+  );
+
+/* =========================================================
+   SPONSOR
+   ========================================================= */
+
+async function loadSponsorOptions(){
+
+  const result =
+    await sb
+      .from("app_settings")
+      .select(
+        "key,value"
+      );
+
+  const settings =
+    Object.fromEntries(
+      (result.data || [])
+        .map(x => [
+          x.key,
+          x.value
+        ])
+    );
+
+  $("durationGrid")
+    .innerHTML =
+    [3,7,15,30]
+      .map(days => {
+
+        const price =
+          Number(
+            settings[
+              "sponsor_price_" +
+              days
+            ] || 0
+          );
+
+        return `
+
+          <button
+            type="button"
+            class="duration ${
+              selectedDuration === days
+                ? "selected"
+                : ""
+            }"
+            onclick="
+              selectedDuration=${days};
+              loadSponsorOptions();
+            "
+          >
+
+            <b>
+              ${days} দিন
+            </b>
+
+            <br>
+
+            <small>
+              ${
+                price
+                  ? money(price)
+                  : "যোগাযোগ"
+              }
+            </small>
+
+          </button>
+
+        `;
+
+      })
+      .join("");
+
+  $("adPrice")
+    .textContent =
+    `${selectedDuration} দিনের প্যাকেজ · WhatsApp 01742-361967`;
+}
+
+function openSponsor(){
+
+  if(!me){
+
+    openModal("authModal");
+
+    return;
+  }
+
+  openModal(
+    "sponsorModal"
+  );
+}
+
+async function submitAd(){
+
+  if(!me){
+
+    openModal("authModal");
+
+    return;
+  }
+
+  const file =
+    $("adFile")
+      .files?.[0];
+
+  if(!file){
+
+    toast(
+      "বিজ্ঞাপনের ছবি অথবা ভিডিও দিন"
+    );
+
+    return;
+  }
+
+  const name =
+    $("adName")
+      .value
+      .trim();
+
+  const title =
+    $("adTitle")
+      .value
+      .trim();
+
+  if(
+    !name ||
+    !title
+  ){
+
+    toast(
+      "নাম ও শিরোনাম দিন"
+    );
+
+    return;
+  }
+
+  const safeName =
+    file.name
+      .replace(
+        /[^a-zA-Z0-9._-]/g,
+        "_"
+      );
+
+  const path =
+    `${me.id}/${crypto.randomUUID()}-${safeName}`;
+
+  const upload =
+    await sb.storage
+      .from("rivo-ad-pending")
+      .upload(
+        path,
+        file,
+        {
+          contentType:
+            file.type
+        }
+      );
+
+  if(upload.error){
+
+    toast(
+      upload.error.message
+    );
+
+    return;
+  }
+
+  const result =
+    await sb
+      .from("sponsored_ads")
+      .insert({
+
+        advertiser_id:
+          me.id,
+
+        advertiser_name:
+          name,
+
+        advertiser_whatsapp:
+          $("adWhatsapp")
+            .value
+            .trim() ||
+          "01742-361967",
+
+        title,
+
+        media_type:
+          file.type
+            .startsWith(
+              "image/"
+            )
+            ? "image"
+            : "video",
+
+        storage_path:
+          path,
+
+        duration_days:
+          selectedDuration,
+
+        price:0,
+
+        payment_status:
+          "unpaid",
+
+        status:
+          "pending"
+
+      });
+
+  if(result.error){
+
+    toast(
+      result.error.message
+    );
+
+    return;
+  }
+
+  closeModal(
+    "sponsorModal"
+  );
+
+  toast(
+    "বিজ্ঞাপন Admin-এর কাছে জমা হয়েছে"
+  );
+
+  window.open(
+    "https://wa.me/8801742361967?text=" +
+    encodeURIComponent(
+      "Rivo বিজ্ঞাপন: " +
+      title +
+      " | " +
+      selectedDuration +
+      " দিন"
+    ),
+    "_blank"
+  );
+}
+
+$("submitAdBtn")
+  .addEventListener(
+    "click",
+    submitAd
+  );
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+let searchTimer = null;
+
+$("searchBox")
+  .addEventListener(
+    "input",
+    () => {
+
+      clearTimeout(
+        searchTimer
+      );
+
+      searchTimer =
+        setTimeout(
+          searchUsers,
+          300
+        );
+
+    }
+  );
+
+async function searchUsers(){
+
+  const q =
+    $("searchBox")
+      .value
+      .trim();
+
+  if(!q){
+
+    $("searchResults")
+      .innerHTML = "";
+
+    return;
+  }
+
+  const result =
+    await sb
+      .from("profiles")
+      .select(
+        "username,full_name,avatar_url"
+      )
+      .ilike(
+        "username",
+        "%" + q + "%"
+      )
+      .limit(10);
+
+  $("searchResults")
+    .innerHTML =
+    (result.data || [])
+      .map(user => {
+
+        const username =
+          user.username ||
+          "user";
+
+        const avatar =
+          user.avatar_url ||
+          `https://ui-avatars.com/api/?name=${
+            encodeURIComponent(username)
+          }&background=ff2f86&color=fff`;
+
+        return `
+
+          <div class="menu">
+
+            <img
+              src="${escapeHtml(avatar)}"
+              style="
+                width:43px;
+                height:43px;
+                border-radius:50%;
+                object-fit:cover;
+              "
+            >
+
+            <span class="menuText">
+
+              <b>
+                @${escapeHtml(username)}
+              </b>
+
+              <small>
+                ${escapeHtml(
+                  user.full_name || ""
+                )}
+              </small>
+
+            </span>
+
+          </div>
+
+        `;
+
+      })
+      .join("");
+}
+
+/* =========================================================
+   NOTICE
+   ========================================================= */
+
+async function loadNotices(){
+
+  const result =
+    await sb
+      .from("notices")
+      .select(
+        "title,message,created_at"
+      )
+      .eq(
+        "is_active",
+        true
+      )
+      .order(
+        "created_at",
+        {
+          ascending:false
+        }
+      );
+
+  const list =
+    result.data || [];
+
+  $("noticeList")
+    .innerHTML =
+    list
+      .map(n => `
+
+        <div class="card">
+
+          <b>
+            📌 ${escapeHtml(
+              n.title ||
+              "Notice"
+            )}
+          </b>
+
+          <p class="muted">
+            ${escapeHtml(
+              n.message || ""
+            )}
+          </p>
+
+        </div>
+
+      `)
+      .join("")
+    ||
+    `
+      <div class="card muted">
+        এখনো কোনো Notice নেই।
+      </div>
+    `;
+}
+
+/* =========================================================
+   GUIDE
+   ========================================================= */
+
+async function loadGuide(){
+
+  const result =
+    await sb
+      .from("guides")
+      .select(
+        "title,body,sort_order"
+      )
+      .eq(
+        "is_active",
+        true
+      )
+      .order(
+        "sort_order"
+      );
+
+  const list =
+    result.data || [];
+
+  $("guideList")
+    .innerHTML =
+    list
+      .map(g => `
+
+        <div class="card">
+
+          <div class="cardTitle">
+            📌 ${escapeHtml(
+              g.title ||
+              "নির্দেশিকা"
+            )}
+          </div>
+
+          <p class="muted">
+            ${escapeHtml(
+              g.body || ""
+            )}
+          </p>
+
+        </div>
+
+      `)
+      .join("")
+    ||
+    `
+      <div class="card muted">
+        এখনো নির্দেশিকা যোগ করা হয়নি।
+      </div>
+    `;
+}
+
+/* =========================================================
+   SERVICE WORKER FIX
+   ========================================================= */
+
+/*
+  পুরোনো Service Worker অনেক সময় পুরোনো
+  index.html cache করে রাখে।
+  তাই পুরোনো cache থাকলে নতুন navigation
+  code আটকে যেতে পারে।
+*/
+
+if(
+  "serviceWorker" in navigator
+){
+
+  window.addEventListener(
+    "load",
+    async () => {
+
+      try{
+
+        const registrations =
+          await navigator
+            .serviceWorker
+            .getRegistrations();
+
+        for(
+          const registration
+          of registrations
+        ){
+
+          await registration.update();
+
+        }
+
+      }catch(error){
+
+        console.log(
+          "Service worker update:",
+          error
+        );
+
+      }
+
+    }
+  );
+}
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+
+async function boot(){
+
+  try{
+    await loadFeed();
+  }catch(error){
+    console.error(
+      "Feed:",
+      error
+    );
+  }
+
+  try{
+    await loadNotices();
+  }catch(error){
+    console.error(
+      "Notice:",
+      error
+    );
+  }
+
+  try{
+    await loadGuide();
+  }catch(error){
+    console.error(
+      "Guide:",
+      error
+    );
+  }
+
+  try{
+    await loadProfile();
+  }catch(error){
+    console.error(
+      "Profile:",
+      error
+    );
+  }
+
+  if(me){
+
+    try{
+      await loadDashboard();
+    }catch(error){
+      console.error(
+        "Dashboard:",
+        error
+      );
+    }
+
+  }
+}
+
+/* AUTH STATE */
+
+sb.auth
+  .getUser()
+  .then(result => {
+
+    me =
+      result?.data?.user ||
+      null;
+
+    boot();
+
+  })
+  .catch(error => {
+
+    console.error(
+      "Auth:",
+      error
+    );
+
+    boot();
+
+  });
+
+/* =========================================================
+   FINAL SAFETY
+   ========================================================= */
+
+/*
+  কোনো JavaScript error-এর কারণে
+  পুরো app যেন বন্ধ না হয়ে যায়।
+*/
+
+window.addEventListener(
+  "error",
+  event => {
+
+    console.error(
+      "Rivo error:",
+      event.error ||
+      event.message
+    );
+
+  }
+);
+
+window.addEventListener(
+  "unhandledrejection",
+  event => {
+
+    console.error(
+      "Rivo promise error:",
+      event.reason
+    );
+
+  }
+);
+
+</script>
+
+</body>
+</html>
